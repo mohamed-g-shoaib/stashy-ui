@@ -5,6 +5,7 @@
   "trailingComma": "all",
   "singleQuote": false,
   "jsxSingleQuote": false,
+  "ignorePatterns": [".agents"],
   "sortImports": {
     "partitionByNewline": true,
     "newlinesBetween": false

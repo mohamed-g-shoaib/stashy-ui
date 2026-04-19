@@ -1,6 +1,6 @@
 > **LLM Context & Usage Guide**
 > **File Purpose:** The authoritative source of truth for the visual identity and structural constraints of the Stashy interface.
-> **How to Use:** Before writing *any* UI code (CSS, Tailwind, or React components), agents MUST cross-reference this document to ensure colors, paddings, shadows, and fonts strictly align with these specifications. No arbitrary pixel values or tailwind default colors are permitted. You must map these token values exactly as described into the Web Sandbox (Next.js/Tailwind).
+> **How to Use:** Before writing _any_ UI code (CSS, Tailwind, or React components), agents MUST cross-reference this document to ensure colors, paddings, shadows, and fonts strictly align with these specifications. No arbitrary pixel values or tailwind default colors are permitted. You must map these token values exactly as described into the Web Sandbox (Next.js/Tailwind).
 > **Constraint Reminder:** Stashy's web environment is a sandbox mimicking a mobile app. Stick strictly to mobile bounding boxes (`max-w-sm`).
 
 # Stashy Mobile Design System
@@ -272,6 +272,7 @@ Google Sans Flex supports Arabic script natively. When rendered in Arabic (`dir=
 - Stitch design note: `ROND 40` is recommended for Arabic display text — rounder terminals complement Arabic letterforms
 
 **Shadcn/UI Native RTL Architecture:**
+
 - The project's shadcn/ui installation has native RTL enabled.
 - **Always use logical classes:** Never use physical classes (`left-*`, `right-*`, `pl-*`, `mr-*`, etc.). Always use their logical equivalents (`start-*`, `end-*`, `ps-*`, `me-*`, etc.). The framework automatically interprets these correctly based on `dir`.
 - **Icons:** Directional icons must use the `rtl:rotate-180` tailwind class to flip properly in Arabic mode.

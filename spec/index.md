@@ -2,7 +2,8 @@
 
 > **LLM Context & Usage Guide**
 > This `index.md` file is the ultimate root of context for the `stashy-ui` repository. It grounds the LLM agent in the overarching project mission, the product mechanics, and the repository's purpose as a rapid UI/UX design environment.
-> - **Read this first** when entering a completely new context to understand *what* Stashy is and *why* things are being built the way they are.
+>
+> - **Read this first** when entering a completely new context to understand _what_ Stashy is and _why_ things are being built the way they are.
 > - Consult the **Spec Directory Map** at the bottom to navigate constraints (`DESIGN.md`), daily logs (`sessions/`), and capabilities (`skills.md`).
 
 ## The `stashy-ui` Repository Mission
@@ -23,34 +24,37 @@ Stashy is a **native mobile budget management app** built for individuals who wa
 
 Most budgeting apps tell you how much you've spent. Stashy tells you **how much you can spend today** — and what happens tomorrow if you don't. The entire product is built around a single, central mechanism:
 
-> **The Daily Rate System** — a dynamic, self-correcting daily spending limit that adapts in real time as you spend, receive income, or log major purchases. 
+> **The Daily Rate System** — a dynamic, self-correcting daily spending limit that adapts in real time as you spend, receive income, or log major purchases.
 
 This means the app doesn't just track; it **projects consequences forward**, showing the user exactly how today's overspending reduces tomorrow's rate.
 
 ### Bilingual Architecture (English & Arabic)
+
 Stashy is actively bilingual and natively supports full RTL (Right-to-Left) rendering for the core MENA market. Rather than maintaining separate layouts, the UI dictates a **strict logical-only CSS architecture**. All layout code must use logical properties (e.g., `ms-*`, `text-start`, `end-0`) exclusively instead of physical ones (e.g., `ml-*`, `text-left`, `right-0`). This allows the framework to seamlessly mirror the interface when rendering Arabic locales (`dir="rtl"`).
 
 ### Who It's For
 
 Stashy targets **individuals managing a monthly budget in a variable-income or variable-spending context** (e.g., Egypt / EGP pricing). The ideal user:
+
 - Has a known monthly budget but irregular daily spending patterns
 - Wants to track fixed commitments (rent, subscriptions) separately from variable day-to-day spending
-- Needs to absorb unexpected large expenses (a laptop, medical bill) without their budget falling apart 
+- Needs to absorb unexpected large expenses (a laptop, medical bill) without their budget falling apart
 
 ### What Makes It Different
 
-| Feature | Common Budgeting Apps | Stashy |
-|---|---|---|
-| **Core output** | "You've spent X" | "You can spend Y today" |
-| **Income handling** | Adds to a static pool | Dynamically redistributes across remaining days |
-| **Large purchases** | Lumped into categories | `Major` type — instantly drops daily rate, acknowledged upfront |
-| **Fixed expenses** | Simple category tracking | Dual-mode: auto-pay subscriptions + manual buckets, with auto-catch-up if missed |
-| **Overspend feedback** | End-of-month summary | Real-time "Tomorrow's Rate Impact" card appears the moment you overspend |
-| **Emergency state** | Silent over-budget | Dedicated emergency mode with "Budget Injection" action |
+| Feature                | Common Budgeting Apps    | Stashy                                                                           |
+| ---------------------- | ------------------------ | -------------------------------------------------------------------------------- |
+| **Core output**        | "You've spent X"         | "You can spend Y today"                                                          |
+| **Income handling**    | Adds to a static pool    | Dynamically redistributes across remaining days                                  |
+| **Large purchases**    | Lumped into categories   | `Major` type — instantly drops daily rate, acknowledged upfront                  |
+| **Fixed expenses**     | Simple category tracking | Dual-mode: auto-pay subscriptions + manual buckets, with auto-catch-up if missed |
+| **Overspend feedback** | End-of-month summary     | Real-time "Tomorrow's Rate Impact" card appears the moment you overspend         |
+| **Emergency state**    | Silent over-budget       | Dedicated emergency mode with "Budget Injection" action                          |
 
 ### The Signature Mechanism: Dual Rate Model
 
 Stashy maintains two parallel rates at all times:
+
 - **Base Rate** — immutable, plan-based: `Base Variable Budget ÷ Days in Month`. This is your stable monthly target.
 - **Today's Rate** — live, reality-based: `(Effective Variable Budget − Yesterday's Spending) ÷ Days Remaining`. This is your actual, current allowance.
 

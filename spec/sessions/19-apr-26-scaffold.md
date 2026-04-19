@@ -257,3 +257,142 @@ The next-intl App Router implementation from Session 4 was installed and buildin
 ## Open Blockers
 
 1. Full `pnpm lint` still fails on pre-existing `.agents/skills/` example files: `YourHomeComponent` in the next-intl skill example and `DotsHorizontalIcon` in the Radix dropdown example. The touched application paths pass targeted oxlint cleanly.
+
+---
+
+# Session 7 — Project Orientation
+
+**Time:** 23:23
+
+---
+
+## Status at Session Start
+
+The repository had completed foundational scaffolding, next-intl locale routing, localized fallback/error handling, and server-rendered direction propagation for Arabic routes. The active goal was to re-orient from `AGENTS.md`, reload the required spec context, and identify the current implementation state before any future UI work.
+
+---
+
+## Completed This Session
+
+- Read `AGENTS.md`, `spec/index.md`, `spec/DESIGN.md`, `spec/skills.md`, and the latest session log.
+- Inspected the current Next.js app spine: root layout, locale layout/page, i18n helpers, proxy middleware, starter shell, fallback components, theme/language toggles, and button primitive.
+- Confirmed the working tree is clean.
+- Identified that app-level next-intl scaffolding is in place, while `app/globals.css` still mostly reflects default shadcn/Forge tokens instead of the Stashy parchment/terracotta design system.
+
+---
+
+## Decisions Made
+
+- Treat the next meaningful implementation step as design-system translation into `app/globals.css` and mobile sandbox shell work, not further i18n plumbing.
+- Preserve the existing next-intl provider boundary decisions: localized UI lives under `app/[locale]`, while root/global fallbacks remain provider-safe and direction-aware.
+
+---
+
+## Open Blockers
+
+1. Full `pnpm lint` still fails on pre-existing `.agents/skills/` example files: `YourHomeComponent` in the next-intl skill example and `DotsHorizontalIcon` in the Radix dropdown example. The touched application paths pass targeted oxlint cleanly.
+
+---
+
+# Session 8 — Lint & Format Ignore Investigation
+
+**Time:** 23:24
+
+---
+
+## Status at Session Start
+
+The latest blocker noted that full `pnpm lint` fails on generated `.agents/skills/` example files, while targeted app lint passes. The active question was why `pnpm lint` and `pnpm format` do not exclude `.agents`.
+
+---
+
+## Completed This Session
+
+- Inspected `package.json`, `.oxlintrc.json`, `.oxfmtrc.json`, `.gitignore`, and `.prettierignore`.
+- Confirmed `pnpm lint` runs `oxlint .`, and `.oxlintrc.json` has explicit `ignorePatterns` that omit `.agents`.
+- Confirmed `pnpm format` runs `oxfmt`; `oxfmt` uses `.gitignore` and `.prettierignore` by default when no `--ignore-path` is provided, but neither file currently excludes `.agents`.
+- Checked CLI help for both tools to verify ignore behavior.
+
+---
+
+## Decisions Made
+
+- The blocker is configuration scope, not a tool bug: `.agents` is being included because it is not ignored by Oxlint or Oxfmt inputs.
+
+---
+
+## Open Blockers
+
+1. ~~Full `pnpm lint` still fails on pre-existing `.agents/skills/` example files until `.agents` is excluded or those examples are made lint-clean.~~ Resolved 2026-04-19 in Session 9.
+
+---
+
+# Session 9 — Ignore Scope Fix & Verification
+
+**Time:** 23:26
+
+---
+
+## Status at Session Start
+
+The lint/format investigation confirmed that `.agents` was not excluded by either Oxlint or Oxfmt's effective ignore inputs. The active goal was to fix the ignore scope, run the affected commands, and clear the carried lint blocker.
+
+---
+
+## Completed This Session
+
+- Added `.agents` to `.oxlintrc.json` `ignorePatterns` so `pnpm lint` no longer scans generated agent skill examples.
+- Added `.agents` to `.oxfmtrc.json` `ignorePatterns` so `pnpm format` and `pnpm format:check` exclude generated agent skill content through Oxfmt's native config.
+- Removed the redundant `.prettierignore`; `.gitignore` already covers the remaining generic Yarn/PnP patterns.
+- Ran `pnpm lint`: passed with 0 warnings and 0 errors across 36 files.
+- Ran `pnpm format:check`: initially failed on first-party markdown files, not `.agents`.
+- Ran `pnpm format` to normalize first-party markdown formatting.
+- Re-ran `pnpm lint` and `pnpm format:check`: both passed cleanly.
+
+---
+
+## Decisions Made
+
+- Keep `.agents` present in the repository but outside normal first-party lint/format gates because it contains generated skill reference examples that should not block application verification.
+- Use Oxfmt's native `.oxfmtrc.json` `ignorePatterns` for formatter exclusions, even though Oxfmt intentionally supports `.prettierignore` compatibility workflows.
+
+---
+
+## Open Blockers
+
+None.
+
+---
+
+# Session 10 — Oxfmt Native Ignore Configuration
+
+**Time:** 23:29
+
+---
+
+## Status at Session Start
+
+After clearing the lint blocker, the formatter exclusion lived in `.prettierignore`, which raised a toolchain consistency concern because the project is standardized on Oxc/Oxfmt rather than Prettier. The active goal was to verify the official Oxfmt documentation and adjust immediately if the docs supported a native Oxc config path.
+
+---
+
+## Completed This Session
+
+- Fetched the official Oxfmt configuration docs at `https://oxc.rs/docs/guide/usage/formatter/config.html`.
+- Confirmed Oxfmt intentionally supports `.gitignore` and `.prettierignore` workflows, but also documents `ignorePatterns` as a top-level `.oxfmtrc.json` field.
+- Moved `.agents` formatter exclusion into `.oxfmtrc.json` `ignorePatterns`.
+- Deleted `.prettierignore` because it was redundant once `.agents` moved into `.oxfmtrc.json` and existing generic patterns were already present in `.gitignore`.
+- Verified `pnpm format:check` and `pnpm lint` both pass cleanly after the change.
+
+---
+
+## Decisions Made
+
+- Prefer Oxfmt-native `.oxfmtrc.json` config for project-owned formatter behavior.
+- Treat `.prettierignore` support as intentional Oxfmt compatibility, not evidence that Prettier is being used.
+
+---
+
+## Open Blockers
+
+None.
