@@ -24,6 +24,6 @@ Stashy is actively bilingual (English/Arabic). Shadcn/UI is officially configure
 
 When you finish a task, or when the session is ending, you MUST:
 
-1. **UPDATE THE SESSION LOG**: Append a new `# Session [N]` entry to the _current day's session file_ in `spec/sessions/`. If no file exists for today, you must create one by copying the exact LLM Context & Session templates from the previous day's log.
+1. **UPDATE THE SESSION LOG**: Update the active session entry in the _current day's session file_ in `spec/sessions/`. A session is a contiguous work block, not a single code edit or request. Only append a new `# Session [N]` entry after a meaningful time gap or restart of work (for example, stopping in the morning and continuing 6 hours later). If no file exists for today, create one by copying the exact LLM Context & Session templates from the previous day's log.
 
 Remember: Your task is not just to write code, but to keep the documentation chronological, uniform, and instantly accessible to the next AI agent that replaces you.

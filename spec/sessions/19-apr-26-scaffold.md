@@ -2,16 +2,18 @@
 > This file establishes the chronological daily session tracking format for this project.
 >
 > - **How to use this directory (`spec/sessions/`)**: Read today's or the most recent day's log when starting a new conversation to quickly ingest the current daily state, established blockers, and past sessions for that day.
-> - **How to update**: You must create a single file for each day (e.g., `DD-MMM-YY-topic.md`). Every newly created daily file MUST contain this exact LLM Context block and the `Unified Session Template` at the very top. As the day progresses, append new sessions (`# Session 1`, `# Session 2`, etc.) sequentially into the same file using the session format.
+> - **How to update**: You must create a single file for each day (e.g., `DD-MMM-YY-topic.md`). Every newly created daily file MUST contain this exact LLM Context block and the `Unified Session Template` at the very top. As the day progresses, update the current active session while work is continuous. Create a new numbered session only when there is a meaningful time gap or restart of work, such as stopping in the morning and continuing 6 hours later.
+>
+> **Session boundary rule:** A session is a contiguous work block, not a single code edit or request. Do not create a new session for every task, fix, or verification pass. Append new facts to the active session's Completed, Decisions, and Open Blockers sections unless the work has clearly resumed after a substantial break.
 
 ## Unified Session Template
 
-When appending a new session to today's daily log, or starting a new daily file, you MUST use the following exact structure to maintain an LLM-friendly standard across the project:
+When appending to today's daily log, first decide whether the current work belongs to the active session. If it is the same continuous work block, update the existing session in place. If it follows a substantial break or restart, append a new session using this exact structure:
 
 ```markdown
 # Session [N] — [Brief descriptor]
 
-**Time:** [HH:MM]
+**Time:** [HH:MM-HH:MM]
 
 ---
 
@@ -23,7 +25,7 @@ When appending a new session to today's daily log, or starting a new daily file,
 
 ## Completed This Session
 
-[Bullet list of concrete deliverables shipped, fixed, or closed.]
+[Bullet list of concrete deliverables shipped, fixed, or closed. Keep adding to this list during the same contiguous work block.]
 
 ---
 
@@ -42,354 +44,61 @@ _(End of Template)_
 
 ---
 
-# Session 1 — Project Scaffolding & Agent Skills
+# Session 1 — Project Scaffolding, i18n, and Tooling Setup
 
-**Time:** 22:15
-
----
-
-## Status at Session Start
-
-Initial project kickoff. The workspace is a clean slate requiring fundamental project scaffolding, local agent configuration, and strict documentation standardization to establish constraints and guardrails for future development cycles.
-
----
-
-## Completed This Session
-
-- **Project Scaffolding:** Initialized foundational directory structure.
-- **Agent Skill Installation:** Ingested and categorized 11 specialized agent skills into the `.agents/skills/` directory.
-- **Skills Guide Documentation (`spec/skills.md`):** Indexed all 11 skills, established an explicit unified format, embedded "Top 5 Priority Rules" for constraint-based prompting, and linked "Triggers" & "Pairs With" metadata.
-- **Session Tracking (`19-apr-26-scaffold.md`):** Established this LLM-friendly, daily-file chronological session log format to securely hand off state across independent agent lifecycles via sequential daily entries.
-
----
-
-## Decisions Made
-
-- **LLM-Optimized Spec Strategy:** All specifications (`skills.md`, session logs) will carry explicit "Unified Format Templates". This ensures the LLM knows _how_ to parse, route, and output data autonomously based on established rules.
-- **Unified Skill Structure Validation:** Standardized that skills must comply with one of 3 explicit file distributions (`Only SKILL.md`, `SKILL.md + AGENTS.md`, or `SKILL.md + folders`) to prevent context fragmentation.
-- **Daily Sequential Logs:** Session files are grouped by day. Each newly created day-file must repeat the top template, and individual sessions are appended sequentially below it over the course of the day.
-
----
-
-## Open Blockers
-
-None.
-
----
-
-# Session 2 — Universal Agent Onboarding & UI Design System
-
-**Time:** 22:45
+**Time:** 22:15-23:29
 
 ---
 
 ## Status at Session Start
 
-Initial scaffolding, skill tracking, and mission clarity established in Session 1. The focus shifted to configuring the visual design parameters and mathematically guaranteeing that any future agent—regardless of IDE or AI platform—is automatically routed into the project's strict architecture guidelines.
+Initial project kickoff. The workspace started as a clean slate requiring project scaffolding, local agent configuration, a strict design system, bilingual/RTL architecture, and verification gates suitable for future UI implementation.
 
 ---
 
 ## Completed This Session
 
-- **Visual Spec Review (`DESIGN.md`):** Verified the core Stashy design token engine, including the `Google Sans Flex` tabular-num implementation, the `Parchment` and `Terracotta` hierarchy, and the React Native simulation boundaries.
-- **Spec Standardization:** Fitted `DESIGN.md` with the `> **LLM Context & Usage Guide**` to guarantee parsing uniformity across all LLMs touching the `spec/` folder.
-- **README AI Directive:** Added an explicit warning block inside `README.md` to forcefully route observing developers or generic bots straight to `spec/index.md`.
-- **Agnostic Agent Routing:** Constructed a universal "Invisible System Prompt" architecture covering the major 2026 IDE/agent platforms, all dictating identical Mandatory Initialization and Wrap-Up sequences:
-  - Added `.cursorrules` (For Cursor editor)
-  - Added `.windsurfrules` (For Windsurf)
-  - Added `.github/copilot-instructions.md` (For VS Code Copilot Workspace)
-  - Added `AGENTS.md` (For Anthropic Claude Code, Antigravity, and CLI agents)
+- **Project Scaffolding:** Initialized the foundational repository structure for the Stashy UI web sandbox.
+- **Agent Skill Installation:** Ingested and categorized specialized agent skills into `.agents/skills/`.
+- **Skills Guide Documentation (`spec/skills.md`):** Indexed installed skills, established the unified writing format, embedded top-priority rules, and added trigger/pairing metadata.
+- **Session Tracking (`spec/sessions/19-apr-26-scaffold.md`):** Established the daily session log template and later corrected it so one numbered session represents a contiguous work block, not every edit.
+- **Visual Spec Review (`spec/DESIGN.md`):** Verified the Stashy design system constraints, including parchment/terracotta palette, typography, mobile canvas bounds, RTL rules, and component tokens.
+- **Spec Standardization:** Added LLM context blocks to specs so future agents can parse mission, design, skills, and session records consistently.
+- **Universal Agent Routing:** Added or updated AI instruction files for major IDE/agent surfaces, including `AGENTS.md`, `.cursorrules`, `.windsurfrules`, and `.github/copilot-instructions.md`.
+- **Bilingual Architecture Setup:** Locked English/Arabic support with strict logical CSS requirements and native RTL direction handling.
+- **next-intl Skill Indexing:** Integrated `next-intl-app-router` into `spec/skills.md` and documented its priority rules.
+- **next-intl App Router Implementation:** Installed `next-intl`, wired the plugin in `next.config.mjs`, added `i18n/routing.ts`, `i18n/request.ts`, `i18n/navigation.ts`, and configured the Next.js 16 `proxy.ts` middleware.
+- **Locale Message Files:** Added segregated English and Arabic messages in `messages/en.json` and `messages/ar.json`.
+- **Locale Layout Refactor:** Updated `app/[locale]/layout.tsx` to validate locales, call `setRequestLocale(locale)`, load messages, scope `NextIntlClientProvider`, and preserve Radix direction handling.
+- **Localized Page Refactor:** Updated `app/[locale]/page.tsx` for static locale rendering and migrated starter shell, theme toggle, language toggle, not-found, and error UI to next-intl APIs.
+- **Provider Boundary Fix:** Removed provider-bound next-intl router usage from shared fallback actions and used provider-safe browser navigation for fallback recovery.
+- **Localized 404 Handling:** Added `app/[locale]/not-found.tsx` so locale-prefixed missing routes render localized copy.
+- **RTL Fallback Fix:** Added server-rendered `lang`/`dir` wrappers and direction-aware fallback props so Arabic error/not-found pages render correctly before hydration.
+- **Handoff Documentation:** Updated `NEXT_INTL_IMPLEMENTATION_HANDOFF.md` with the not-found/error boundary fixes and direction propagation requirements.
+- **Project Orientation:** Re-read `AGENTS.md`, `spec/index.md`, `spec/DESIGN.md`, `spec/skills.md`, and inspected the app spine to identify the next meaningful implementation step.
+- **Lint/Format Blocker Investigation:** Confirmed generated `.agents/skills/` examples were being scanned because `.agents` was missing from the effective Oxlint and Oxfmt ignore inputs.
+- **Lint Ignore Fix:** Added `.agents` to `.oxlintrc.json` `ignorePatterns`.
+- **Formatter Ignore Fix:** Verified official Oxfmt docs and added `.agents` to `.oxfmtrc.json` `ignorePatterns`.
+- **Prettier Compatibility Cleanup:** Confirmed Oxfmt intentionally supports `.prettierignore` compatibility workflows, then deleted the redundant `.prettierignore` so this Oxc toolchain expresses formatter exclusions in `.oxfmtrc.json`.
+- **Formatting Normalization:** Ran `pnpm format` after Oxfmt identified first-party Markdown formatting drift.
+- **Verification:** Confirmed `pnpm lint` passes with 0 warnings and 0 errors, and `pnpm format:check` reports all matched files correctly formatted.
 
 ---
 
 ## Decisions Made
 
-- **Tool-Agnostic LLM Configuration:** The repository will not be dependent on a single AI IDE or platform's rule interpretation (e.g., Cursor alone). Core behavioral mandates are mirrored into the native instruction files for Copilot, Windsurf, Cursor, and generic AI agents to ensure 100% compatibility.
-- **Figma in Code Implementation Lock:** Next steps are fully unlocked to begin translating `DESIGN.md` CSS Variables into Tailwind V4 and constructing the mobile bounded component wrapper constraint.
-
----
-
-## Open Blockers
-
-None. Ready to write application code.
-
----
-
-# Session 3 — i18n Localization Skill Setup
-
-**Time:** 23:05
-
----
-
-## Status at Session Start
-
-Agnostic agent routing and UI design systems were established in Session 2. The user specified a new bilingual requirement for the app (Arabic and English) and injected the `next-intl-app-router` skill into the environment.
-
----
-
-## Completed This Session
-
-- **Next-Intl Skill Indexing:** Successfully digested the new `next-intl-app-router` skill and integrated it into the `spec/skills.md` index.
-- **Top 5 Priority Rules Extraction:** Documented specific next-intl integration mandates (e.g. `NextIntlClientProvider` layout positioning, custom navigation wrapper conventions, `setRequestLocale` usage for static rendering, and message segregation strategies).
-- **RTL Specs Documentation:** Updated `spec/DESIGN.md` and all agent rule files (`AGENTS.md`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md`) to explicitly enforce the use of logical CSS properties (`start-*`, `end-*`) over physical ones, leveraging shadcn/ui's native RTL support.
-
----
-
-## Decisions Made
-
-- **Bilingual Architecture Lock:** Stashy will officially support Arabic and English explicitly using Next.js App Router prefix-based routing (`/[locale]`), meaning future UI component construction must account for potential RTL configurations and localized messaging.
-- **Logical CSS properties only:** Native shadcn/ui RTL parsing will be leveraged aggressively. All physical CSS directional utilities are strictly banned across the codebase to ensure flawless bidirectional rendering.
-
----
-
-## Open Blockers
-
-None. The scaffolding infrastructure phase is fully concluded. Ready to begin application code execution (translating DESIGN.md to globals.css, configuring next-intl, and setting up the master layout).
-
----
-
-# Session 4 — next-intl App Router Implementation
-
-**Time:** 23:07
-
----
-
-## Status at Session Start
-
-The project already had English/Arabic locale routing scaffolding and a hand-rolled translation context in `hooks/use-locale.tsx`. The active goal was to replace that local dictionary approach with the `next-intl-app-router` skill workflow while preserving the mobile sandbox constraints and native RTL behavior.
-
----
-
-## Completed This Session
-
-- Installed `next-intl` and wired the plugin through `next.config.mjs`.
-- Added the required next-intl routing spine: `i18n/routing.ts`, `i18n/request.ts`, `i18n/navigation.ts`, and the Next.js 16 `proxy.ts` middleware integration.
-- Added segregated locale message files under `messages/en.json` and `messages/ar.json`.
-- Refactored `app/[locale]/layout.tsx` to validate locales with `hasLocale`, call `setRequestLocale(locale)`, load messages with `getMessages()`, and scope `NextIntlClientProvider` to the locale layout only.
-- Refactored `app/[locale]/page.tsx` to call `setRequestLocale(locale)` for static rendering.
-- Removed `hooks/use-locale.tsx` and migrated starter shell, theme toggle, language toggle, not-found, and localized error handling to next-intl APIs.
-- Preserved Radix direction handling via `Direction.Provider` and document `lang`/`dir` synchronization from the active next-intl locale.
-- Verified `pnpm typecheck`, `pnpm build`, and targeted app lint via `pnpm exec oxlint app components lib i18n proxy.ts next.config.mjs`.
-
----
-
-## Decisions Made
-
-- Kept next-intl files at the repository root (`i18n/`, `messages/`) because this project does not use a `src/` directory; imports still follow the skill's internal helper pattern through `@/i18n/navigation`.
-- Kept root/global error boundaries independent of next-intl provider context, while adding a localized `app/[locale]/error.tsx` for route-level errors inside locale scope.
-- Left `notFound` imported from `next/navigation` in `app/[locale]/layout.tsx` because the skill explicitly requires `notFound()` as the invalid-locale fallback.
-
----
-
-## Open Blockers
-
-1. Full `pnpm lint` still fails on pre-existing `.agents/skills/` example files: `YourHomeComponent` in the next-intl skill example and `DotsHorizontalIcon` in the Radix dropdown example. The touched application paths pass targeted oxlint cleanly.
-
----
-
-# Session 6 — RTL Fallback Boundary Fix
-
-**Time:** 23:19
-
----
-
-## Status at Session Start
-
-The localized not-found and error paths were translated correctly after Session 5, but Arabic fallback pages still rendered with LTR layout behavior. The root cause was that fallback routes could render without a guaranteed `dir="rtl"` ancestor, because the root layout remains generic and the client-side document direction sync is not a reliable foundation for all not-found/error boundary renders.
-
----
-
-## Completed This Session
-
-- **Locale Layout Direction Wrapper:** Added a server-rendered `lang`/`dir` wrapper inside `app/[locale]/layout.tsx` so localized routes have a direction ancestor before hydration.
-- **Direction-Aware Fallback Shell:** Updated `components/fallback-screen.tsx` to accept `locale` and `direction` props and apply them to the fallback `<main>`.
-- **Error View Direction Propagation:** Updated `components/error-view.tsx` to pass locale/direction through to the fallback shell.
-- **Localized Fallback Entry Points:** Passed computed locale direction into root not-found, locale not-found, root error, locale error, and global error views.
-- **Logical Alignment:** Added `text-start` to fallback copy so Arabic and English alignment follows the active direction without physical CSS classes.
-- **Handoff Documentation:** Updated `NEXT_INTL_IMPLEMENTATION_HANDOFF.md` with the translated-but-LTR fallback failure mode and the server-rendered direction wrapper requirement.
-- **Verification:** Confirmed `pnpm typecheck`, `pnpm build`, and targeted app oxlint pass. Smoke-tested `/ar/does-not-exist` and `/en/does-not-exist`; both return 404 with correct localized copy and matching `dir` attributes.
-
----
-
-## Decisions Made
-
-- **Direction Must Be Server-Rendered for Fallbacks:** Do not rely only on client-side `document.documentElement.dir` sync for not-found/error boundaries.
-- **Fallback UI Owns Its Direction:** Any shared fallback screen must be able to receive and apply `dir` directly, because it may render outside the normal app shell.
-- **Logical Classes Remain Mandatory:** Fallback alignment uses `text-start` and direction attributes rather than physical left/right alignment.
-
----
-
-## Open Blockers
-
-1. Full `pnpm lint` still fails on pre-existing `.agents/skills/` example files: `YourHomeComponent` in the next-intl skill example and `DotsHorizontalIcon` in the Radix dropdown example. The touched application paths pass targeted oxlint cleanly.
-
----
-
-# Session 5 — next-intl Not Found & Error Boundary Fix
-
-**Time:** 23:15
-
----
-
-## Status at Session Start
-
-The next-intl App Router implementation from Session 4 was installed and building, but manual testing of missing routes revealed a runtime provider-boundary bug. Visiting invalid English or Arabic routes rendered the error boundary because the shared fallback action component called the next-intl navigation `useRouter()` hook outside `NextIntlClientProvider`.
-
----
-
-## Completed This Session
-
-- **Provider Boundary Fix:** Removed the next-intl navigation hook from `components/fallback-actions.tsx` and changed fallback home navigation to provider-agnostic `window.location.assign(homeHref)`.
-- **Localized 404 Route:** Added `app/[locale]/not-found.tsx` so `/en/...` and `/ar/...` missing routes render localized not-found copy inside the locale segment.
-- **Handoff Documentation:** Updated `NEXT_INTL_IMPLEMENTATION_HANDOFF.md` with the provider-boundary failure mode, the localized not-found route requirement, and the provider-agnostic fallback action pattern.
-- **Verification:** Confirmed `pnpm typecheck`, `pnpm build`, and targeted app oxlint pass. Smoke-tested `/en/does-not-exist` and `/ar/does-not-exist`; both return 404 with localized not-found copy and no `No intl context found` content.
-
----
-
-## Decisions Made
-
-- **Shared Fallback Components Must Be Provider-Agnostic:** Components used by root `app/not-found.tsx`, global error boundaries, or localized error routes must not assume `NextIntlClientProvider` is available.
-- **Localized 404s Get a Segment-Level Boundary:** Locale-prefixed missing routes should use `app/[locale]/not-found.tsx` instead of relying only on the root not-found file.
-- **Browser Navigation Is Acceptable for Error Fallbacks:** For emergency fallback actions that may render outside app navigation context, direct browser navigation is safer than a provider-bound router hook.
-
----
-
-## Open Blockers
-
-1. Full `pnpm lint` still fails on pre-existing `.agents/skills/` example files: `YourHomeComponent` in the next-intl skill example and `DotsHorizontalIcon` in the Radix dropdown example. The touched application paths pass targeted oxlint cleanly.
-
----
-
-# Session 7 — Project Orientation
-
-**Time:** 23:23
-
----
-
-## Status at Session Start
-
-The repository had completed foundational scaffolding, next-intl locale routing, localized fallback/error handling, and server-rendered direction propagation for Arabic routes. The active goal was to re-orient from `AGENTS.md`, reload the required spec context, and identify the current implementation state before any future UI work.
-
----
-
-## Completed This Session
-
-- Read `AGENTS.md`, `spec/index.md`, `spec/DESIGN.md`, `spec/skills.md`, and the latest session log.
-- Inspected the current Next.js app spine: root layout, locale layout/page, i18n helpers, proxy middleware, starter shell, fallback components, theme/language toggles, and button primitive.
-- Confirmed the working tree is clean.
-- Identified that app-level next-intl scaffolding is in place, while `app/globals.css` still mostly reflects default shadcn/Forge tokens instead of the Stashy parchment/terracotta design system.
-
----
-
-## Decisions Made
-
-- Treat the next meaningful implementation step as design-system translation into `app/globals.css` and mobile sandbox shell work, not further i18n plumbing.
-- Preserve the existing next-intl provider boundary decisions: localized UI lives under `app/[locale]`, while root/global fallbacks remain provider-safe and direction-aware.
-
----
-
-## Open Blockers
-
-1. Full `pnpm lint` still fails on pre-existing `.agents/skills/` example files: `YourHomeComponent` in the next-intl skill example and `DotsHorizontalIcon` in the Radix dropdown example. The touched application paths pass targeted oxlint cleanly.
-
----
-
-# Session 8 — Lint & Format Ignore Investigation
-
-**Time:** 23:24
-
----
-
-## Status at Session Start
-
-The latest blocker noted that full `pnpm lint` fails on generated `.agents/skills/` example files, while targeted app lint passes. The active question was why `pnpm lint` and `pnpm format` do not exclude `.agents`.
-
----
-
-## Completed This Session
-
-- Inspected `package.json`, `.oxlintrc.json`, `.oxfmtrc.json`, `.gitignore`, and `.prettierignore`.
-- Confirmed `pnpm lint` runs `oxlint .`, and `.oxlintrc.json` has explicit `ignorePatterns` that omit `.agents`.
-- Confirmed `pnpm format` runs `oxfmt`; `oxfmt` uses `.gitignore` and `.prettierignore` by default when no `--ignore-path` is provided, but neither file currently excludes `.agents`.
-- Checked CLI help for both tools to verify ignore behavior.
-
----
-
-## Decisions Made
-
-- The blocker is configuration scope, not a tool bug: `.agents` is being included because it is not ignored by Oxlint or Oxfmt inputs.
-
----
-
-## Open Blockers
-
-1. ~~Full `pnpm lint` still fails on pre-existing `.agents/skills/` example files until `.agents` is excluded or those examples are made lint-clean.~~ Resolved 2026-04-19 in Session 9.
-
----
-
-# Session 9 — Ignore Scope Fix & Verification
-
-**Time:** 23:26
-
----
-
-## Status at Session Start
-
-The lint/format investigation confirmed that `.agents` was not excluded by either Oxlint or Oxfmt's effective ignore inputs. The active goal was to fix the ignore scope, run the affected commands, and clear the carried lint blocker.
-
----
-
-## Completed This Session
-
-- Added `.agents` to `.oxlintrc.json` `ignorePatterns` so `pnpm lint` no longer scans generated agent skill examples.
-- Added `.agents` to `.oxfmtrc.json` `ignorePatterns` so `pnpm format` and `pnpm format:check` exclude generated agent skill content through Oxfmt's native config.
-- Removed the redundant `.prettierignore`; `.gitignore` already covers the remaining generic Yarn/PnP patterns.
-- Ran `pnpm lint`: passed with 0 warnings and 0 errors across 36 files.
-- Ran `pnpm format:check`: initially failed on first-party markdown files, not `.agents`.
-- Ran `pnpm format` to normalize first-party markdown formatting.
-- Re-ran `pnpm lint` and `pnpm format:check`: both passed cleanly.
-
----
-
-## Decisions Made
-
-- Keep `.agents` present in the repository but outside normal first-party lint/format gates because it contains generated skill reference examples that should not block application verification.
-- Use Oxfmt's native `.oxfmtrc.json` `ignorePatterns` for formatter exclusions, even though Oxfmt intentionally supports `.prettierignore` compatibility workflows.
-
----
-
-## Open Blockers
-
-None.
-
----
-
-# Session 10 — Oxfmt Native Ignore Configuration
-
-**Time:** 23:29
-
----
-
-## Status at Session Start
-
-After clearing the lint blocker, the formatter exclusion lived in `.prettierignore`, which raised a toolchain consistency concern because the project is standardized on Oxc/Oxfmt rather than Prettier. The active goal was to verify the official Oxfmt documentation and adjust immediately if the docs supported a native Oxc config path.
-
----
-
-## Completed This Session
-
-- Fetched the official Oxfmt configuration docs at `https://oxc.rs/docs/guide/usage/formatter/config.html`.
-- Confirmed Oxfmt intentionally supports `.gitignore` and `.prettierignore` workflows, but also documents `ignorePatterns` as a top-level `.oxfmtrc.json` field.
-- Moved `.agents` formatter exclusion into `.oxfmtrc.json` `ignorePatterns`.
-- Deleted `.prettierignore` because it was redundant once `.agents` moved into `.oxfmtrc.json` and existing generic patterns were already present in `.gitignore`.
-- Verified `pnpm format:check` and `pnpm lint` both pass cleanly after the change.
-
----
-
-## Decisions Made
-
-- Prefer Oxfmt-native `.oxfmtrc.json` config for project-owned formatter behavior.
-- Treat `.prettierignore` support as intentional Oxfmt compatibility, not evidence that Prettier is being used.
+- **LLM-Optimized Spec Strategy:** Specs and session logs should keep explicit context and templates so future agents can onboard quickly.
+- **Daily Session Boundary:** Session numbers represent substantial work blocks separated by meaningful gaps, not each prompt, edit, or verification pass.
+- **Tool-Agnostic Agent Configuration:** Core agent behavior must remain mirrored across the repo's supported agent instruction files.
+- **Figma in Code Constraint:** The web app must remain a mobile bounded sandbox for native Stashy UI exploration.
+- **Bilingual Architecture Lock:** Stashy supports English and Arabic through prefix-based App Router locale routing under `/[locale]`.
+- **Logical CSS Only:** Physical directional classes remain banned; use logical classes and explicit `dir` propagation for RTL safety.
+- **next-intl Provider Scope:** `NextIntlClientProvider` belongs inside `app/[locale]/layout.tsx`, not the global root layout.
+- **Provider-Safe Fallbacks:** Shared root/global fallback components must not assume next-intl provider context is available.
+- **Server-Rendered Direction for Fallbacks:** Do not rely only on client-side document direction sync for error and not-found boundaries.
+- **Oxc-Native Tooling Config:** Use `.oxlintrc.json` and `.oxfmtrc.json` for project-owned lint/format exclusions; treat `.prettierignore` support as intentional Oxfmt compatibility, not active Prettier usage.
+- **Generated Skill References:** Keep `.agents` available in the repository but outside normal first-party lint and format gates.
+- **Next Implementation Target:** The next meaningful app work is translating `spec/DESIGN.md` into `app/globals.css` and building the mobile sandbox shell; the i18n plumbing is already in place.
 
 ---
 
