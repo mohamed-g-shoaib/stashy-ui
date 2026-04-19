@@ -4,6 +4,7 @@ import * as React from "react"
 
 import { ErrorView } from "@/components/error-view"
 import { Button } from "@/components/ui/button"
+import { getDirectionForLocale } from "@/lib/i18n"
 
 export default function RouteErrorBoundary({
   reset,
@@ -17,8 +18,12 @@ export default function RouteErrorBoundary({
     setLocale(document.documentElement.lang === "ar" ? "ar" : "en")
   }, [])
 
+  const direction = getDirectionForLocale(locale)
+
   return (
     <ErrorView
+      locale={locale}
+      direction={direction}
       title={locale === "ar" ? "حدث خطأ ما." : "Something went wrong."}
       description={
         locale === "ar"

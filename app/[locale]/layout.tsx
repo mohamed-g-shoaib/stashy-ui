@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 
 import { AppProviders } from "@/components/app-providers"
 import { routing } from "@/i18n/routing"
+import { getDirectionForLocale } from "@/lib/i18n"
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -24,10 +25,13 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale)
   const messages = await getMessages()
+  const direction = getDirectionForLocale(locale)
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <AppProviders>{children}</AppProviders>
+      <div lang={locale} dir={direction}>
+        <AppProviders>{children}</AppProviders>
+      </div>
     </NextIntlClientProvider>
   )
 }

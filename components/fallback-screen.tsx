@@ -1,7 +1,10 @@
 import type * as React from "react"
+import { type Direction } from "@/lib/i18n"
 
 type FallbackScreenProps = {
   eyebrow?: string
+  locale?: string
+  direction?: Direction
   title: string
   description: string
   action?: React.ReactNode
@@ -9,15 +12,21 @@ type FallbackScreenProps = {
 
 export function FallbackScreen({
   eyebrow = "Forge",
+  locale,
+  direction,
   title,
   description,
   action,
 }: FallbackScreenProps) {
   return (
-    <main className="flex min-h-svh items-center justify-center px-6 py-10">
+    <main
+      lang={locale}
+      dir={direction}
+      className="flex min-h-svh items-center justify-center px-6 py-10"
+    >
       <section className="w-full max-w-md">
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 text-start">
             <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
               {eyebrow}
             </p>
@@ -29,7 +38,9 @@ export function FallbackScreen({
             </p>
           </div>
 
-          {action ? <div className="flex flex-wrap items-center gap-2">{action}</div> : null}
+          {action ? (
+            <div className="flex flex-wrap items-center justify-start gap-2">{action}</div>
+          ) : null}
         </div>
       </section>
     </main>

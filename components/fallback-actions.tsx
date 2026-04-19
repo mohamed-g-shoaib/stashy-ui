@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { useUiSound } from "@/hooks/use-ui-sound"
-import { useRouter } from "@/i18n/navigation"
 
 type FallbackActionsProps = {
   homeHref: string
@@ -17,7 +16,6 @@ export function FallbackActions({
   retryLabel,
   onRetry,
 }: FallbackActionsProps) {
-  const router = useRouter()
   const { playSound } = useUiSound()
 
   return (
@@ -43,7 +41,9 @@ export function FallbackActions({
         className="h-9 rounded-full px-3"
         onClick={() => {
           playSound("click-soft")
-          window.setTimeout(() => router.push(homeHref), 100)
+          window.setTimeout(() => {
+            window.location.assign(homeHref)
+          }, 100)
         }}
       >
         {homeLabel}

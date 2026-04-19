@@ -5,7 +5,7 @@ import { FallbackScreen } from "@/components/fallback-screen"
 import { type Locale } from "@/i18n/routing"
 import { getDirectionForLocale, isLocale } from "@/lib/i18n"
 
-export default async function NotFound() {
+export default async function LocaleNotFound() {
   const requestedLocale = await getLocale()
   const locale: Locale = isLocale(requestedLocale) ? requestedLocale : "en"
   const direction = getDirectionForLocale(locale)

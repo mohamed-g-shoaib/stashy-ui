@@ -7,6 +7,7 @@ import * as React from "react"
 import { ErrorView } from "@/components/error-view"
 import { Button } from "@/components/ui/button"
 
+import { getDirectionForLocale } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 
 const geist = Geist({
@@ -43,14 +44,17 @@ export default function GlobalError({
           retryLabel: "Try again",
           homeHref: "/",
         }
+  const direction = getDirectionForLocale(locale)
 
   return (
-    <html lang="en" dir="ltr" suppressHydrationWarning>
+    <html lang={locale} dir={direction} suppressHydrationWarning>
       <body
         className={cn("antialiased", "font-sans", geist.variable, fontMono.variable)}
         suppressHydrationWarning
       >
         <ErrorView
+          locale={locale}
+          direction={direction}
           title={locale === "ar" ? "حدث خطأ ما." : "Something went wrong."}
           description={
             locale === "ar"
