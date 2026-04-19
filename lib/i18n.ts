@@ -1,11 +1,9 @@
-export const locales = ["en", "ar"] as const
-export const defaultLocale = "en"
+import { routing, type Locale } from "@/i18n/routing"
 
-export type Locale = (typeof locales)[number]
 export type Direction = "ltr" | "rtl"
 
 export function isLocale(value: string | undefined): value is Locale {
-  return value === "en" || value === "ar"
+  return routing.locales.some((locale) => locale === value)
 }
 
 export function getDirectionForLocale(locale: Locale): Direction {

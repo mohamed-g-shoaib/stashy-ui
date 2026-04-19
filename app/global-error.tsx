@@ -5,7 +5,7 @@ import "./globals.css"
 import { Geist, Geist_Mono } from "next/font/google"
 import * as React from "react"
 import { ErrorView } from "@/components/error-view"
-import { FallbackActions } from "@/components/fallback-actions"
+import { Button } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
 
@@ -58,12 +58,28 @@ export default function GlobalError({
               : "An unexpected error occurred. Please try again."
           }
           action={
-            <FallbackActions
-              homeHref={copy.homeHref}
-              homeLabel={copy.homeLabel}
-              retryLabel={copy.retryLabel}
-              onRetry={reset}
-            />
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 rounded-full px-3"
+                onClick={reset}
+              >
+                {copy.retryLabel}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 rounded-full px-3"
+                onClick={() => {
+                  window.location.assign(copy.homeHref)
+                }}
+              >
+                {copy.homeLabel}
+              </Button>
+            </>
           }
         />
       </body>

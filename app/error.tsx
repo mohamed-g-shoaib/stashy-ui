@@ -1,20 +1,9 @@
 "use client"
 
-import { useParams } from "next/navigation"
+import * as React from "react"
 
 import { ErrorView } from "@/components/error-view"
-import { FallbackActions } from "@/components/fallback-actions"
-
-const MESSAGES = {
-  en: {
-    homeLabel: "Go home",
-    retryLabel: "Try again",
-  },
-  ar: {
-    homeLabel: "العودة للرئيسية",
-    retryLabel: "أعد المحاولة",
-  },
-} as const
+import { Button } from "@/components/ui/button"
 
 export default function RouteErrorBoundary({
   reset,
@@ -22,9 +11,11 @@ export default function RouteErrorBoundary({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  const params = useParams<{ locale?: string }>()
-  const locale = params.locale === "ar" ? "ar" : "en"
-  const copy = MESSAGES[locale]
+  const [locale, setLocale] = React.useState<"en" | "ar">("en")
+
+  React.useEffect(() => {
+    setLocale(document.documentElement.lang === "ar" ? "ar" : "en")
+  }, [])
 
   return (
     <ErrorView
@@ -35,12 +26,28 @@ export default function RouteErrorBoundary({
           : "An unexpected error occurred. Please try again."
       }
       action={
-        <FallbackActions
-          homeHref={`/${locale}`}
-          homeLabel={copy.homeLabel}
-          retryLabel={copy.retryLabel}
-          onRetry={reset}
-        />
+        <>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-9 rounded-full px-3"
+            onClick={reset}
+          >
+            {locale === "ar" ? "أعد المحاولة" : "Try again"}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-9 rounded-full px-3"
+            onClick={() => {
+              window.location.assign(`/${locale}`)
+            }}
+          >
+            {locale === "ar" ? "العودة للرئيسية" : "Go home"}
+          </Button>
+        </>
       }
     />
   )

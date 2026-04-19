@@ -123,3 +123,37 @@ Agnostic agent routing and UI design systems were established in Session 2. The 
 
 ## Open Blockers
 None. The scaffolding infrastructure phase is fully concluded. Ready to begin application code execution (translating DESIGN.md to globals.css, configuring next-intl, and setting up the master layout).
+
+---
+
+# Session 4 — next-intl App Router Implementation
+**Time:** 23:07
+
+---
+
+## Status at Session Start
+The project already had English/Arabic locale routing scaffolding and a hand-rolled translation context in `hooks/use-locale.tsx`. The active goal was to replace that local dictionary approach with the `next-intl-app-router` skill workflow while preserving the mobile sandbox constraints and native RTL behavior.
+
+---
+
+## Completed This Session
+- Installed `next-intl` and wired the plugin through `next.config.mjs`.
+- Added the required next-intl routing spine: `i18n/routing.ts`, `i18n/request.ts`, `i18n/navigation.ts`, and the Next.js 16 `proxy.ts` middleware integration.
+- Added segregated locale message files under `messages/en.json` and `messages/ar.json`.
+- Refactored `app/[locale]/layout.tsx` to validate locales with `hasLocale`, call `setRequestLocale(locale)`, load messages with `getMessages()`, and scope `NextIntlClientProvider` to the locale layout only.
+- Refactored `app/[locale]/page.tsx` to call `setRequestLocale(locale)` for static rendering.
+- Removed `hooks/use-locale.tsx` and migrated starter shell, theme toggle, language toggle, not-found, and localized error handling to next-intl APIs.
+- Preserved Radix direction handling via `Direction.Provider` and document `lang`/`dir` synchronization from the active next-intl locale.
+- Verified `pnpm typecheck`, `pnpm build`, and targeted app lint via `pnpm exec oxlint app components lib i18n proxy.ts next.config.mjs`.
+
+---
+
+## Decisions Made
+- Kept next-intl files at the repository root (`i18n/`, `messages/`) because this project does not use a `src/` directory; imports still follow the skill's internal helper pattern through `@/i18n/navigation`.
+- Kept root/global error boundaries independent of next-intl provider context, while adding a localized `app/[locale]/error.tsx` for route-level errors inside locale scope.
+- Left `notFound` imported from `next/navigation` in `app/[locale]/layout.tsx` because the skill explicitly requires `notFound()` as the invalid-locale fallback.
+
+---
+
+## Open Blockers
+1. Full `pnpm lint` still fails on pre-existing `.agents/skills/` example files: `YourHomeComponent` in the next-intl skill example and `DotsHorizontalIcon` in the Radix dropdown example. The touched application paths pass targeted oxlint cleanly.

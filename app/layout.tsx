@@ -1,10 +1,8 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
-import { headers } from "next/headers"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { type Locale, defaultLocale, getDirectionForLocale, isLocale } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 
 const geist = Geist({
@@ -43,13 +41,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const requestHeaders = await headers()
-  const headerLocale = requestHeaders.get("x-forge-locale") ?? undefined
-  const initialLocale: Locale = isLocale(headerLocale) ? headerLocale : defaultLocale
-  const initialDirection = getDirectionForLocale(initialLocale)
-
   return (
-    <html lang={initialLocale} dir={initialDirection} suppressHydrationWarning>
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <body
         className={cn("antialiased", "font-sans", geist.variable, fontMono.variable)}
         suppressHydrationWarning
