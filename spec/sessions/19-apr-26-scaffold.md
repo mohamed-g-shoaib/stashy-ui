@@ -46,7 +46,7 @@ _(End of Template)_
 
 # Session 1 — Project Scaffolding, i18n, and Tooling Setup
 
-**Time:** 22:15-23:29
+**Time:** 22:15-23:52 (ended)
 
 ---
 
@@ -82,6 +82,17 @@ Initial project kickoff. The workspace started as a clean slate requiring projec
 - **Prettier Compatibility Cleanup:** Confirmed Oxfmt intentionally supports `.prettierignore` compatibility workflows, then deleted the redundant `.prettierignore` so this Oxc toolchain expresses formatter exclusions in `.oxfmtrc.json`.
 - **Formatting Normalization:** Ran `pnpm format` after Oxfmt identified first-party Markdown formatting drift.
 - **Verification:** Confirmed `pnpm lint` passes with 0 warnings and 0 errors, and `pnpm format:check` reports all matched files correctly formatted.
+- **Project Re-Orientation:** Re-read `AGENTS.md`, `spec/index.md`, `spec/DESIGN.md`, `spec/skills.md`, and the latest session log; confirmed the worktree is clean, the app remains a small Next 16/Tailwind 4 scaffold, and `app/globals.css` still needs Stashy design-token translation.
+- **Stashy Design Token Absorption:** Adapted `spec/DESIGN.md` into the web sandbox by replacing shadcn default CSS values in `app/globals.css` with Stashy light/dark palette tokens, semantic financial-state colors, ring-shadow elevation tokens, radius tokens, spacing aliases, and the core motion curve.
+- **Google Sans Flex Web Font:** Replaced the starter Geist font wiring with the local Google Sans Flex variable font from `public/fonts/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf`.
+- **Mobile Canvas Constraint:** Updated the starter screen to render inside a `max-w-sm` mobile replica container and use Stashy card, typography, and surface tokens.
+- **Button Token Alignment:** Updated the shared button variants toward Stashy component specs: 52px primary height, 8px radius, Terracotta primary state, Warm Sand secondary/outline state, ring shadows, and 0.96 active press scale.
+- **Verification:** Re-ran `pnpm lint`, `pnpm typecheck`, `pnpm format:check`, and `pnpm build`; all passed. Also scanned `app/` and `components/` for banned physical directional Tailwind utilities, with only false-positive matches inside words like `border`.
+- **Mobile Canvas Centralization:** Added `components/mobile-canvas.tsx` and moved the `max-w-sm` app-width invariant into `app/[locale]/layout.tsx` so every localized screen is mobile-bounded by default.
+- **Starter Shell Removal:** Deleted the shadcn/Forge leftover `components/starter-shell.tsx`, replaced it with `components/sandbox-home.tsx`, and updated locale messages from starter copy to Stashy sandbox copy.
+- **Fallback Shell Alignment:** Updated `components/fallback-screen.tsx` to use the same mobile-canvas-compatible Stashy card, typography, and spacing treatment as the sandbox home.
+- **Verification:** Re-ran `pnpm lint`, `pnpm typecheck`, `pnpm format:check`, and `pnpm build`; all passed. Re-scanned `app/` and `components/` for banned physical directional Tailwind utilities, with only false-positive matches inside words like `border`.
+- **Session Close:** Ended the session after centralizing the mobile canvas. No mock screen was created by decision.
 
 ---
 
@@ -99,6 +110,8 @@ Initial project kickoff. The workspace started as a clean slate requiring projec
 - **Oxc-Native Tooling Config:** Use `.oxlintrc.json` and `.oxfmtrc.json` for project-owned lint/format exclusions; treat `.prettierignore` support as intentional Oxfmt compatibility, not active Prettier usage.
 - **Generated Skill References:** Keep `.agents` available in the repository but outside normal first-party lint and format gates.
 - **Next Implementation Target:** The next meaningful app work is translating `spec/DESIGN.md` into `app/globals.css` and building the mobile sandbox shell; the i18n plumbing is already in place.
+- **Mobile Boundary Ownership:** The mobile replica width is an app-shell invariant, not a per-page styling detail; localized routes should pass through `MobileCanvas` by default.
+- **Mock Deferral:** Do not create a decorative phone/device-frame mock for this handoff; future visual work should start from real Stashy product screens inside `MobileCanvas`.
 
 ---
 

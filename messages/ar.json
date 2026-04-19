@@ -1,8 +1,8 @@
 {
-  "StarterShell": {
-    "eyebrow": "فورج",
-    "heading": "الواجهة جاهزة لتبدأ التعديل.",
-    "description": "استبدل هذه الشاشة من app/[locale]/page.tsx. عدل components/ لعناصر الواجهة، أو app-providers.tsx للمظهر واللغة والسلوك العام."
+  "SandboxHome": {
+    "eyebrow": "ستاشي UI",
+    "heading": "مساحة تصميم محمولة لستاشي.",
+    "description": "ابن شاشات التطبيق هنا بنفس الرموز والإيقاع والسلوك ثنائي اللغة المستخدم في المنتج الأصلي."
   },
   "ThemeToggle": {
     "fallbackLabel": "المظهر",
@@ -13,7 +13,7 @@
     "label": "English"
   },
   "Fallback": {
-    "eyebrow": "فورج",
+    "eyebrow": "ستاشي",
     "notFoundTitle": "الصفحة غير موجودة.",
     "notFoundDescription": "هذا المسار غير موجود بعد.",
     "errorTitle": "حدث خطأ ما.",

@@ -1,11 +1,11 @@
 import { setRequestLocale } from "next-intl/server"
 import { use } from "react"
 
-import { StarterShell } from "@/components/starter-shell"
+import { SandboxHome } from "@/components/sandbox-home"
 
 export default function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params)
   setRequestLocale(locale)
 
-  return <StarterShell />
+  return <SandboxHome />
 }

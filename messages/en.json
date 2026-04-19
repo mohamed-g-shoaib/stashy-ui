@@ -1,8 +1,8 @@
 {
-  "StarterShell": {
-    "eyebrow": "Forge",
-    "heading": "Your starter is ready to customize.",
-    "description": "Replace this screen in app/[locale]/page.tsx. Edit components/ for UI pieces, or app-providers.tsx for theme, language, and shared app behavior."
+  "SandboxHome": {
+    "eyebrow": "Stashy UI",
+    "heading": "A mobile design sandbox for Stashy.",
+    "description": "Build app screens here with the same tokens, rhythm, and bilingual behavior used by the native product."
   },
   "ThemeToggle": {
     "fallbackLabel": "Theme",
@@ -13,7 +13,7 @@
     "label": "Arabic"
   },
   "Fallback": {
-    "eyebrow": "Forge",
+    "eyebrow": "Stashy",
     "notFoundTitle": "Page not found.",
     "notFoundDescription": "This route does not exist yet.",
     "errorTitle": "Something went wrong.",

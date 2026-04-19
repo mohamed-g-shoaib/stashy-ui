@@ -3,6 +3,7 @@ import { getMessages, setRequestLocale } from "next-intl/server"
 import { notFound } from "next/navigation"
 
 import { AppProviders } from "@/components/app-providers"
+import { MobileCanvas } from "@/components/mobile-canvas"
 import { routing } from "@/i18n/routing"
 import { getDirectionForLocale } from "@/lib/i18n"
 
@@ -30,7 +31,9 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider messages={messages}>
       <div lang={locale} dir={direction}>
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          <MobileCanvas>{children}</MobileCanvas>
+        </AppProviders>
       </div>
     </NextIntlClientProvider>
   )

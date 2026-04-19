@@ -11,7 +11,7 @@ type FallbackScreenProps = {
 }
 
 export function FallbackScreen({
-  eyebrow = "Forge",
+  eyebrow = "Stashy",
   locale,
   direction,
   title,
@@ -19,21 +19,17 @@ export function FallbackScreen({
   action,
 }: FallbackScreenProps) {
   return (
-    <main
-      lang={locale}
-      dir={direction}
-      className="flex min-h-svh items-center justify-center px-6 py-10"
-    >
-      <section className="w-full max-w-md">
-        <div className="flex flex-col gap-6">
+    <main lang={locale} dir={direction} className="flex min-h-svh items-center px-4 py-10">
+      <section className="w-full">
+        <div className="flex flex-col gap-6 rounded-md border border-border-subtle bg-card p-4 shadow-soft">
           <div className="flex flex-col gap-2 text-start">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-tertiary">
               {eyebrow}
             </p>
-            <h1 className="max-w-sm text-balance text-xl font-medium tracking-tight text-foreground">
+            <h1 className="text-balance text-2xl font-semibold leading-[1.2] text-foreground">
               {title}
             </h1>
-            <p className="max-w-sm text-pretty text-sm leading-6 text-muted-foreground">
+            <p className="text-pretty text-[1.0625rem] leading-[1.5] text-text-secondary">
               {description}
             </p>
           </div>
