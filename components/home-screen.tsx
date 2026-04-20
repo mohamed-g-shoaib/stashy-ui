@@ -1,26 +1,37 @@
-"use client"
+"use client";
 
-import { useLocale, useTranslations } from "next-intl"
-import * as React from "react"
+import { useLocale, useTranslations } from "next-intl";
+import * as React from "react";
 
-import { BottomNavigation } from "@/components/home/bottom-navigation"
-import { FloatingAddButton } from "@/components/home/floating-add-button"
-import { HomeContent, SecondaryTabPanels } from "@/components/home/home-content"
-import { navItems } from "@/components/home/home-data"
-import { HomeDrawer } from "@/components/home/home-drawer"
-import { HomeHeader } from "@/components/home/home-header"
-import type { DailyRate, DailyScenario, DrawerKind } from "@/components/home/types"
-import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { type Locale } from "@/i18n/routing"
-import { getDirectionForLocale } from "@/lib/i18n"
+import { BottomNavigation } from "@/components/home/bottom-navigation";
+import { FloatingAddButton } from "@/components/home/floating-add-button";
+import {
+  HomeContent,
+  SecondaryTabPanels,
+} from "@/components/home/home-content";
+import { navItems } from "@/components/home/home-data";
+import { HomeDrawer } from "@/components/home/home-drawer";
+import { HomeHeader } from "@/components/home/home-header";
+import type {
+  DailyRate,
+  DailyScenario,
+  DrawerKind,
+} from "@/components/home/types";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { type Locale } from "@/i18n/routing";
+import { getDirectionForLocale } from "@/lib/i18n";
 
 export function HomeScreen() {
-  const t = useTranslations("Home")
-  const locale = useLocale() as Locale
-  const direction = getDirectionForLocale(locale)
-  const [drawer, setDrawer] = React.useState<DrawerKind | null>(null)
-  const [dailyScenario, setDailyScenario] = React.useState<DailyScenario>("track")
-  const dailyRate = getDailyRate(dailyScenario, t)
+  const t = useTranslations("Home");
+  const locale = useLocale() as Locale;
+  const direction = getDirectionForLocale(locale);
+  const [drawer, setDrawer] = React.useState<DrawerKind | null>(null);
+  const [dailyScenario, setDailyScenario] =
+    React.useState<DailyScenario>("track");
+  const [majorScenario, setMajorScenario] = React.useState<"active" | "none">(
+    "active",
+  );
+  const dailyRate = getDailyRate(dailyScenario, t);
 
   return (
     <Tabs defaultValue="home" className="min-h-svh gap-0 bg-background">
@@ -28,9 +39,8 @@ export function HomeScreen() {
         <HomeHeader onOpenDrawer={setDrawer} />
         <TabsContent value="home" className="flex-1">
           <HomeContent
-            dailyScenario={dailyScenario}
             dailyRate={dailyRate}
-            onDailyScenarioChange={(value) => setDailyScenario(value as DailyScenario)}
+            majorScenario={majorScenario}
             onOpenDrawer={setDrawer}
           />
         </TabsContent>
@@ -41,15 +51,19 @@ export function HomeScreen() {
 
       <HomeDrawer
         kind={drawer}
+        dailyScenario={dailyScenario}
+        majorScenario={majorScenario}
         direction={direction}
+        onDailyScenarioChange={setDailyScenario}
+        onMajorScenarioChange={setMajorScenario}
         onOpenChange={(open) => {
           if (!open) {
-            setDrawer(null)
+            setDrawer(null);
           }
         }}
       />
     </Tabs>
-  )
+  );
 }
 
 function getDailyRate(
@@ -66,7 +80,7 @@ function getDailyRate(
       statusTone: "success",
       fill: "basis-[75%]",
       spentFill: "basis-[25%]",
-    }
+    };
   }
 
   return {
@@ -78,5 +92,5 @@ function getDailyRate(
     statusTone: "danger",
     fill: "basis-[8%]",
     spentFill: "basis-[92%]",
-  }
+  };
 }

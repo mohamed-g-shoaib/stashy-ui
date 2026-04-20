@@ -1,32 +1,19 @@
 import {
   Analytics01Icon,
+  BankIcon,
   Home01Icon,
   Invoice03Icon,
+  MoneyBag02Icon,
+  CreditCardIcon,
   Settings02Icon,
 } from "@hugeicons/core-free-icons"
-import type { NavItem } from "@/components/home/types"
-import type { ChartConfig } from "@/components/ui/chart"
+import type { NavItem, Transaction } from "@/components/home/types"
 
 export const budgetChartData = [
   { name: "variable", value: 7960, fill: "var(--color-brand)" },
   { name: "fixed", value: 1240, fill: "var(--color-info)" },
   { name: "remaining", value: 800, fill: "var(--color-surface-offset)" },
 ]
-
-export const budgetChartConfig = {
-  variable: {
-    label: "Variable",
-    color: "var(--color-brand)",
-  },
-  fixed: {
-    label: "Fixed",
-    color: "var(--color-info)",
-  },
-  remaining: {
-    label: "Remaining",
-    color: "var(--color-surface-offset)",
-  },
-} satisfies ChartConfig
 
 export const fixedPayments = [
   {
@@ -43,10 +30,34 @@ export const fixedPayments = [
   },
 ]
 
-export const transactions = [
-  { amount: "-200 EGP", date: "Fri, 17/Apr" },
-  { amount: "-800 EGP", date: "Fri, 17/Apr" },
-  { amount: "-1200 EGP", date: "Fri, 17/Apr" },
+export const transactions: Transaction[] = [
+  {
+    titleKey: "historyItems.market",
+    typeKey: "historyTypes.variable",
+    methodKey: "paymentMethods.cash",
+    amount: "-200 EGP",
+    date: "Fri, 17/Apr",
+    tone: "variable",
+    methodIcon: MoneyBag02Icon,
+  },
+  {
+    titleKey: "historyItems.internet",
+    typeKey: "historyTypes.fixed",
+    methodKey: "paymentMethods.card",
+    amount: "-800 EGP",
+    date: "Fri, 17/Apr",
+    tone: "fixed",
+    methodIcon: CreditCardIcon,
+  },
+  {
+    titleKey: "historyItems.transfer",
+    typeKey: "historyTypes.received",
+    methodKey: "paymentMethods.transfer",
+    amount: "+1200 EGP",
+    date: "Fri, 17/Apr",
+    tone: "received",
+    methodIcon: BankIcon,
+  },
 ]
 
 export const navItems: NavItem[] = [

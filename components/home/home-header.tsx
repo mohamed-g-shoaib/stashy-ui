@@ -26,7 +26,7 @@ export function HomeHeader({ onOpenDrawer }: HomeHeaderProps) {
           <p className="truncate text-[1.0625rem] font-semibold leading-[1.3] text-foreground">
             {t("header.greeting")}
           </p>
-          <p className="truncate text-xs font-medium leading-[1.4] text-text-tertiary">
+          <p className="truncate text-xs font-medium leading-[1.4] text-text-secondary">
             {t("header.date")}
           </p>
         </div>

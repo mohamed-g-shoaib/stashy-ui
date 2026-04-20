@@ -1,15 +1,15 @@
-import { Add01Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { useTranslations } from "next-intl"
+import { Add01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useTranslations } from "next-intl";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 type FloatingAddButtonProps = {
-  onClick: () => void
-}
+  onClick: () => void;
+};
 
 export function FloatingAddButton({ onClick }: FloatingAddButtonProps) {
-  const t = useTranslations("Home")
+  const t = useTranslations("Home");
 
   return (
     <Button
@@ -22,5 +22,5 @@ export function FloatingAddButton({ onClick }: FloatingAddButtonProps) {
     >
       <HugeiconsIcon icon={Add01Icon} aria-hidden="true" />
     </Button>
-  )
+  );
 }

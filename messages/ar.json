@@ -25,8 +25,6 @@
     },
     "daily": {
       "title": "المعدل اليومي",
-      "trackTab": "على المسار",
-      "overspentTab": "تجاوز",
       "remaining": "المتبقي",
       "allowance": "المتاح",
       "spent": "مصروف اليوم:",
@@ -37,10 +35,11 @@
     },
     "budget": {
       "title": "نظرة عامة على الميزانية",
+      "total": "ميزانية الشهر",
       "variable": "متغير",
       "fixed": "ثابت",
-      "variableCaption": "المبلغ المتاح بعد الالتزامات الثابتة",
-      "fixedCaption": "المبلغ الذي يجب دفعه"
+      "variableCaption": "بعد الالتزامات الثابتة",
+      "fixedCaption": "مدفوعات ملتزم بها"
     },
     "major": {
       "title": "المصاريف الكبيرة",
@@ -58,6 +57,21 @@
     },
     "history": {
       "title": "السجل"
+    },
+    "historyItems": {
+      "market": "مشتريات السوق",
+      "internet": "فاتورة الإنترنت",
+      "transfer": "تحويل وارد"
+    },
+    "historyTypes": {
+      "variable": "متغير",
+      "fixed": "ثابت",
+      "received": "وارد"
+    },
+    "paymentMethods": {
+      "cash": "نقدا",
+      "card": "بطاقة ائتمان",
+      "transfer": "تحويل بنكي"
     },
     "fab": {
       "label": "إضافة معاملة"
@@ -93,7 +107,10 @@
       },
       "settings": {
         "title": "الإعدادات",
-        "description": "بدّل المظهر أو اللغة مع بقاء معاينة الهاتف في مكانها."
+        "description": "بدّل المظهر أو اللغة مع بقاء معاينة الهاتف في مكانها.",
+        "previewLabel": "حالة المعدل اليومي في مساحة التجربة",
+        "trackPreview": "على المسار",
+        "overspentPreview": "تم التجاوز"
       },
       "fixed": {
         "title": "المدفوعات الثابتة",

@@ -22,6 +22,7 @@
 - [11- vercel-react-best-practices](#11--vercel-react-best-practices): High-impact Next.js/React performance rules and bundle optimization.
 - [12- next-intl-app-router](#12--next-intl-app-router): Configures and uses next-intl with prefix-based locale routing for App Router.
 - [13- clean-code](#13--clean-code): Refactoring discipline for small functions, readable names, and single-responsibility modules.
+- [14- wcag-audit-patterns](#14--wcag-audit-patterns): WCAG 2.2 accessibility audits, contrast checks, keyboard access, and remediation patterns.
 
 ---
 
@@ -338,3 +339,24 @@ Clean Code principles for turning working code into readable, maintainable code 
 3. Keep related code vertically close and split unrelated responsibilities into separate modules.
 4. Avoid comments that explain unclear code; rewrite the code so the intent is visible.
 5. Avoid needless complexity and repetition unless it is clearly justified by the domain.
+
+### 14- wcag-audit-patterns
+
+**Structure**: Only `SKILL.md`
+**Triggers**: accessibility, WCAG, audit, contrast, keyboard, focus, a11y, remediation
+**Pairs With**: radix-ui-design-system, shadcn, make-interfaces-feel-better
+**Summary**:
+WCAG 2.2 audit patterns for finding and fixing accessibility issues across perceivable, operable, understandable, and robust UI behavior.
+
+- Covers WCAG conformance levels, POUR principles, and common critical/serious/moderate violations
+- Provides checklists for text alternatives, semantic relationships, contrast, keyboard access, focus order, headings, labels, language, and status messages
+- Includes remediation patterns for missing labels, insufficient color contrast, and custom keyboard interactions
+- Encourages combining automated checks with manual verification because automated tooling cannot catch every accessibility issue
+
+**Top 5 Rules (By Priority)**:
+
+1. Verify color contrast: text at 4.5:1, large text at 3:1, and UI/graphical objects at 3:1.
+2. Ensure all interactive behavior is keyboard accessible with visible focus and no keyboard traps.
+3. Use semantic HTML and accessible names before reaching for custom ARIA.
+4. Do not communicate state through color alone; pair color with labels, structure, or icons.
+5. Validate headings, labels, language, and focus order manually in addition to automated checks.

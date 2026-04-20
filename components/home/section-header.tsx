@@ -16,9 +16,9 @@ export function SectionHeader({ title, action, onAction, actions }: SectionHeade
       ) : action ? (
         <Button
           type="button"
-          variant="ghost"
+          variant="outline"
           size="xs"
-          className="min-h-11 px-2"
+          className="h-11 min-h-11 rounded-full px-3"
           onClick={onAction}
         >
           {action}

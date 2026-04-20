@@ -1,86 +1,68 @@
-import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { useTranslations } from "next-intl"
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useTranslations } from "next-intl";
 
-import type { DailyRate, DailyScenario } from "@/components/home/types"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn } from "@/lib/utils"
+import type { DailyRate } from "@/components/home/types";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 type DailyRateCardProps = {
-  value: DailyScenario
-  onValueChange: (value: string) => void
-  rate: DailyRate
-}
+  rate: DailyRate;
+};
 
-export function DailyRateCard({ value, onValueChange, rate }: DailyRateCardProps) {
-  const t = useTranslations("Home")
+export function DailyRateCard({ rate }: DailyRateCardProps) {
+  const t = useTranslations("Home");
 
   return (
-    <Card size="sm" className="rounded-md border border-border bg-card py-4 shadow-soft">
+    <Card
+      size="sm"
+      className="rounded-md border border-border bg-card py-4 shadow-soft"
+    >
       <CardContent className="flex flex-col gap-4 px-4">
-        <Tabs value={value} onValueChange={onValueChange} className="gap-3">
-          <TabsList className="grid h-11 w-full grid-cols-2 rounded-sm bg-surface-offset p-1">
-            <TabsTrigger value="track" className="rounded-xs text-xs">
-              {t("daily.trackTab")}
-            </TabsTrigger>
-            <TabsTrigger value="overspent" className="rounded-xs text-xs">
-              {t("daily.overspentTab")}
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value={value} className="flex flex-col gap-4">
-            <DailyRateAmounts rate={rate} />
-            <DailyAllowanceBar rate={rate} label={t("daily.progressLabel")} />
-            <DailyRateStatus rate={rate} />
-            <Separator className="bg-border-subtle" />
-            <TomorrowRate rate={rate} />
-          </TabsContent>
-        </Tabs>
+        <DailyRateAmounts rate={rate} />
+        <DailyAllowanceBar rate={rate} label={t("daily.progressLabel")} />
+        <DailyRateStatus rate={rate} />
+        <Separator className="bg-border-subtle" />
+        <TomorrowRate rate={rate} />
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function DailyRateAmounts({ rate }: { rate: DailyRate }) {
-  const t = useTranslations("Home")
+  const t = useTranslations("Home");
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      <MoneyBlock label={t("daily.remaining")} value={rate.remaining} emphasis />
-      <MoneyBlock label={t("daily.allowance")} value={rate.allowance} alignEnd />
+      <MoneyBlock label={t("daily.remaining")} value={rate.remaining} />
+      <MoneyBlock label={t("daily.allowance")} value={rate.allowance} />
     </div>
-  )
+  );
 }
 
-function MoneyBlock({
-  label,
-  value,
-  emphasis,
-  alignEnd,
-}: {
-  label: string
-  value: string
-  emphasis?: boolean
-  alignEnd?: boolean
-}) {
+function MoneyBlock({ label, value }: { label: string; value: string }) {
   return (
-    <div className={cn("flex min-w-0 flex-col gap-1 text-start", alignEnd && "text-end")}>
-      <p className="text-xs font-medium text-text-tertiary">{label}</p>
+    <div className="flex min-w-0 flex-col gap-1 rounded-sm bg-surface-offset p-3 text-start shadow-ring">
+      <p className="text-xs font-medium text-text-secondary">{label}</p>
       <p
-        className={cn(
-          "truncate font-semibold leading-none text-foreground tabular-nums",
-          emphasis ? "text-2xl" : "text-xl",
-        )}
+        dir="ltr"
+        className="truncate text-[1.25rem] font-semibold leading-[1.1] text-foreground tabular-nums"
       >
         {value}
       </p>
     </div>
-  )
+  );
 }
 
-function DailyAllowanceBar({ rate, label }: { rate: DailyRate; label: string }) {
+function DailyAllowanceBar({
+  rate,
+  label,
+}: {
+  rate: DailyRate;
+  label: string;
+}) {
   return (
     <div
       className="flex h-4 overflow-hidden rounded-full bg-surface-offset shadow-ring"
@@ -90,22 +72,25 @@ function DailyAllowanceBar({ rate, label }: { rate: DailyRate; label: string }) 
       <div
         className={cn(
           "bg-[repeating-linear-gradient(135deg,var(--color-warning-subtle)_0,var(--color-warning-subtle)_4px,var(--color-warning)_4px,var(--color-warning)_6px)]",
+          "dark:bg-[repeating-linear-gradient(135deg,var(--color-warning-subtle-dark)_0,var(--color-warning-subtle-dark)_4px,var(--color-warning-dark)_4px,var(--color-warning-dark)_6px)]",
           rate.spentFill,
         )}
       />
     </div>
-  )
+  );
 }
 
 function DailyRateStatus({ rate }: { rate: DailyRate }) {
-  const t = useTranslations("Home")
-  const isOnTrack = rate.statusTone === "success"
+  const t = useTranslations("Home");
+  const isOnTrack = rate.statusTone === "success";
 
   return (
     <div className="flex items-center justify-between gap-3 text-sm">
       <p className="text-text-secondary">
         {t("daily.spent")}{" "}
-        <span className="font-semibold text-foreground tabular-nums">{rate.spent}</span>
+        <span dir="ltr" className="font-semibold text-foreground tabular-nums">
+          {rate.spent}
+        </span>
       </p>
       <Badge
         variant={isOnTrack ? "secondary" : "destructive"}
@@ -118,24 +103,40 @@ function DailyRateStatus({ rate }: { rate: DailyRate }) {
         {rate.status}
       </Badge>
     </div>
-  )
+  );
 }
 
 function TomorrowRate({ rate }: { rate: DailyRate }) {
-  const t = useTranslations("Home")
-  const isOverspent = rate.statusTone === "danger"
+  const t = useTranslations("Home");
+  const isOverspent = rate.statusTone === "danger";
 
   return (
     <div className="flex items-center justify-between gap-3">
       <p className="text-sm font-medium text-foreground">
-        {t("daily.tomorrow")} <span className="tabular-nums text-brand">{rate.tomorrow}</span>
+        {t("daily.tomorrow")}{" "}
+        <span
+          dir="ltr"
+          className={cn(
+            "tabular-nums",
+            isOverspent
+              ? "text-danger dark:text-danger-dark"
+              : "text-foreground",
+          )}
+        >
+          {rate.tomorrow}
+        </span>
       </p>
       <HugeiconsIcon
         icon={ArrowUpRight01Icon}
         size={20}
-        className={cn("shrink-0", isOverspent ? "rotate-90 text-danger" : "text-success")}
+        className={cn(
+          "shrink-0",
+          isOverspent
+            ? "rotate-90 text-danger dark:text-danger-dark"
+            : "text-success dark:text-success-dark",
+        )}
         aria-hidden="true"
       />
     </div>
-  )
+  );
 }

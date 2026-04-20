@@ -19,3 +19,15 @@ export type NavItem = {
   labelKey: string
   icon: IconSvgElement
 }
+
+export type TransactionTone = "variable" | "fixed" | "received"
+
+export type Transaction = {
+  titleKey: string
+  typeKey: string
+  methodKey: string
+  amount: string
+  date: string
+  tone: TransactionTone
+  methodIcon: IconSvgElement
+}

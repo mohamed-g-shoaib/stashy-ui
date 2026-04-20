@@ -43,7 +43,7 @@ export function ThemeToggle() {
       variant="outline"
       size="sm"
       aria-label={nextThemeLabel}
-      className="h-9 rounded-full px-3"
+      className="h-11 min-h-11 rounded-full px-3"
       onClick={handleToggle}
     >
       <span className="relative me-1.5 size-4">

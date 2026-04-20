@@ -25,8 +25,6 @@
     },
     "daily": {
       "title": "Daily Rate",
-      "trackTab": "On track",
-      "overspentTab": "Overspent",
       "remaining": "Remaining",
       "allowance": "Allowance",
       "spent": "Spent Today:",
@@ -37,10 +35,11 @@
     },
     "budget": {
       "title": "Budget Overview",
+      "total": "Monthly budget",
       "variable": "Variable",
       "fixed": "Fixed",
-      "variableCaption": "Total money after fixed expenses",
-      "fixedCaption": "Total money that must be paid"
+      "variableCaption": "After fixed expenses",
+      "fixedCaption": "Committed payments"
     },
     "major": {
       "title": "Major Expenses",
@@ -58,6 +57,21 @@
     },
     "history": {
       "title": "History"
+    },
+    "historyItems": {
+      "market": "Market run",
+      "internet": "Internet bill",
+      "transfer": "Wire transfer"
+    },
+    "historyTypes": {
+      "variable": "Variable",
+      "fixed": "Fixed",
+      "received": "Received"
+    },
+    "paymentMethods": {
+      "cash": "Cash",
+      "card": "Credit card",
+      "transfer": "Bank transfer"
     },
     "fab": {
       "label": "Add transaction"
@@ -93,7 +107,10 @@
       },
       "settings": {
         "title": "Settings",
-        "description": "Switch theme or language while keeping the mobile preview in place."
+        "description": "Switch theme or language while keeping the mobile preview in place.",
+        "previewLabel": "Sandbox daily-rate state",
+        "trackPreview": "On track",
+        "overspentPreview": "Overspent"
       },
       "fixed": {
         "title": "Fixed payments",
