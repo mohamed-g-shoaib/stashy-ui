@@ -1,6 +1,7 @@
 "use client"
 
-import { LanguagesIcon } from "lucide-react"
+import { TranslateIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useLocale, useTranslations } from "next-intl"
 import * as React from "react"
 
@@ -32,7 +33,7 @@ export function LanguageToggle() {
         })
       }}
     >
-      <LanguagesIcon data-icon="inline-start" aria-hidden="true" />
+      <HugeiconsIcon icon={TranslateIcon} data-icon="inline-start" aria-hidden="true" />
       {t("label")}
     </Button>
   )

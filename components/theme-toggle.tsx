@@ -1,6 +1,7 @@
 "use client"
 
-import { MoonStarIcon, SunMediumIcon } from "lucide-react"
+import { Moon02Icon, Sun03Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useTranslations } from "next-intl"
 import * as React from "react"
 
@@ -54,7 +55,7 @@ export function ThemeToggle() {
               : "scale-[0.25] opacity-0 blur-[4px]",
           ].join(" ")}
         >
-          <SunMediumIcon aria-hidden="true" />
+          <HugeiconsIcon icon={Sun03Icon} aria-hidden="true" />
         </span>
         <span
           className={[
@@ -64,7 +65,7 @@ export function ThemeToggle() {
               : "scale-[0.25] opacity-0 blur-[4px]",
           ].join(" ")}
         >
-          <MoonStarIcon aria-hidden="true" />
+          <HugeiconsIcon icon={Moon02Icon} aria-hidden="true" />
         </span>
       </span>
       {nextThemeLabel}
