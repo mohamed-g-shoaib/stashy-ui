@@ -12,6 +12,99 @@
   "LanguageToggle": {
     "label": "Arabic"
   },
+  "Home": {
+    "header": {
+      "greeting": "Hi, Mohamed",
+      "date": "Sat, 18/Apr 12 Days Left",
+      "help": "Help",
+      "settings": "Settings"
+    },
+    "actions": {
+      "viewAll": "View All",
+      "filter": "Filter"
+    },
+    "daily": {
+      "title": "Daily Rate",
+      "trackTab": "On track",
+      "overspentTab": "Overspent",
+      "remaining": "Remaining",
+      "allowance": "Allowance",
+      "spent": "Spent Today:",
+      "statusTrack": "On Track",
+      "statusOverspent": "Overspent",
+      "tomorrow": "Your Rate Tomorrow:",
+      "progressLabel": "Daily allowance progress"
+    },
+    "budget": {
+      "title": "Budget Overview",
+      "variable": "Variable",
+      "fixed": "Fixed",
+      "variableCaption": "Total money after fixed expenses",
+      "fixedCaption": "Total money that must be paid"
+    },
+    "major": {
+      "title": "Major Expenses",
+      "ofBudget": "of 10,000 EGP budget",
+      "warning": "Major expenses are high this month"
+    },
+    "fixed": {
+      "title": "Upcoming Fixed Payments"
+    },
+    "fixedPayments": {
+      "rent": "Rent",
+      "internet": "Internet",
+      "oneDay": "1 Day Left",
+      "twoDays": "2 Days Left"
+    },
+    "history": {
+      "title": "History"
+    },
+    "fab": {
+      "label": "Add transaction"
+    },
+    "nav": {
+      "home": "Home",
+      "tracker": "Tracker",
+      "analytics": "Analytics",
+      "settings": "Settings"
+    },
+    "navPlaceholders": {
+      "tracker": "Tracker flows will open here without leaving the mobile sandbox.",
+      "analytics": "Analytics will reuse the same budget rhythm with richer charts.",
+      "settings": "Settings stay close so locale and theme can be tested quickly."
+    },
+    "drawer": {
+      "close": "Close",
+      "preview": "This interaction is ready for the next implementation pass.",
+      "add": {
+        "title": "Add transaction",
+        "description": "Log spending, income, fixed payments, or budget injections."
+      },
+      "filter": {
+        "title": "Filter history",
+        "description": "Narrow the transaction list by movement type.",
+        "all": "All",
+        "spent": "Spent",
+        "received": "Received"
+      },
+      "help": {
+        "title": "Daily Rate help",
+        "description": "Today's rate adjusts when spending changes the rest of the month."
+      },
+      "settings": {
+        "title": "Settings",
+        "description": "Switch theme or language while keeping the mobile preview in place."
+      },
+      "fixed": {
+        "title": "Fixed payments",
+        "description": "Review every fixed commitment due this month."
+      },
+      "history": {
+        "title": "History",
+        "description": "Review recent spending and incoming money."
+      }
+    }
+  },
   "Fallback": {
     "eyebrow": "Stashy",
     "notFoundTitle": "Page not found.",

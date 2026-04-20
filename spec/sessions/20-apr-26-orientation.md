@@ -46,7 +46,7 @@ _(End of Template)_
 
 # Session 1 — Project Orientation
 
-**Time:** 02:43-06:32
+**Time:** 02:43-06:53
 
 ---
 
@@ -74,6 +74,16 @@ Fresh context on 20 Apr 2026. The previous session ended clean after scaffolding
 - Fixed a generated `chart.tsx` lint warning and formatted only the newly added UI component files.
 - Verified `app/globals.css` was not changed.
 - Verification: `pnpm lint`, `pnpm typecheck`, and `pnpm build` pass.
+- Implemented the home screen wireframe as `components/home-screen.tsx` and wired `app/[locale]/page.tsx` to render it.
+- Added localized English and Arabic copy for the home screen, drawers, bottom navigation placeholders, and screen actions.
+- Built the home screen with the installed shadcn/Radix components and Hugeicons: header avatar/actions, Daily Rate card with interactive tabs, budget donut chart with Recharts, major expenses warning card, upcoming fixed payment rows, history rows, FAB, reusable drawer, and bottom tab navigation.
+- Kept `app/globals.css` untouched and avoided inline styles in the new home screen implementation.
+- Verification after implementation: `pnpm lint`, `pnpm typecheck`, and `pnpm build` pass.
+- Confirmed the already-running local dev server responds at `http://localhost:3000/en`.
+- Added the newly installed `clean-code` skill to `spec/skills.md`, including the quick index and a full skill entry following the established template.
+- Applied `clean-code` and `vercel-composition-patterns` to refactor the oversized `components/home-screen.tsx` implementation into focused modules under `components/home/`.
+- Reduced `components/home-screen.tsx` from the previous oversized implementation to a 75-line page coordinator, with section, drawer, chart, navigation, row, and data responsibilities split into dedicated files.
+- Verification after refactor: `pnpm lint`, `pnpm typecheck`, and `pnpm build` pass. A scan of `components/home-screen.tsx` and `components/home/` found no inline styles and no banned physical directional class utilities.
 
 ---
 
@@ -84,6 +94,8 @@ Fresh context on 20 Apr 2026. The previous session ended clean after scaffolding
 - Do not begin home screen implementation until the user installs or approves adding required shadcn components and resolves the icon-library mismatch between `spec/DESIGN.md` Hugeicons guidance and the current shadcn `lucide` configuration.
 - Hugeicons is now the project icon direction for web sandbox work, using `@hugeicons/react` as the renderer and `@hugeicons/core-free-icons` as the free icon source.
 - Keep generated shadcn components, but patch any physical directional utilities introduced by the registry before using them in product screens.
+- Use the home screen as the first real product mock inside the existing `MobileCanvas`; keep future additions localized and RTL-safe from the start.
+- For future non-trivial React screens, load `vercel-composition-patterns` and `clean-code` before implementation so files are split by responsibility from the start.
 
 ---
 

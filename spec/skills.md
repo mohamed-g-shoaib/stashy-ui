@@ -21,6 +21,7 @@
 - [10- vercel-composition-patterns](#10--vercel-composition-patterns): React component composition strategies to prevent prop bloat.
 - [11- vercel-react-best-practices](#11--vercel-react-best-practices): High-impact Next.js/React performance rules and bundle optimization.
 - [12- next-intl-app-router](#12--next-intl-app-router): Configures and uses next-intl with prefix-based locale routing for App Router.
+- [13- clean-code](#13--clean-code): Refactoring discipline for small functions, readable names, and single-responsibility modules.
 
 ---
 
@@ -316,3 +317,24 @@ Setup and usage of `next-intl` with prefix-based locale routing for Next.js App 
 3. Ensure you map `hasLocale()` explicitly inside layout bounds, executing a `notFound()` fallback immediately if an invalid locale path triggers.
 4. Call `setRequestLocale(locale)` before executing any `next-intl` translation APIs within statically rendered layouts or pages.
 5. Maintain segregated JSON files per namespace/locale under `/messages/` to keep string data decoupled from the component lifecycle.
+
+### 13- clean-code
+
+**Structure**: Only `SKILL.md`
+**Triggers**: refactor, clean code, code smells, large files, readability, maintainability
+**Pairs With**: vercel-composition-patterns, vercel-react-best-practices
+**Summary**:
+Clean Code principles for turning working code into readable, maintainable code that another developer can safely extend.
+
+- Emphasizes intention-revealing names, searchable identifiers, and meaningful distinctions between data and behavior
+- Pushes functions and components to do one thing at one level of abstraction
+- Flags common smells such as needless complexity, repetition, hidden side effects, and oversized classes/modules
+- Guides refactors toward small modules, clear formatting, and tests or verification appropriate to the change
+
+**Top 5 Rules (By Priority)**:
+
+1. Keep functions and components small, focused, and responsible for one thing.
+2. Use intention-revealing, searchable names instead of vague abbreviations or overloaded terms.
+3. Keep related code vertically close and split unrelated responsibilities into separate modules.
+4. Avoid comments that explain unclear code; rewrite the code so the intent is visible.
+5. Avoid needless complexity and repetition unless it is clearly justified by the domain.
