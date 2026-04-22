@@ -1,13 +1,13 @@
-import { useTranslations } from "next-intl"
+import { useTranslations } from "next-intl";
 
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 
 export function MajorExpensesCard() {
-  const t = useTranslations("Home")
-  const majorAmount = 3000
-  const variableBudget = 7960
-  const percentage = Math.round((majorAmount / variableBudget) * 100)
+  const t = useTranslations("Home");
+  const majorAmount = 3000;
+  const variableBudget = 7960;
+  const percentage = Math.round((majorAmount / variableBudget) * 100);
 
   return (
     <Card
@@ -19,7 +19,9 @@ export function MajorExpensesCard() {
           <p className="text-sm font-semibold text-foreground tabular-nums">
             {majorAmount.toLocaleString()} EGP{" "}
             <span className="font-normal text-text-secondary">
-              {t("major.ofVariable", { amount: `${variableBudget.toLocaleString()} EGP` })}
+              {t("major.ofVariable", {
+                amount: `${variableBudget.toLocaleString()} EGP`,
+              })}
             </span>
           </p>
           <Badge className="rounded-full bg-warning text-foreground dark:bg-warning-dark dark:text-bg text-xs font-bold px-2 py-0.5">
@@ -32,8 +34,10 @@ export function MajorExpensesCard() {
             style={{ width: `${percentage}%` }}
           />
         </div>
-        <p className="text-sm font-semibold text-foreground">{t("major.warning")}</p>
+        <p className="text-sm font-semibold text-foreground">
+          {t("major.warning")}
+        </p>
       </CardContent>
     </Card>
-  )
+  );
 }
