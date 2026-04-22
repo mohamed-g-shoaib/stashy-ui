@@ -3,11 +3,18 @@ import { Cell, Pie, PieChart } from "recharts";
 
 import { budgetChartData } from "@/components/home/home-data";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChartContainer } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
+import { ChartContainer } from "@/components/ui/chart";
 
-export function BudgetOverviewCard() {
+export function BudgetOverviewCard({
+  majorScenario,
+}: {
+  majorScenario?: "active" | "none";
+}) {
   const t = useTranslations("Home");
+  const majorAmount = 3000;
+  const variableBudget = 7960;
+  const percentage = Math.round((majorAmount / variableBudget) * 100);
 
   return (
     <Card
@@ -35,6 +42,18 @@ export function BudgetOverviewCard() {
             valueClassName="text-info dark:text-info-dark"
           />
         </div>
+
+        {majorScenario === "active" && (
+          <div className="flex items-center justify-between rounded-sm bg-warning-subtle px-3 py-2.5 shadow-ring dark:bg-warning-subtle-dark">
+            <div className="flex items-center gap-2">
+              <span className="size-2 shrink-0 rounded-full bg-warning dark:bg-warning-dark" />
+              <p className="text-xs font-semibold text-foreground">
+                {majorAmount.toLocaleString()} EGP {t("major.title")}
+              </p>
+            </div>
+            <p className="text-xs font-bold text-foreground">{percentage}%</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

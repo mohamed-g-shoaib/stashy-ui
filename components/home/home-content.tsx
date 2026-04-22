@@ -9,7 +9,6 @@ import {
   navItems,
   transactions,
 } from "@/components/home/home-data";
-import { MajorExpensesCard } from "@/components/home/major-expenses-card";
 import { PaymentRow } from "@/components/home/payment-row";
 import { PlaceholderPanel } from "@/components/home/placeholder-panel";
 import { SectionHeader } from "@/components/home/section-header";
@@ -34,9 +33,8 @@ export function HomeContent({
   return (
     <main className="flex flex-col gap-section px-screen pb-28 pt-5">
       <h1 className="sr-only">{t("nav.home")}</h1>
-      <BudgetOverviewSection />
+      <BudgetOverviewSection majorScenario={majorScenario} />
       <DailyRateSection rate={dailyRate} />
-      {majorScenario === "active" && <MajorExpensesSection />}
       <FixedPaymentsSection onViewAll={() => onOpenDrawer("fixed")} />
       <HistorySection
         onFilter={() => onOpenDrawer("filter")}
@@ -79,24 +77,17 @@ function DailyRateSection({ rate }: { rate: DailyRate }) {
   );
 }
 
-function BudgetOverviewSection() {
+function BudgetOverviewSection({
+  majorScenario,
+}: {
+  majorScenario: "active" | "none";
+}) {
   const t = useTranslations("Home");
 
   return (
     <section className="flex flex-col gap-card-gap">
       <SectionHeader title={t("budget.title")} />
-      <BudgetOverviewCard />
-    </section>
-  );
-}
-
-function MajorExpensesSection() {
-  const t = useTranslations("Home");
-
-  return (
-    <section className="flex flex-col gap-card-gap">
-      <SectionHeader title={t("major.title")} />
-      <MajorExpensesCard />
+      <BudgetOverviewCard majorScenario={majorScenario} />
     </section>
   );
 }
