@@ -34,8 +34,8 @@ export function HomeContent({
   return (
     <main className="flex flex-col gap-section px-screen pb-28 pt-5">
       <h1 className="sr-only">{t("nav.home")}</h1>
-      <DailyRateSection rate={dailyRate} />
       <BudgetOverviewSection />
+      <DailyRateSection rate={dailyRate} />
       {majorScenario === "active" && <MajorExpensesSection />}
       <FixedPaymentsSection onViewAll={() => onOpenDrawer("fixed")} />
       <HistorySection

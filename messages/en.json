@@ -43,7 +43,7 @@
     },
     "major": {
       "title": "Major Expenses",
-      "ofBudget": "of 10,000 EGP budget",
+      "ofVariable": "of {amount} variable budget",
       "warning": "Major expenses are high this month"
     },
     "fixed": {
