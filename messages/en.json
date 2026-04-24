@@ -122,6 +122,156 @@
       }
     }
   },
+  "Tracker": {
+    "title": "Tracker",
+    "tabs": {
+      "fixed": "Fixed",
+      "major": "Major",
+      "history": "History"
+    },
+    "overview": {
+      "title": "Overview",
+      "budgeted": "Budgeted",
+      "paid": "Paid",
+      "remaining": "Remaining"
+    },
+    "sections": {
+      "monthly": "Monthly",
+      "budgets": "Budgets",
+      "monthlySummary": "({count}) {total}",
+      "budgetSummary": "({count}) {total}"
+    },
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "overdue": "Overdue"
+    },
+    "monthly": {
+      "rent": "Rent",
+      "spotify": "Spotify",
+      "netflix": "Netflix",
+      "internet": "Internet",
+      "gym": "Gym",
+      "icloud": "iCloud",
+      "phone": "Phone Bill"
+    },
+    "budgets": {
+      "coffee": "Coffee",
+      "gas": "Gas",
+      "groceries": "Groceries",
+      "eatingOut": "Eating Out",
+      "transport": "Transport",
+      "transactionCount": "{count} transactions",
+      "transactionPreview": "Transactions stay collapsed by default for this preview."
+    },
+    "major": {
+      "warning": "Major expenses are high this month"
+    },
+    "majorItems": {
+      "laptop": "Laptop",
+      "dentist": "Dentist",
+      "furniture": "Furniture"
+    },
+    "methods": {
+      "cash": "Cash",
+      "card": "Card",
+      "bank": "Bank"
+    },
+    "history": {
+      "details": "Details",
+      "detailsActive": "Details ({count})",
+      "date": "Date",
+      "dateActive": "Date",
+      "loadMore": "Load more"
+    },
+    "transactions": {
+      "market": "Market run",
+      "internet": "Internet bill",
+      "transfer": "Wire transfer",
+      "coffee": "Coffee run",
+      "laptop": "Laptop",
+      "freelance": "Freelance pay"
+    },
+    "transactionTypes": {
+      "variable": "Variable",
+      "monthlyInternet": "Monthly / Internet",
+      "budgetCoffee": "Budget / Coffee",
+      "major": "Major"
+    },
+    "empty": {
+      "monthlyTitle": "No monthly payments yet.",
+      "monthlyDescription": "Add things like rent or subscriptions to track them automatically.",
+      "addMonthly": "+ Add Monthly Payment",
+      "budgetTitle": "No budgets yet.",
+      "budgetDescription": "Create a spending bucket to watch category limits during the month.",
+      "addBudget": "+ Add Budget",
+      "majorTitle": "No major expenses this month.",
+      "majorDescription": "Record large one-time purchases like appliances or medical bills here.",
+      "addMajor": "+ Add Major Expense"
+    },
+    "fab": {
+      "fixed": "Add to Fixed",
+      "major": "Add Major Expense"
+    },
+    "drawer": {
+      "close": "Close",
+      "add": {
+        "fixed": {
+          "title": "Add to Fixed",
+          "description": "Choose whether this is a recurring payment or a budget transaction.",
+          "monthlyPayment": "Monthly Payment",
+          "budgetTransaction": "Budget Transaction"
+        },
+        "major": {
+          "title": "Add Major Expense",
+          "description": "Record a large one-time purchase.",
+          "preview": "This will open the major expense form in the next implementation pass."
+        },
+        "history": {
+          "title": "History is read-only",
+          "description": "Use filters to inspect past movement."
+        }
+      },
+      "filter": {
+        "detailsTitle": "Transaction details",
+        "detailsDescription": "Narrow the list by type, direction, or payment method.",
+        "dateTitle": "Transaction date",
+        "dateDescription": "Choose the time period for the history list.",
+        "type": "Type",
+        "direction": "Direction",
+        "method": "Payment Method",
+        "preset": "Preset",
+        "customRange": "Custom Range",
+        "from": "From",
+        "to": "To",
+        "clear": "Clear All",
+        "apply": "Apply",
+        "typeOptions": {
+          "all": "All",
+          "variable": "Variable",
+          "monthly": "Monthly",
+          "budget": "Budget",
+          "major": "Major"
+        },
+        "directionOptions": {
+          "all": "All",
+          "expense": "Expense",
+          "received": "Received"
+        },
+        "methodOptions": {
+          "all": "All",
+          "cash": "Cash",
+          "card": "Card",
+          "bank": "Bank"
+        },
+        "dateOptions": {
+          "thisMonth": "This month",
+          "thisWeek": "This week",
+          "today": "Today"
+        }
+      }
+    }
+  },
   "Fallback": {
     "eyebrow": "Stashy",
     "notFoundTitle": "Page not found.",

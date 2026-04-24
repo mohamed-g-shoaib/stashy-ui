@@ -1,0 +1,270 @@
+"use client"
+
+import {
+  Alert02Icon,
+  ArrowDown01Icon,
+  ArrowUp01Icon,
+  PackageIcon,
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { useTranslations } from "next-intl"
+import * as React from "react"
+
+import { budgetBuckets, monthlyPayments } from "@/components/tracker/tracker-data"
+import { TrackerProgress } from "@/components/tracker/tracker-progress"
+import type {
+  BudgetBucket,
+  MonthlyPayment,
+  PaymentStatus,
+  WarningTone,
+} from "@/components/tracker/types"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
+
+export function TrackerFixedTab() {
+  return (
+    <div className="flex flex-col gap-section">
+      <MonthlySection />
+      <BudgetsSection />
+    </div>
+  )
+}
+
+function MonthlySection() {
+  const t = useTranslations("Tracker")
+  const [expanded, setExpanded] = React.useState(true)
+  const visibleItems = expanded ? monthlyPayments : [monthlyPayments.at(-1)!]
+
+  if (monthlyPayments.length === 0) {
+    return (
+      <EmptySection
+        title={t("empty.monthlyTitle")}
+        description={t("empty.monthlyDescription")}
+        action={t("empty.addMonthly")}
+      />
+    )
+  }
+
+  return (
+    <section className="flex flex-col gap-card-gap">
+      <SectionHeader
+        label={t("sections.monthly")}
+        summary={t("sections.monthlySummary", {
+          count: monthlyPayments.length,
+          total: "3,955 EGP",
+        })}
+        tone="danger"
+        expanded={expanded}
+        onToggle={() => setExpanded((value) => !value)}
+      />
+      <div className="flex flex-col gap-3">
+        {visibleItems.map((item) => (
+          <MonthlyRow key={item.nameKey} item={item} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function BudgetsSection() {
+  const t = useTranslations("Tracker")
+  const [expanded, setExpanded] = React.useState(true)
+  const visibleBuckets = expanded ? budgetBuckets : [budgetBuckets[0]]
+
+  if (budgetBuckets.length === 0) {
+    return (
+      <EmptySection
+        title={t("empty.budgetTitle")}
+        description={t("empty.budgetDescription")}
+        action={t("empty.addBudget")}
+      />
+    )
+  }
+
+  return (
+    <section className="flex flex-col gap-card-gap">
+      <SectionHeader
+        label={t("sections.budgets")}
+        summary={t("sections.budgetSummary", {
+          count: budgetBuckets.length,
+          total: "2,100/2,400 EGP",
+        })}
+        tone="warning"
+        expanded={expanded}
+        onToggle={() => setExpanded((value) => !value)}
+      />
+      <div className="flex flex-col gap-3">
+        {visibleBuckets.map((bucket) => (
+          <BudgetCard key={bucket.nameKey} bucket={bucket} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function SectionHeader({
+  label,
+  summary,
+  tone,
+  expanded,
+  onToggle,
+}: {
+  label: string
+  summary: string
+  tone: WarningTone
+  expanded: boolean
+  onToggle: () => void
+}) {
+  return (
+    <button
+      type="button"
+      className={cn(
+        "flex min-h-12 items-center gap-2 text-start text-[1.0625rem] font-semibold",
+        tone === "danger" && "text-danger dark:text-danger-dark",
+        tone === "warning" && "text-warning dark:text-warning-dark",
+      )}
+      onClick={onToggle}
+      aria-expanded={expanded}
+    >
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+      <span dir="ltr" className="shrink-0 text-xs font-semibold text-current tabular-nums">
+        {summary}
+      </span>
+      {tone !== "neutral" ? (
+        <HugeiconsIcon icon={Alert02Icon} aria-hidden="true" size={18} />
+      ) : null}
+      <HugeiconsIcon
+        icon={expanded ? ArrowUp01Icon : ArrowDown01Icon}
+        aria-hidden="true"
+        size={18}
+      />
+    </button>
+  )
+}
+
+function MonthlyRow({ item }: { item: MonthlyPayment }) {
+  const t = useTranslations("Tracker")
+
+  return (
+    <Card size="sm" className="rounded-md border border-border bg-card py-3 shadow-ring">
+      <CardContent className="flex items-center justify-between gap-4 px-4">
+        <div className="min-w-0 text-start">
+          <p className="truncate text-[1.0625rem] font-semibold text-foreground">
+            {t(item.nameKey)}
+          </p>
+          <p className="text-sm text-text-secondary">{item.date}</p>
+        </div>
+        <div className="shrink-0 text-end">
+          <p className="text-[1.0625rem] font-semibold text-foreground tabular-nums">
+            {item.amount}
+          </p>
+          <StatusBadge status={item.status} />
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function StatusBadge({ status }: { status: PaymentStatus }) {
+  const t = useTranslations("Tracker.status")
+
+  return (
+    <Badge
+      className={cn(
+        "h-5 border-transparent px-2 text-[0.6875rem]",
+        status === "paid" && "bg-success-subtle text-success",
+        status === "pending" && "bg-warning-subtle text-warning",
+        status === "overdue" && "bg-danger-subtle text-danger",
+        status === "paid" && "dark:bg-success-subtle-dark dark:text-success-dark",
+        status === "pending" && "dark:bg-warning-subtle-dark dark:text-warning-dark",
+        status === "overdue" && "dark:bg-danger-subtle-dark dark:text-danger-dark",
+      )}
+      variant="secondary"
+    >
+      {t(status)}
+    </Badge>
+  )
+}
+
+function BudgetCard({ bucket }: { bucket: BudgetBucket }) {
+  const t = useTranslations("Tracker")
+  const [transactionsOpen, setTransactionsOpen] = React.useState(false)
+  const tone = bucket.percent >= 100 ? "danger" : bucket.percent >= 90 ? "warning" : "brand"
+
+  return (
+    <Card size="sm" className="rounded-md border border-border bg-card py-4 shadow-soft">
+      <CardContent className="px-4">
+        <div className="mb-3 flex items-start gap-3">
+          <div className="min-w-0 flex-1 text-start">
+            <h3 className="truncate text-[1.0625rem] font-semibold text-foreground">
+              {t(bucket.nameKey)}
+            </h3>
+            <p dir="ltr" className="text-sm text-text-secondary tabular-nums">
+              {bucket.spent}/{bucket.budgeted}
+            </p>
+          </div>
+          <span
+            dir="ltr"
+            className={cn(
+              "text-sm font-semibold tabular-nums",
+              bucket.percent >= 90 ? "text-warning dark:text-warning-dark" : "text-text-secondary",
+            )}
+          >
+            {bucket.percent}%
+          </span>
+        </div>
+        <TrackerProgress valueClass={bucket.percentClass} tone={tone} />
+        <Button
+          type="button"
+          variant="ghost"
+          size="xs"
+          className="mt-2 h-10 min-h-10 px-0 text-xs text-text-secondary"
+          onClick={() => setTransactionsOpen((value) => !value)}
+          aria-expanded={transactionsOpen}
+        >
+          <HugeiconsIcon
+            icon={transactionsOpen ? ArrowUp01Icon : ArrowDown01Icon}
+            data-icon="inline-start"
+            aria-hidden="true"
+          />
+          {t("budgets.transactionCount", { count: bucket.transactionCount })}
+        </Button>
+        {transactionsOpen ? (
+          <div className="mt-2 rounded-sm bg-surface-offset p-3 text-xs text-text-secondary shadow-ring">
+            {t("budgets.transactionPreview")}
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
+  )
+}
+
+function EmptySection({
+  title,
+  description,
+  action,
+}: {
+  title: string
+  description: string
+  action: string
+}) {
+  return (
+    <Card
+      size="sm"
+      className="rounded-md border border-border bg-card py-4 text-center shadow-soft"
+    >
+      <CardContent className="px-4">
+        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-md border border-dashed border-border text-text-tertiary">
+          <HugeiconsIcon icon={PackageIcon} aria-hidden="true" size={28} />
+        </div>
+        <h3 className="text-[1.0625rem] font-semibold text-foreground">{title}</h3>
+        <p className="mt-2 text-sm leading-[1.5] text-text-secondary">{description}</p>
+        <Button type="button" variant="secondary" size="sm" className="mt-4">
+          {action}
+        </Button>
+      </CardContent>
+    </Card>
+  )
+}

@@ -122,6 +122,156 @@
       }
     }
   },
+  "Tracker": {
+    "title": "المتابعة",
+    "tabs": {
+      "fixed": "ثابت",
+      "major": "كبير",
+      "history": "السجل"
+    },
+    "overview": {
+      "title": "نظرة عامة",
+      "budgeted": "المخطط",
+      "paid": "المدفوع",
+      "remaining": "المتبقي"
+    },
+    "sections": {
+      "monthly": "شهري",
+      "budgets": "الميزانيات",
+      "monthlySummary": "({count}) {total}",
+      "budgetSummary": "({count}) {total}"
+    },
+    "status": {
+      "paid": "مدفوع",
+      "pending": "معلق",
+      "overdue": "متأخر"
+    },
+    "monthly": {
+      "rent": "الإيجار",
+      "spotify": "سبوتيفاي",
+      "netflix": "نتفليكس",
+      "internet": "الإنترنت",
+      "gym": "الجيم",
+      "icloud": "آي كلاود",
+      "phone": "فاتورة الهاتف"
+    },
+    "budgets": {
+      "coffee": "القهوة",
+      "gas": "الوقود",
+      "groceries": "البقالة",
+      "eatingOut": "الأكل خارجا",
+      "transport": "المواصلات",
+      "transactionCount": "{count} معاملات",
+      "transactionPreview": "تظل المعاملات مطوية افتراضيا في هذه المعاينة."
+    },
+    "major": {
+      "warning": "المصاريف الكبيرة مرتفعة هذا الشهر"
+    },
+    "majorItems": {
+      "laptop": "لابتوب",
+      "dentist": "طبيب الأسنان",
+      "furniture": "أثاث"
+    },
+    "methods": {
+      "cash": "نقدا",
+      "card": "بطاقة",
+      "bank": "بنك"
+    },
+    "history": {
+      "details": "التفاصيل",
+      "detailsActive": "التفاصيل ({count})",
+      "date": "التاريخ",
+      "dateActive": "التاريخ",
+      "loadMore": "تحميل المزيد"
+    },
+    "transactions": {
+      "market": "مشتريات السوق",
+      "internet": "فاتورة الإنترنت",
+      "transfer": "تحويل بنكي",
+      "coffee": "مشوار قهوة",
+      "laptop": "لابتوب",
+      "freelance": "دخل عمل حر"
+    },
+    "transactionTypes": {
+      "variable": "متغير",
+      "monthlyInternet": "شهري / الإنترنت",
+      "budgetCoffee": "ميزانية / القهوة",
+      "major": "كبير"
+    },
+    "empty": {
+      "monthlyTitle": "لا توجد مدفوعات شهرية بعد.",
+      "monthlyDescription": "أضف أشياء مثل الإيجار أو الاشتراكات لمتابعتها تلقائيا.",
+      "addMonthly": "+ إضافة دفعة شهرية",
+      "budgetTitle": "لا توجد ميزانيات بعد.",
+      "budgetDescription": "أنشئ بند إنفاق لمراقبة حدود التصنيف خلال الشهر.",
+      "addBudget": "+ إضافة ميزانية",
+      "majorTitle": "لا توجد مصاريف كبيرة هذا الشهر.",
+      "majorDescription": "سجل المشتريات الكبيرة لمرة واحدة مثل الأجهزة أو الفواتير الطبية هنا.",
+      "addMajor": "+ إضافة مصروف كبير"
+    },
+    "fab": {
+      "fixed": "إضافة إلى الثابت",
+      "major": "إضافة مصروف كبير"
+    },
+    "drawer": {
+      "close": "إغلاق",
+      "add": {
+        "fixed": {
+          "title": "إضافة إلى الثابت",
+          "description": "اختر هل هي دفعة متكررة أم معاملة ضمن ميزانية.",
+          "monthlyPayment": "دفعة شهرية",
+          "budgetTransaction": "معاملة ميزانية"
+        },
+        "major": {
+          "title": "إضافة مصروف كبير",
+          "description": "سجل عملية شراء كبيرة لمرة واحدة.",
+          "preview": "سيفتح هذا نموذج المصروف الكبير في مرحلة التنفيذ التالية."
+        },
+        "history": {
+          "title": "السجل للقراءة فقط",
+          "description": "استخدم التصفية لفحص الحركات السابقة."
+        }
+      },
+      "filter": {
+        "detailsTitle": "تفاصيل المعاملة",
+        "detailsDescription": "ضيّق القائمة حسب النوع أو الاتجاه أو طريقة الدفع.",
+        "dateTitle": "تاريخ المعاملة",
+        "dateDescription": "اختر الفترة الزمنية لقائمة السجل.",
+        "type": "النوع",
+        "direction": "الاتجاه",
+        "method": "طريقة الدفع",
+        "preset": "اختيار سريع",
+        "customRange": "نطاق مخصص",
+        "from": "من",
+        "to": "إلى",
+        "clear": "مسح الكل",
+        "apply": "تطبيق",
+        "typeOptions": {
+          "all": "الكل",
+          "variable": "متغير",
+          "monthly": "شهري",
+          "budget": "ميزانية",
+          "major": "كبير"
+        },
+        "directionOptions": {
+          "all": "الكل",
+          "expense": "مصروف",
+          "received": "وارد"
+        },
+        "methodOptions": {
+          "all": "الكل",
+          "cash": "نقدا",
+          "card": "بطاقة",
+          "bank": "بنك"
+        },
+        "dateOptions": {
+          "thisMonth": "هذا الشهر",
+          "thisWeek": "هذا الأسبوع",
+          "today": "اليوم"
+        }
+      }
+    }
+  },
   "Fallback": {
     "eyebrow": "ستاشي",
     "notFoundTitle": "الصفحة غير موجودة.",
