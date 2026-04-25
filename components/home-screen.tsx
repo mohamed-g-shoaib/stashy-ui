@@ -22,7 +22,21 @@ export function HomeScreen() {
   const [activeNav, setActiveNav] = React.useState("home")
   const [dailyScenario, setDailyScenario] = React.useState<DailyScenario>("track")
   const [majorScenario, setMajorScenario] = React.useState<"active" | "none">("active")
+  const [introCardVisible, setIntroCardVisible] = React.useState(true)
   const dailyRate = getDailyRate(dailyScenario, t)
+
+  React.useEffect(() => {
+    const dismissed = window.localStorage.getItem("stashy-home-intro-dismissed")
+
+    if (dismissed === "true") {
+      setIntroCardVisible(false)
+    }
+  }, [])
+
+  const handleIntroCardVisibleChange = React.useCallback((visible: boolean) => {
+    window.localStorage.setItem("stashy-home-intro-dismissed", visible ? "false" : "true")
+    setIntroCardVisible(visible)
+  }, [])
 
   return (
     <Tabs value={activeNav} onValueChange={setActiveNav} className="min-h-svh gap-0 bg-background">
@@ -31,7 +45,9 @@ export function HomeScreen() {
         <TabsContent value="home" className="flex-1">
           <HomeContent
             dailyRate={dailyRate}
+            introCardVisible={introCardVisible}
             majorScenario={majorScenario}
+            onDismissIntroCard={() => handleIntroCardVisibleChange(false)}
             onOpenDrawer={setDrawer}
           />
         </TabsContent>
@@ -43,10 +59,25 @@ export function HomeScreen() {
       <HomeDrawer
         kind={drawer}
         dailyScenario={dailyScenario}
+        introCardVisible={introCardVisible}
         majorScenario={majorScenario}
         direction={direction}
         onDailyScenarioChange={setDailyScenario}
+        onIntroCardVisibleChange={handleIntroCardVisibleChange}
         onMajorScenarioChange={setMajorScenario}
+        onPreviewAddAction={(action, amount) => {
+          if (action === "major") {
+            setMajorScenario("active")
+            return
+          }
+
+          if (action === "receive" || action === "injection") {
+            setDailyScenario("track")
+            return
+          }
+
+          setDailyScenario(amount > 615.38 ? "overspent" : "track")
+        }}
         onOpenChange={(open) => {
           if (!open) {
             setDrawer(null)
@@ -57,6 +88,7 @@ export function HomeScreen() {
   )
 }
 
+
 function getDailyRate(
   scenario: DailyScenario,
   t: ReturnType<typeof useTranslations<"Home">>,
@@ -66,7 +98,8 @@ function getDailyRate(
       remaining: "615.38 EGP",
       allowance: "815.38 EGP",
       spent: "200 EGP",
-      tomorrow: "860 EGP",
+      explanation: t("daily.explanationTrack"),
+      tomorrow: null,
       status: t("daily.statusTrack"),
       statusTone: "success",
       fill: "basis-[75%]",
@@ -78,6 +111,7 @@ function getDailyRate(
     remaining: "-84.62 EGP",
     allowance: "815.38 EGP",
     spent: "900 EGP",
+    explanation: t("daily.explanationOverspent"),
     tomorrow: "742 EGP",
     status: t("daily.statusOverspent"),
     statusTone: "danger",

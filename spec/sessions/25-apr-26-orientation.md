@@ -116,6 +116,139 @@ Fresh context on 25 Apr 2026. The latest prior session had restored Home as the 
 
 ---
 
+# Session 4 — Audit Execution Deepening
+
+**Time:** 07:42-07:43
+
+---
+
+## Status at Session Start
+
+The initial audit artifact already existed, but the user confirmed they wanted execution now rather than just a framework. The next step was to deepen `spec/product-ux-audit.md` into a more operational review with journey-level evaluations and clearer separation between true UX defects and preview-only sandbox gaps.
+
+---
+
+## Completed This Session
+
+- Re-opened the current audit artifact and reviewed additional live implementation details from Home, Tracker, Analytics, and Settings to tighten evidence in the audit.
+- Expanded `spec/product-ux-audit.md` with detailed journey evaluations for all required flows, including: Home promise comprehension, daily-rate understanding, variable expense entry, received income/budget injection discoverability, category-model understanding, fixed tracker review, major-expense consequence understanding, history filtering, analytics actionability, and settings-language/payment-method management.
+- Added stronger distinction between three classes of issues: implemented but weak UX, product-supported behavior missing from the sandbox, and intentionally preview-only UI that should be labeled as such.
+- Added new findings around the weak use of Home help as a teaching surface and the trust gap introduced by Analytics’ preview-only month selector.
+- Marked the audit as execution-ready for the next product pass by adding an `Audit Execution Status` section.
+- Implemented the first `P0` UX/code pass from the audit across the live sandbox.
+- Reworked Home hierarchy so the product promise and daily-rate teaching content now appear before budget overview, with a new intro card that frames Stashy around today’s safe-to-spend number and exposes direct `Log Money` / `How it works` actions.
+- Expanded the Home add drawer from a generic preview into explicit action choices for spending, received income, budget injection, and major purchases, each with short plain-language explanations.
+- Turned Home help into a real explainer drawer that teaches Today’s Rate, Remaining Today, major purchases, and tomorrow-impact behavior instead of placeholder preview text.
+- Fixed the daily-rate card logic so tomorrow-rate impact no longer renders in the on-track state; the card now shows explanatory copy and only shows tomorrow-impact content when the user is overspent.
+- Localized the newly added Home onboarding/teaching copy in both English and Arabic.
+- Localized the remaining major user-facing Analytics copy through the message files, including header metadata, month picker, projection labels, shaping-card content, comparison labels, and upgrade gate text.
+- Localized the remaining major user-facing Settings copy through the message files, including section headers, actions, drawer titles/descriptions, form labels, and about text.
+- Verification after the `P0` implementation pass: `pnpm typecheck` and `pnpm lint` pass.
+- Logged follow-up product direction from the user into `spec/product-ux-audit.md`: interaction design stays in scope for the audit, and the Home intro card should be treated as newcomer guidance rather than permanent UI.
+- Updated Home so the intro card can be dismissed after first understanding, while Help remains the recovery path for the same concepts.
+- Added a Home settings-sheet toggle for the intro card so dismissable onboarding can be turned back on during design review when we need to inspect newcomer versus returning-user states.
+- Merged Tracker History filtering into one calmer filter drawer with a single active-count entry point instead of split details/date controls.
+- Added a major-expense consequence summary card above the Tracker Major list so the category explains month impact before transaction detail.
+- Localized the new Home and Tracker interaction copy in both English and Arabic.
+- Reworked Home add-entry choices from simple descriptive buttons into a chooser-plus-consequence pattern, so each action now explains both what it changes in the month and what the real product flow should ask next.
+- Reworked Tracker add-entry previews so Fixed now compares monthly payments versus budget transactions through an impact panel, and Major now previews the consequence model instead of only saying a form will exist later.
+- Localized the new Home and Tracker consequence-preview copy in both English and Arabic.
+- Verification after the journey-continuation pass: `pnpm typecheck` and `pnpm lint` pass.
+- Updated `spec/product-ux-audit.md` to formalize a stricter rule for all previous and future tasks: guidance alone is not enough; interactive surfaces must also show the functional shape of the action, the inputs, the response state, and any needed review toggles.
+- Added an interaction coverage matrix to the audit so Home, Tracker, Analytics, and Settings are all judged section-by-section for both explanation and actual interaction design.
+- Expanded `spec/product-ux-audit.md` again with a retrospective and a block-by-block audit across Home, Tracker, Analytics, and Settings, grading each major block against the stronger interaction rule.
+- Added a “Re-Do Summary” and explicit “Next Mission” section to the audit so the redesign can carry forward from the weakest blocks rather than continuing with scattered improvements.
+- Clarified in the spec that the stronger interaction rule is global to the entire Stashy sandbox and all future missions, not scoped to any specific page or block.
+- Started the execution stage from the next-mission backlog by rebuilding Home’s add drawer into a real multi-step interaction instead of a guidance-first sheet.
+- Added action-specific fields to the Home add flow: amount, payment method, and note, plus consequence-preview messaging and a save-preview response state for spending, received income, budget injection, and major purchase.
+- Wired the Home add flow so saving a preview now updates the live Home screen state where appropriate: spending can switch Home into overspent, received income and injections recover Home to on-track, and major purchase keeps the major-expense preview active.
+- Localized the new Home form, preview, and response-state copy in both English and Arabic.
+- Verification after the Home execution-stage pass: `pnpm typecheck` and `pnpm lint` pass.
+- Updated the audit spec again after user critique to reflect a broader method change: shared component reuse is mandatory, duplicated guidance should be reduced, orientation should move to the top of interactions, and drawers/sheets must be scrollable on real mobile viewports.
+- Recorded validation inside the spec that supports the method change: Nielsen Norman guidance for placing instructions before fields, and Material guidance for internally scrollable bottom-sheet content.
+- Implemented a shared segmented-choice utility and replaced the divergent Home payment-method tabs with the same segmented selection pattern used by Settings, bringing the add flow back under the project’s shared-component rule.
+- Simplified the Home add flow so the chooser step no longer stacks extra “what this changes / next in the real flow” guidance beneath already descriptive choices.
+- Tightened the Home add details step so the only orientation copy now sits above the fields, followed by the actual inputs and one concise consequence card.
+- Fixed real drawer usability across the app by turning Home, Tracker, Analytics, and Settings drawer bodies into internal scroll regions inside a constrained shared drawer shell.
+- Shifted the Home add-flow copy away from developer-facing “preview” language toward end-product wording such as saving a transaction, what happens now, and transaction added.
+- Verification after the shared-pattern and drawer-scroll pass: `pnpm typecheck` and `pnpm lint` pass.
+- Removed the extra post-save Home add step after user feedback; saving a transaction now updates Home and closes the drawer instead of opening another explanatory state.
+- Updated `spec/product-ux-audit.md` with a stronger global rule: post-save explanation panels are not a default pattern, and the updated product state should usually be the feedback.
+- Updated `spec/product-ux-audit.md` again to explicitly adopt a state-based design methodology across the whole app: starting state, interaction state, non-interaction state, added-data state, empty state, populated state, and deleted/reset state, plus validation/loading/error variants where relevant.
+- Ran a full consistency pass on `spec/product-ux-audit.md` to remove stale language from the older methodology, especially wording that implied preview notes, post-save explainer states, or weaker placeholder framing were acceptable defaults.
+- Tightened the audit language so it now consistently prefers resulting product states, honest design-review controls, and full state-based behavior across the whole app.
+- Revalidated the live app against the stricter audit and confirmed Tracker remained the weakest implementation area after Home’s interaction work.
+- Rebuilt the Tracker add drawer into real product flows for both Fixed and Major instead of leaving them as guidance-first placeholders.
+- Added a true Fixed chooser flow for `Monthly Payment` vs `Budget Transaction`, followed by real fields, payment-method selection, concise consequence framing, and save behavior.
+- Added a true Major entry flow with name, amount, payment method, purchase-size selection, and a consequence card that frames the result before save.
+- Wired Tracker saves into resulting product state: new monthly payments now appear in Fixed, new budget transactions update the selected budget bucket, new major expenses appear in Major, and all saved actions prepend real entries into History.
+- Refactored Tracker tabs away from hard-wired static constants so Fixed, Major, and History can now reflect locally added data during the session.
+- Added the new bilingual Tracker copy for fields, categories, save actions, and resulting-state messaging in both English and Arabic.
+- Verification after the Tracker interaction pass: `pnpm typecheck` and `pnpm lint` pass.
+- Fixed the shared drawer root again after user review so mobile sheets now reserve viewport-safe height at the primitive level and rely on a dedicated internal scroll region rather than overgrowing the viewport.
+- Normalized drawer instruction hierarchy across Home and Tracker so the header is the main task introduction, duplicated internal intro cards are removed, and decision-critical consequence copy now sits before the first relevant field instead of at the bottom.
+- Validated the drawer-direction fix against the `shadcn` skill guidance by checking the current drawer docs and vaul API references before applying the root-level shell change.
+- Removed the inconsistent extra footer `Close` action from Tracker task drawers so Home and Tracker now follow the same dismissal rule: task flows use `Cancel`/`Back`, while informational drawers use a single `Close`.
+- Updated the audit spec with a dedicated drawer-dismissal rule so future work does not mix `Cancel` and `Close` in the same drawer mode unless there is a strong product reason.
+- Moved Home and Tracker task-drawer action rows into the fixed drawer footer so the primary actions stay visible while only the body scrolls.
+- Updated the audit spec again to make this a standing drawer rule: long task sheets may scroll through content, but their action buttons should not disappear into the scroll region.
+- Revalidated the remaining weak surfaces from the audit and upgraded them from “interactive-looking” to actually stateful behavior.
+- Rebuilt Tracker History filtering so the drawer now owns real type, direction, method, preset, and custom-date inputs; applying filters changes the visible result list; active filters are summarized in-page; and empty-result states are rendered honestly instead of stopping at an active-count badge.
+- Extended Tracker transaction data and local screen logic with filterable categories and ISO dates so History can support meaningful result-state changes and date-range filtering.
+- Rebuilt Analytics month switching so selecting February, March, or April now changes the visible pacing, projection, shaping, and comparison content instead of only changing selection styling.
+- Added month-specific static datasets to Analytics so the month picker is now an honest report-state control rather than a decorative interaction.
+- Reworked Settings drawers so Profile, Monthly Budget, Budget Boosts, and Payment Methods now save back into the visible screen state instead of acting as visual-only forms.
+- Added real local add, edit, delete, and default-setting behavior to Payment Methods plus a real empty-to-filled transition for Budget Boosts.
+- Updated English and Arabic messages to support the new History result-state copy, Analytics month-state copy, and Settings interaction copy.
+- Updated `spec/product-ux-audit.md` again to record the new standing rule that editable-looking controls must change visible state, and revised the remaining block-by-block audit entries to reflect the now-resolved History, Analytics month-switching, and Settings save-state issues.
+- Verification after the History/Analytics/Settings statefulness pass: `pnpm typecheck` and `pnpm lint` pass.
+- Fixed the Analytics month-picker drawer spacing issue by adding top breathing room to the scrollable option list so the first selectable month no longer crowds the header separator.
+- Refactored the oversized Analytics and Settings route files into smaller modules so the route entries are now thin wrappers and the screen logic is split across dedicated `components/analytics/*` and `components/settings/*` files.
+- Reduced `app/(app)/analytics.tsx` and `app/(app)/settings.tsx` to one-line exports and moved the actual screen orchestration into focused screen modules with supporting section/drawer/data files.
+- Verification after the clean-code refactor and drawer-spacing pass: `pnpm typecheck` and `pnpm lint` pass.
+- Promoted the drawer-spacing correction from a local fix into a shared root fix in `components/ui/drawer.tsx`, so every drawer now gets consistent breathing room between the header separator and the first body element.
+- Removed the temporary component-level top-padding workaround from the Analytics month picker and Settings drawer once the shared drawer primitive owned that spacing.
+- Expanded `spec/product-ux-audit.md` to make the broader rule explicit: full-app validation must include the visual design of the product itself across all screens and states, not just interactivity, copy, or CSS defect checks.
+- Verification after the shared drawer-spacing fix and spec update: `pnpm typecheck` and `pnpm lint` pass.
+
+---
+
+## Decisions Made
+
+- The audit document should function as a live execution artifact, not just a planning or templating file.
+- Journey-level evaluation is necessary because Stashy’s UX quality depends on cross-screen comprehension, not just isolated screen polish.
+- Preview-only controls should be called out explicitly in the audit to avoid confusing incomplete sandbox behavior with final product intent.
+- Interaction design decisions such as drawer structure, filter grouping, and onboarding persistence are part of the product audit scope, not a later polish pass.
+- The Home intro card should not remain permanent chrome; it is now treated as first-use teaching content that can be dismissed and re-opened through Help.
+- Dismissable sandbox surfaces should stay re-toggleable from the relevant settings bottom sheet so design review can deliberately compare first-use and returning-user states.
+- Entry flows in the sandbox should prioritize explaining consequence and classification, even before full forms exist, so the user journey can still be audited meaningfully.
+- Going forward, “designing the interaction” means showing how the user acts and how the system responds, not only adding helpful explanatory guidance around static shells.
+- The audit should now be maintained at both journey level and block level, so each major section in the app is judged for real interaction coverage rather than only screen-level storytelling.
+- The stronger interaction requirement is now explicitly global across the whole app, all major blocks, and all future redesign missions.
+- The execution stage should now prioritize replacing explanation-first placeholders with interaction-first mock flows that visibly change the live sandbox state after save when the underlying product logic supports it.
+- The end-product bar is now stricter: interaction work must prioritize shared components, concise top-loaded guidance, low reading burden, and mobile-usable sheet behavior instead of developer-oriented explanatory layouts.
+- Shared interaction fixes should be applied at the system level whenever possible, so issues like drawer scrolling and selector drift are corrected once and then inherited across pages.
+- End-product interaction design should prefer direct state change over extra explanation after save; follow-up sheets after completion require a clear product reason, not a desire to narrate the result.
+- Stashy design work should be state-based, not screenshot-based; no page or block is considered complete until its key before/during/after/empty/populated/deleted states are accounted for.
+- The audit spec itself must be maintained as a living product rulebook; stale wording that pushes false or weaker behavior should be corrected as soon as it is found.
+- Home is no longer the only credible interaction reference in the product; Tracker now has real save-driven state change and should be used as the next bar for follow-up work on History, Analytics honesty, and Settings separation.
+- Drawer behavior and instruction hierarchy should now be treated as shared product infrastructure, not per-screen improvisation; future drawer work must inherit the same root shell and the same “header first, consequence before fields” order.
+- Drawer dismissal should be consistent across the app: gesture support remains expected, but every drawer mode should expose one clear visible dismiss pattern instead of redundant controls.
+- Drawer task actions are now part of the shared shell contract: header fixed, body scrollable, footer actions visible.
+- Controls that look editable in the end-product sandbox should no longer be treated as visual-only by default; saving or selecting them should change visible state unless the UI is explicitly framed as review tooling.
+- Analytics month switching, Tracker History filtering, and Settings form saves now form the baseline examples of this interaction-honesty rule.
+- Route files should stay thin, and large product screens should be decomposed into smaller screen, section, drawer, and data modules before they become hard to reason about.
+- Drawer breathing room below the header separator is now part of the shared primitive contract, not something individual sheets should patch manually.
+- “Design validation” now explicitly means validating the full visual product quality across the entire app, not only interactivity, structure, or bug-level spacing issues.
+
+---
+
+## Open Blockers
+
+1. Owner: User/Codex follow-up — full `pnpm format:check` remains blocked by pre-existing formatting issues in markdown docs/wireframes, including `spec/wireframe/home-screen.md` and `spec/wireframe/tracker-screen.md`.
+
+---
+
 # Session 3 — Product UX Audit Spec
 
 **Time:** 05:45-06:07

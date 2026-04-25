@@ -14,6 +14,7 @@ type DailyRateCardProps = {
 
 export function DailyRateCard({ rate }: DailyRateCardProps) {
   const t = useTranslations("Home");
+  const showsTomorrow = rate.tomorrow !== null
 
   return (
     <Card
@@ -21,11 +22,16 @@ export function DailyRateCard({ rate }: DailyRateCardProps) {
       className="rounded-md border border-border bg-card py-4 shadow-soft"
     >
       <CardContent className="flex flex-col gap-4 px-4">
+        <p className="text-sm leading-[1.6] text-text-secondary text-pretty">{rate.explanation}</p>
         <DailyRateAmounts rate={rate} />
         <DailyAllowanceBar rate={rate} label={t("daily.progressLabel")} />
         <DailyRateStatus rate={rate} />
-        <Separator className="bg-border-subtle" />
-        <TomorrowRate rate={rate} />
+        {showsTomorrow ? (
+          <>
+            <Separator className="bg-border-subtle" />
+            <TomorrowRate rate={rate} />
+          </>
+        ) : null}
       </CardContent>
     </Card>
   );
@@ -109,6 +115,10 @@ function DailyRateStatus({ rate }: { rate: DailyRate }) {
 function TomorrowRate({ rate }: { rate: DailyRate }) {
   const t = useTranslations("Home");
   const isOverspent = rate.statusTone === "danger";
+
+  if (!rate.tomorrow) {
+    return null
+  }
 
   return (
     <div className="flex items-center justify-between gap-3">

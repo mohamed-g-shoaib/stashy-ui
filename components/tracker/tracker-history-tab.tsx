@@ -1,67 +1,104 @@
 "use client"
 
-import { Calendar03Icon, FilterIcon } from "@hugeicons/core-free-icons"
+import { FilterIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useTranslations } from "next-intl"
 
-import { trackerTransactions } from "@/components/tracker/tracker-data"
+import { trackerTransactions as initialTrackerTransactions } from "@/components/tracker/tracker-data"
 import type { TrackerTransaction } from "@/components/tracker/types"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 type TrackerHistoryTabProps = {
-  detailsFilterCount: number
-  dateFilterCount: number
-  onOpenDetailsFilter: () => void
-  onOpenDateFilter: () => void
+  filterCount: number
+  filters: {
+    type: string
+    direction: string
+    method: string
+    preset: string
+    from: string
+    to: string
+  }
+  items?: TrackerTransaction[]
+  onOpenFilter: () => void
 }
 
 export function TrackerHistoryTab({
-  detailsFilterCount,
-  dateFilterCount,
-  onOpenDetailsFilter,
-  onOpenDateFilter,
+  filterCount,
+  filters,
+  items = initialTrackerTransactions,
+  onOpenFilter,
 }: TrackerHistoryTabProps) {
   const t = useTranslations("Tracker")
+  const appliedFilters = getAppliedFilters(t, filters)
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-end">
         <Button
           type="button"
           variant="outline"
           size="xs"
           className="h-11 min-h-11 rounded-full px-3"
-          onClick={onOpenDetailsFilter}
+          onClick={onOpenFilter}
         >
           <HugeiconsIcon icon={FilterIcon} data-icon="inline-start" aria-hidden="true" />
-          {detailsFilterCount > 0
-            ? t("history.detailsActive", { count: detailsFilterCount })
-            : t("history.details")}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="xs"
-          className="h-11 min-h-11 rounded-full px-3"
-          onClick={onOpenDateFilter}
-        >
-          <HugeiconsIcon icon={Calendar03Icon} data-icon="inline-start" aria-hidden="true" />
-          {dateFilterCount > 0 ? t("history.dateActive") : t("history.date")}
+          {filterCount > 0 ? t("history.filterActive", { count: filterCount }) : t("history.filter")}
         </Button>
       </div>
+      {filterCount > 0 ? (
+        <Card size="sm" className="rounded-md border border-border bg-card py-3 shadow-ring">
+          <CardContent className="flex flex-col gap-3 px-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-semibold text-foreground">
+                {t("history.resultsSummary", { count: items.length })}
+              </p>
+              <button
+                type="button"
+                className="text-sm font-medium text-brand"
+                onClick={onOpenFilter}
+              >
+                {t("history.adjustFilters")}
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {appliedFilters.map((label) => (
+                <span
+                  key={label}
+                  className="rounded-full bg-surface-offset px-2.5 py-1 text-[0.6875rem] font-medium text-text-secondary shadow-ring"
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
       <div className="flex flex-col gap-3">
-        {trackerTransactions.map((transaction) => (
-          <HistoryRow
-            key={`${transaction.descriptionKey}-${transaction.amount}`}
-            transaction={transaction}
-          />
-        ))}
+        {items.length > 0 ? (
+          items.map((transaction) => (
+            <HistoryRow
+              key={`${transaction.descriptionKey ?? transaction.descriptionLabel}-${transaction.amount}-${transaction.dateISO}`}
+              transaction={transaction}
+            />
+          ))
+        ) : (
+          <Card size="sm" className="rounded-md border border-border bg-card py-6 shadow-ring">
+            <CardContent className="flex flex-col items-center gap-2 px-4 text-center">
+              <p className="text-base font-semibold text-foreground">{t("history.emptyTitle")}</p>
+              <p className="max-w-[26ch] text-sm leading-[1.6] text-text-secondary text-pretty">
+                {t("history.emptyDescription")}
+              </p>
+            </CardContent>
+          </Card>
+        )}
       </div>
-      <Button type="button" variant="secondary" size="sm">
-        {t("history.loadMore")}
-      </Button>
+      {items.length > 0 ? (
+        <Button type="button" variant="secondary" size="sm">
+          {t("history.loadMore")}
+        </Button>
+      ) : null}
     </div>
   )
 }
@@ -102,10 +139,44 @@ function HistoryRow({ transaction }: { transaction: TrackerTransaction }) {
             </time>
           </div>
           <p className="mt-0.5 truncate text-sm text-text-secondary">
-            {t(transaction.descriptionKey)} / {t(transaction.typeLabelKey)}
+            {transaction.descriptionKey ? t(transaction.descriptionKey) : transaction.descriptionLabel} /{" "}
+            {transaction.typeLabelKey ? t(transaction.typeLabelKey) : transaction.typeLabel}
           </p>
         </div>
       </CardContent>
     </Card>
   )
+}
+
+function getAppliedFilters(
+  t: ReturnType<typeof useTranslations<"Tracker">>,
+  filters: TrackerHistoryTabProps["filters"],
+) {
+  const labels: string[] = []
+
+  if (filters.type !== "all") {
+    labels.push(t(`drawer.filter.typeOptions.${filters.type}`))
+  }
+
+  if (filters.direction !== "all") {
+    labels.push(t(`drawer.filter.directionOptions.${filters.direction}`))
+  }
+
+  if (filters.method !== "all") {
+    labels.push(t(`drawer.filter.methodOptions.${filters.method}`))
+  }
+
+  if (filters.from || filters.to) {
+    labels.push(
+      filters.from && filters.to
+        ? t("history.rangeBetween", { from: filters.from, to: filters.to })
+        : filters.from
+          ? t("history.rangeFrom", { from: filters.from })
+          : t("history.rangeTo", { to: filters.to }),
+    )
+  } else if (filters.preset !== "thisMonth") {
+    labels.push(t(`drawer.filter.dateOptions.${filters.preset}`))
+  }
+
+  return labels
 }

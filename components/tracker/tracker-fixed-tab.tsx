@@ -10,7 +10,10 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useTranslations } from "next-intl"
 import * as React from "react"
 
-import { budgetBuckets, monthlyPayments } from "@/components/tracker/tracker-data"
+import {
+  budgetBuckets as initialBudgetBuckets,
+  monthlyPayments as initialMonthlyPayments,
+} from "@/components/tracker/tracker-data"
 import { TrackerProgress } from "@/components/tracker/tracker-progress"
 import type {
   BudgetBucket,
@@ -23,21 +26,29 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
-export function TrackerFixedTab() {
+type TrackerFixedTabProps = {
+  items?: MonthlyPayment[]
+  buckets?: BudgetBucket[]
+}
+
+export function TrackerFixedTab({
+  items = initialMonthlyPayments,
+  buckets = initialBudgetBuckets,
+}: TrackerFixedTabProps) {
   return (
     <div className="flex flex-col gap-section">
-      <MonthlySection />
-      <BudgetsSection />
+      <MonthlySection items={items} />
+      <BudgetsSection buckets={buckets} />
     </div>
   )
 }
 
-function MonthlySection() {
+function MonthlySection({ items }: { items: MonthlyPayment[] }) {
   const t = useTranslations("Tracker")
   const [expanded, setExpanded] = React.useState(true)
-  const visibleItems = expanded ? monthlyPayments : [monthlyPayments.at(-1)!]
+  const visibleItems = expanded ? items : [items.at(-1)!]
 
-  if (monthlyPayments.length === 0) {
+  if (items.length === 0) {
     return (
       <EmptySection
         title={t("empty.monthlyTitle")}
@@ -52,8 +63,8 @@ function MonthlySection() {
       <SectionHeader
         label={t("sections.monthly")}
         summary={t("sections.monthlySummary", {
-          count: monthlyPayments.length,
-          total: "3,955 EGP",
+          count: items.length,
+          total: getMonthlyTotal(items),
         })}
         tone="danger"
         expanded={expanded}
@@ -61,19 +72,19 @@ function MonthlySection() {
       />
       <div className="flex flex-col gap-3">
         {visibleItems.map((item) => (
-          <MonthlyRow key={item.nameKey} item={item} />
+          <MonthlyRow key={item.nameKey ?? item.nameLabel} item={item} />
         ))}
       </div>
     </section>
   )
 }
 
-function BudgetsSection() {
+function BudgetsSection({ buckets }: { buckets: BudgetBucket[] }) {
   const t = useTranslations("Tracker")
   const [expanded, setExpanded] = React.useState(true)
-  const visibleBuckets = expanded ? budgetBuckets : [budgetBuckets[0]]
+  const visibleBuckets = expanded ? buckets : [buckets[0]]
 
-  if (budgetBuckets.length === 0) {
+  if (buckets.length === 0) {
     return (
       <EmptySection
         title={t("empty.budgetTitle")}
@@ -88,8 +99,8 @@ function BudgetsSection() {
       <SectionHeader
         label={t("sections.budgets")}
         summary={t("sections.budgetSummary", {
-          count: budgetBuckets.length,
-          total: "2,100/2,400 EGP",
+          count: buckets.length,
+          total: getBudgetSummary(buckets),
         })}
         tone="warning"
         expanded={expanded}
@@ -97,7 +108,7 @@ function BudgetsSection() {
       />
       <div className="flex flex-col gap-3">
         {visibleBuckets.map((bucket) => (
-          <BudgetCard key={bucket.nameKey} bucket={bucket} />
+          <BudgetCard key={bucket.nameKey ?? bucket.nameLabel} bucket={bucket} />
         ))}
       </div>
     </section>
@@ -152,7 +163,7 @@ function MonthlyRow({ item }: { item: MonthlyPayment }) {
       <CardContent className="flex items-center justify-between gap-4 px-4">
         <div className="min-w-0 text-start">
           <p className="truncate text-[1.0625rem] font-semibold text-foreground">
-            {t(item.nameKey)}
+            {item.nameKey ? t(item.nameKey) : item.nameLabel}
           </p>
           <p className="text-sm text-text-secondary">{item.date}</p>
         </div>
@@ -199,7 +210,7 @@ function BudgetCard({ bucket }: { bucket: BudgetBucket }) {
         <div className="mb-3 flex items-start gap-3">
           <div className="min-w-0 flex-1 text-start">
             <h3 className="truncate text-[1.0625rem] font-semibold text-foreground">
-              {t(bucket.nameKey)}
+              {bucket.nameKey ? t(bucket.nameKey) : bucket.nameLabel}
             </h3>
             <p dir="ltr" className="text-sm text-text-secondary tabular-nums">
               {bucket.spent}/{bucket.budgeted}
@@ -267,4 +278,21 @@ function EmptySection({
       </CardContent>
     </Card>
   )
+}
+
+function getMonthlyTotal(items: MonthlyPayment[]) {
+  const total = items.reduce((sum, item) => sum + extractAmount(item.amount), 0)
+
+  return `${new Intl.NumberFormat("en").format(total)} EGP`
+}
+
+function getBudgetSummary(buckets: BudgetBucket[]) {
+  const spent = buckets.reduce((sum, bucket) => sum + extractAmount(bucket.spent), 0)
+  const budgeted = buckets.reduce((sum, bucket) => sum + extractAmount(bucket.budgeted), 0)
+
+  return `${new Intl.NumberFormat("en").format(spent)}/${new Intl.NumberFormat("en").format(budgeted)} EGP`
+}
+
+function extractAmount(value: string) {
+  return Number(value.replaceAll(/[^\d]/g, "")) || 0
 }

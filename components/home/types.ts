@@ -2,12 +2,14 @@ import type { IconSvgElement } from "@hugeicons/react"
 
 export type DrawerKind = "add" | "filter" | "help" | "settings" | "fixed" | "history"
 export type DailyScenario = "track" | "overspent"
+export type AddActionKind = "spend" | "receive" | "injection" | "major"
 
 export type DailyRate = {
   remaining: string
   allowance: string
   spent: string
-  tomorrow: string
+  explanation: string
+  tomorrow: string | null
   status: string
   statusTone: "success" | "danger"
   fill: string
