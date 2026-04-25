@@ -75,5 +75,9 @@ function getNavHref(value: string) {
     return "/tracker"
   }
 
+  if (value === "analytics") {
+    return "/analytics"
+  }
+
   return null
 }

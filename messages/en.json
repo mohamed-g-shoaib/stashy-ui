@@ -272,6 +272,60 @@
       }
     }
   },
+  "Analytics": {
+    "title": "Analytics",
+    "meta": {
+      "line": "{tracked} days tracked / {remaining} days remaining / {status}",
+      "status": {
+        "inProgress": "In Progress"
+      }
+    },
+    "pacing": {
+      "underPace": "Under pace",
+      "overPace": "Over pace",
+      "narrative": "You've used {budgetUsed}% of your budget with {monthProgress}% of the month gone - {descriptor}.",
+      "descriptorStrongPositive": "far under pace",
+      "descriptorPositive": "well under pace",
+      "descriptorSoftPositive": "slightly under pace",
+      "descriptorStrongWarning": "well ahead of budget pace",
+      "descriptorWarning": "ahead of budget pace",
+      "descriptorSoftWarning": "slightly ahead of budget pace",
+      "budgetUsed": "Budget Used",
+      "monthProgress": "Month Progress",
+      "barLabel": "Budget pace compared with month progress",
+      "overspentDays": "{count} days overspent so far"
+    },
+    "projection": {
+      "avgDaily": "Avg Daily",
+      "projectedSpend": "Proj. Spend",
+      "projectedSavings": "Proj. Savings",
+      "positiveNarrative": "If you keep this pace, you'll finish {month} {amount} under budget.",
+      "negativeNarrative": "At this rate, you'll overspend by {amount} by end of month. Consider pulling back on variable spending.",
+      "savingsRate": "~{rate}% projected savings rate"
+    },
+    "comparison": {
+      "title": "vs Last Month",
+      "arrow": "->",
+      "savingsRate": "Savings Rate",
+      "baseDailyRate": "Base Daily Rate",
+      "largePurchases": "Large Purchases",
+      "verdictBetter": "You're trending better than March across the metrics that moved.",
+      "verdictMostlyBetter": "April looks better than March overall, with stronger savings and lighter large purchases.",
+      "verdictMostlyWorse": "April is slipping behind March on the metrics that moved.",
+      "verdictWorse": "April is tracking below March on both key comparison metrics.",
+      "verdictMixed": "Mixed month - one metric improved while another moved the wrong way.",
+      "savingsRateMessage": "Saving more than last month",
+      "baseRateReason": "Base rate unchanged - fixed expenses stayed the same",
+      "largePurchasesMessage": "Fewer large purchases than last month",
+      "emptyDescription": "No previous month data yet. Close {month} to unlock comparison.",
+      "closeMonth": "Close {month}"
+    },
+    "upgrade": {
+      "title": "Unlock Analytics",
+      "description": "See your spending pace, monthly trends, and savings projections all in one place.",
+      "cta": "Upgrade to Pro"
+    }
+  },
   "Fallback": {
     "eyebrow": "Stashy",
     "notFoundTitle": "Page not found.",

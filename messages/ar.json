@@ -272,6 +272,60 @@
       }
     }
   },
+  "Analytics": {
+    "title": "التحليلات",
+    "meta": {
+      "line": "تم تتبع {tracked} يوما / متبقي {remaining} أيام / {status}",
+      "status": {
+        "inProgress": "قيد التنفيذ"
+      }
+    },
+    "pacing": {
+      "underPace": "أقل من الإيقاع",
+      "overPace": "أعلى من الإيقاع",
+      "narrative": "استخدمت {budgetUsed}% من الميزانية بينما مر {monthProgress}% من الشهر - {descriptor}.",
+      "descriptorStrongPositive": "أقل كثيرا من الإيقاع",
+      "descriptorPositive": "أقل بوضوح من الإيقاع",
+      "descriptorSoftPositive": "أقل قليلا من الإيقاع",
+      "descriptorStrongWarning": "أعلى كثيرا من إيقاع الميزانية",
+      "descriptorWarning": "أعلى من إيقاع الميزانية",
+      "descriptorSoftWarning": "أعلى قليلا من إيقاع الميزانية",
+      "budgetUsed": "المستخدم من الميزانية",
+      "monthProgress": "تقدم الشهر",
+      "barLabel": "مقارنة إيقاع الإنفاق بتقدم الشهر",
+      "overspentDays": "تم التجاوز {count} أيام حتى الآن"
+    },
+    "projection": {
+      "avgDaily": "المتوسط اليومي",
+      "projectedSpend": "المصروف المتوقع",
+      "projectedSavings": "التوفير المتوقع",
+      "positiveNarrative": "إذا استمر هذا الإيقاع فستنهي {month} وأنت أقل من الميزانية بمقدار {amount}.",
+      "negativeNarrative": "بهذا المعدل ستتجاوز الميزانية بمقدار {amount} مع نهاية الشهر. من الأفضل تهدئة الإنفاق المتغير.",
+      "savingsRate": "نحو {rate}% معدل توفير متوقع"
+    },
+    "comparison": {
+      "title": "مقارنة بالشهر الماضي",
+      "arrow": "->",
+      "savingsRate": "معدل التوفير",
+      "baseDailyRate": "المعدل اليومي الأساسي",
+      "largePurchases": "المشتريات الكبيرة",
+      "verdictBetter": "أبريل أفضل من مارس في المؤشرات التي تغيرت.",
+      "verdictMostlyBetter": "أبريل يبدو أفضل من مارس إجمالا مع توفير أعلى ومشتريات كبيرة أقل.",
+      "verdictMostlyWorse": "أبريل يتراجع عن مارس في المؤشرات التي تغيرت.",
+      "verdictWorse": "أبريل أقل من مارس في مؤشري المقارنة الأساسيين.",
+      "verdictMixed": "شهر مختلط - تحسن مؤشر بينما تحرك الآخر في الاتجاه الخاطئ.",
+      "savingsRateMessage": "توفير أعلى من الشهر الماضي",
+      "baseRateReason": "المعدل الأساسي لم يتغير - بقيت المصروفات الثابتة كما هي",
+      "largePurchasesMessage": "مشتريات كبيرة أقل من الشهر الماضي",
+      "emptyDescription": "لا توجد بيانات للشهر السابق بعد. أغلق {month} لفتح المقارنة.",
+      "closeMonth": "أغلق {month}"
+    },
+    "upgrade": {
+      "title": "افتح التحليلات",
+      "description": "اطلع على إيقاع إنفاقك واتجاهات الشهر وتوقعات التوفير كلها في مكان واحد.",
+      "cta": "الترقية إلى Pro"
+    }
+  },
   "Fallback": {
     "eyebrow": "ستاشي",
     "notFoundTitle": "الصفحة غير موجودة.",
