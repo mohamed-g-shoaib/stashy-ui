@@ -89,6 +89,11 @@ Fresh context on 25 Apr 2026. The latest prior session had restored Home as the 
 - Removed the long default-scroll detail treatment for fixed-expense, payment-method, and major-purchase sections from the main page. Their data is now summarized into a small set of high-signal insights instead of forcing users through a full audit sheet.
 - Shifted the visual hierarchy so only the pace delta behaves like a hero number; all other values now sit in smaller support roles or short summary rows to reduce the “wall of numbers” effect.
 - Verification after the Analytics UX redesign: `pnpm lint`, `pnpm typecheck`, `pnpm build`, and targeted formatting checks for `app/(app)/analytics.tsx` pass.
+- Added a new Settings product surface in `app/(app)/settings.tsx` and a localized route wrapper at `app/[locale]/settings/page.tsx`, keeping the same route architecture used by Tracker and Analytics.
+- Extended the shared app dock so the Settings tab now routes to `/settings` under each locale and highlights correctly when active.
+- Built Settings as a single-screen management surface with card-grouped sections, inline payment-method delete confirmation, local visual toggles for theme/language/default payment method, and same-screen bottom sheets for editing profile, budget, budget boosts, and payment methods.
+- Kept all interactions local and visual-only with no API calls or external state, matching the sandbox brief while still making the screen feel like a real in-product settings experience.
+- Verification after Settings implementation: `pnpm typecheck`, `pnpm lint`, `pnpm build`, and targeted formatting checks for `app/(app)/settings.tsx`, `app/[locale]/settings/page.tsx`, and `components/app-bottom-navigation.tsx` pass.
 
 ---
 
@@ -101,6 +106,7 @@ Fresh context on 25 Apr 2026. The latest prior session had restored Home as the 
 - When a prompt asks for a screen file under `app/(app)/...`, the implementation can live there as a shared screen module, but the user-facing route should still flow through the repo's locale-aware `app/[locale]/.../page.tsx` structure.
 - For spec-driven mock screens, numeric UI should be traceable from top-level constants or named derived values rather than scattered inline literals, even when the interaction itself remains static.
 - Analytics should prioritize interpretation over exhaustiveness. The default screen should surface a few decisive monthly insights, while lower-level operational detail should be summarized or moved behind a secondary interaction instead of appearing as a long primary scroll.
+- Settings should stay single-surface and in-context for the sandbox: card-group related controls together, prefer bottom sheets over sub-routes for edit flows, and keep destructive confirmation inline when the action scope is small and obvious.
 
 ---
 
