@@ -23,6 +23,7 @@
 - [12- next-intl-app-router](#12--next-intl-app-router): Configures and uses next-intl with prefix-based locale routing for App Router.
 - [13- clean-code](#13--clean-code): Refactoring discipline for small functions, readable names, and single-responsibility modules.
 - [14- wcag-audit-patterns](#14--wcag-audit-patterns): WCAG 2.2 accessibility audits, contrast checks, keyboard access, and remediation patterns.
+- [15- frontend-design](#15--frontend-design): Distinctive, production-grade frontend design direction for screens, pages, and polished UI builds.
 
 ---
 
@@ -360,3 +361,24 @@ WCAG 2.2 audit patterns for finding and fixing accessibility issues across perce
 3. Use semantic HTML and accessible names before reaching for custom ARIA.
 4. Do not communicate state through color alone; pair color with labels, structure, or icons.
 5. Validate headings, labels, language, and focus order manually in addition to automated checks.
+
+### 15- frontend-design
+
+**Structure**: Only `SKILL.md`
+**Triggers**: frontend UI, page design, landing page, dashboard, component styling, visual polish
+**Pairs With**: emil-design-eng, make-interfaces-feel-better, tailwind-design-system
+**Summary**:
+Creative frontend design skill for building distinctive, production-grade interfaces with a strong visual point of view instead of generic AI-looking layouts.
+
+- Pushes each UI task to start with a clear aesthetic direction tied to purpose, tone, audience, and differentiation
+- Emphasizes expressive typography, committed color systems, intentional motion, and atmospheric backgrounds instead of safe defaults
+- Encourages memorable layout composition through asymmetry, overlap, bold spacing choices, and context-specific visual details
+- Balances ambition with execution quality by matching implementation complexity to the chosen design direction
+
+**Top 5 Rules (By Priority)**:
+
+1. Choose a bold, intentional aesthetic direction before coding and execute it consistently.
+2. Avoid generic frontend defaults such as Inter, Arial, predictable layouts, and overused purple-on-white gradients.
+3. Use typography, color, motion, and background treatments as part of one cohesive visual system.
+4. Make the interface memorable through context-specific creative choices rather than reusable-looking template patterns.
+5. Match the implementation complexity to the design vision so maximalist concepts feel rich and minimalist concepts feel precise.

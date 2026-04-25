@@ -113,3 +113,79 @@ Fresh context on 25 Apr 2026. The latest prior session had restored Home as the 
 ## Open Blockers
 
 1. Owner: User/Codex follow-up — full `pnpm format:check` remains blocked by pre-existing formatting issues in markdown docs/wireframes, including `spec/wireframe/home-screen.md` and `spec/wireframe/tracker-screen.md`.
+
+---
+
+# Session 3 — Product UX Audit Spec
+
+**Time:** 05:45-06:07
+
+---
+
+## Status at Session Start
+
+The user requested implementation of the planned product UX audit artifact. The repo already had the necessary context loaded: product truth in `docs/stashy-logics`, intended screen behavior in `spec/wireframe`, and current sandbox implementations for Home, Tracker, Analytics, and Settings. The next task was to turn that context into a durable audit spec and actual first-pass findings without changing product code.
+
+---
+
+## Completed This Session
+
+- Re-used the initialized repository context and completed a focused review of the core product/business-logic documents under `docs/stashy-logics`.
+- Re-reviewed the current Home, Tracker, Analytics, and Settings implementations to ground the audit in live sandbox behavior instead of relying only on wireframes.
+- Re-used the previously gathered external benchmark research across Apple HIG chart guidance, Apple’s Copilot Money article, YNAB, Monarch, Rocket Money, Google Play budgeting editorial context, and Material navigation guidance.
+- Created a new durable audit artifact at `spec/product-ux-audit.md`.
+- Structured the audit file around the planned sections: purpose, source hierarchy, original request summary, goals/non-goals, benchmark sources, methodology, severity rubric, journey matrix, findings template, recommendation template, observed strengths, grouped findings, and prioritized backlog.
+- Added a concrete comparison audit rather than a blank template only, including immediate UX risks, structural redesign opportunities, competitive product guidance, and a prioritized `P0`-`P3` backlog.
+- Captured the current highest-priority UX issues in the audit, including: Home under-emphasizing the daily-rate promise, the sandbox showing tomorrow-rate content outside overspend logic, unclear transaction entry paths for key money actions, weak first-use explanation of Stashy terminology, major-expense consequence visibility gaps, incomplete bilingual coverage in Analytics and Settings, and the split History filtering model diverging from the intended wireframe.
+
+---
+
+## Decisions Made
+
+- The product UX audit should live as a standalone reusable spec at `spec/product-ux-audit.md`, not only inside the daily session log.
+- The audit should remain a comparison document that explicitly separates system truth, intended UX, and current sandbox behavior.
+- Findings should distinguish between true logic mismatches, incomplete sandbox implementations, and weaker-but-functional UX decisions so future implementation work can prioritize correctly.
+
+---
+
+## Open Blockers
+
+1. Owner: User/Codex follow-up — full `pnpm format:check` remains blocked by pre-existing formatting issues in markdown docs/wireframes, including `spec/wireframe/home-screen.md` and `spec/wireframe/tracker-screen.md`.
+
+---
+
+# Session 2 — Orientation Refresh
+
+**Time:** 05:44-05:45
+
+---
+
+## Status at Session Start
+
+Fresh chat started from `AGENTS.md` with the goal of re-orienting on the current project state before new implementation work. Session 1 had already shipped Analytics and Settings, but the latest real repository state still needed to be re-read and confirmed from the live files.
+
+---
+
+## Completed This Session
+
+- Re-ran the required startup sequence by reading `AGENTS.md`, `spec/index.md`, `spec/DESIGN.md`, `spec/skills.md`, and the latest daily session log.
+- Re-checked the current repo shape and package baseline: Next 16, React 19, Tailwind 4, `next-intl`, Radix/shadcn, Recharts, Oxlint, and Oxfmt.
+- Re-confirmed the app shell architecture from the live source: `app/[locale]/layout.tsx` validates locale, sets request locale, resolves direction, provides `NextIntlClientProvider`, and wraps screens in `MobileCanvas`.
+- Re-confirmed the current localized route entrypoints: Home at `app/[locale]/page.tsx`, Tracker at `app/[locale]/tracker/page.tsx`, Analytics at `app/[locale]/analytics/page.tsx`, and Settings at `app/[locale]/settings/page.tsx`.
+- Re-confirmed that Analytics and Settings currently live as shared screen modules at `app/(app)/analytics.tsx` and `app/(app)/settings.tsx`, while user-facing navigation remains locale-aware.
+- Re-confirmed the shared dock in `components/app-bottom-navigation.tsx` drives the four-tab app navigation for `home`, `tracker`, `analytics`, and `settings`.
+- Checked the live worktree state and found it is not clean at the moment: modified `skills-lock.json` plus untracked `.agents/skills/frontend-design/`, `spec/wireframe/analytics-screen.md`, and `spec/wireframe/settings-screen.md`. Left all of these untouched because they appear unrelated to this orientation pass.
+- Added the new `frontend-design` skill to `spec/skills.md`, including a Quick Index entry plus a full structured section with triggers, pairings, summary bullets, and top-priority rules.
+
+---
+
+## Decisions Made
+
+- Treat the current orientation baseline for future work as a four-surface localized app: Home, Tracker, Analytics, and Settings, all contained within the shared mobile shell and bottom dock.
+- Continue assuming the worktree may contain intentional user-side or generated changes unless the active task explicitly requires cleaning or reconciling them.
+
+---
+
+## Open Blockers
+
+1. Owner: User/Codex follow-up — full `pnpm format:check` remains blocked by pre-existing formatting issues in markdown docs/wireframes, including `spec/wireframe/home-screen.md` and `spec/wireframe/tracker-screen.md`.
