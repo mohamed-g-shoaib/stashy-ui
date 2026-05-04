@@ -1,6 +1,7 @@
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 
 import { Card, CardContent } from "@/components/ui/card"
+import { semanticSurfaceClass } from "@/lib/semantic-styles"
 
 type PlaceholderPanelProps = {
   title: string
@@ -13,7 +14,9 @@ export function PlaceholderPanel({ title, description, icon }: PlaceholderPanelP
     <div className="flex min-h-[calc(100svh-9rem)] items-center justify-center text-center">
       <Card className="rounded-md border border-border bg-card shadow-soft">
         <CardContent className="flex flex-col items-center gap-3 px-4">
-          <span className="flex size-12 items-center justify-center rounded-full bg-brand-subtle text-brand">
+          <span
+            className={`flex size-12 items-center justify-center rounded-full ${semanticSurfaceClass.brand}`}
+          >
             <HugeiconsIcon icon={icon} size={24} aria-hidden="true" />
           </span>
           <div className="flex flex-col gap-1">

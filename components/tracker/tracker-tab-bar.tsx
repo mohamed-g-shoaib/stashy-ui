@@ -1,16 +1,21 @@
-import { useTranslations } from "next-intl"
+import { useTranslations } from "next-intl";
 
-import type { TrackerTab } from "@/components/tracker/types"
-import { TabsList, TabsTrigger } from "@/components/ui/tabs"
+import type { TrackerTab } from "@/components/tracker/types";
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  segmentedWellClass,
+  surfacePanelClass,
+} from "@/lib/design-system-classes";
+import { cn } from "@/lib/utils";
 
-const tabs: TrackerTab[] = ["fixed", "major", "history"]
+const tabs: TrackerTab[] = ["fixed", "major"];
 
 export function TrackerTabBar() {
-  const t = useTranslations("Tracker")
+  const t = useTranslations("Tracker");
 
   return (
-    <div className="rounded-md bg-surface-offset p-3 shadow-ring">
-      <TabsList className="grid h-11 w-full grid-cols-3 rounded-sm bg-card p-1">
+    <div className={surfacePanelClass}>
+      <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
         {tabs.map((tab) => (
           <TabsTrigger key={tab} value={tab} className="rounded-xs text-xs">
             {t(`tabs.${tab}`)}
@@ -18,5 +23,5 @@ export function TrackerTabBar() {
         ))}
       </TabsList>
     </div>
-  )
+  );
 }

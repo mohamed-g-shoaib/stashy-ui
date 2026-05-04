@@ -25,7 +25,7 @@ export function FallbackActions({
           type="button"
           variant="outline"
           size="sm"
-          className="h-9 rounded-full px-3"
+          className="min-h-11 rounded-full px-3"
           onClick={() => {
             playSound("click-soft")
             onRetry()
@@ -38,7 +38,7 @@ export function FallbackActions({
         type="button"
         variant="outline"
         size="sm"
-        className="h-9 rounded-full px-3"
+        className="min-h-11 rounded-full px-3"
         onClick={() => {
           playSound("click-soft")
           window.setTimeout(() => {

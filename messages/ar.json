@@ -4,11 +4,6 @@
     "heading": "مساحة تصميم محمولة لستاشي.",
     "description": "ابن شاشات التطبيق هنا بنفس الرموز والإيقاع والسلوك ثنائي اللغة المستخدم في المنتج الأصلي."
   },
-  "ThemeToggle": {
-    "fallbackLabel": "المظهر",
-    "toLightLabel": "فاتح",
-    "toDarkLabel": "داكن"
-  },
   "LanguageToggle": {
     "label": "English"
   },
@@ -89,11 +84,13 @@
     "nav": {
       "home": "الرئيسية",
       "tracker": "المتابعة",
+      "history": "السجل",
       "analytics": "التحليل",
       "settings": "الإعدادات"
     },
     "navPlaceholders": {
       "tracker": "تجارب المتابعة ستفتح هنا بدون مغادرة مساحة الهاتف.",
+      "history": "السجل أصبح في شاشة مستقلة مع التصفية والإجماليات.",
       "analytics": "التحليلات ستستخدم نفس إيقاع الميزانية مع رسوم أغنى.",
       "settings": "الإعدادات قريبة حتى تختبر اللغة والمظهر بسرعة."
     },
@@ -224,6 +221,89 @@
       "history": {
         "title": "السجل",
         "description": "راجع آخر المصاريف والأموال الواردة."
+      }
+    }
+  },
+  "History": {
+    "title": "السجل",
+    "overview": {
+      "title": "نظرة عامة",
+      "spent": "إجمالي المصروف",
+      "received": "إجمالي الوارد",
+      "transactions": "المعاملات",
+      "count": "{count} معاملة"
+    },
+    "filter": "تصفية",
+    "filterActive": "تصفية ({count})",
+    "resultsSummary": "{count} معاملات تطابق هذه التصفية",
+    "adjustFilters": "تعديل",
+    "emptyTitle": "لا توجد معاملات تطابق هذا العرض.",
+    "emptyDescription": "عدّل التصفية أو وسّع النطاق الزمني حتى يظهر السجل من جديد.",
+    "rangeBetween": "{from} إلى {to}",
+    "rangeFrom": "من {from}",
+    "rangeTo": "حتى {to}",
+    "loadMore": "تحميل المزيد",
+    "labels": {
+      "autoPay": "دفع تلقائي"
+    },
+    "budgetTypes": {
+      "variable": "متغير",
+      "fixed": "ثابت",
+      "major": "كبير",
+      "received": "وارد",
+      "injection": "دعم للميزانية",
+      "transfer": "تحويل"
+    },
+    "fixedTypes": {
+      "internet": "فاتورة الإنترنت",
+      "gas": "الوقود"
+    },
+    "transactions": {
+      "market": "مشتريات السوق",
+      "internet": "فاتورة الإنترنت",
+      "transfer": "تحويل",
+      "gas": "تعبئة وقود",
+      "laptop": "لابتوب",
+      "freelance": "دخل عمل حر",
+      "injection": "دعم للميزانية"
+    },
+    "drawer": {
+      "filter": {
+        "title": "تصفية السجل",
+        "description": "نقِّح عرض السجل الواحد حسب النوع والاتجاه وطريقة الدفع والفترة الزمنية.",
+        "type": "النوع",
+        "direction": "الاتجاه",
+        "method": "طريقة الدفع",
+        "preset": "اختيار سريع",
+        "customRange": "نطاق مخصص",
+        "from": "من",
+        "to": "إلى",
+        "clear": "مسح الكل",
+        "applyCount": "تطبيق ({count})",
+        "apply": "تطبيق",
+        "typeOptions": {
+          "all": "الكل",
+          "variable": "متغير",
+          "monthly": "شهري",
+          "budget": "ميزانية",
+          "major": "كبير"
+        },
+        "directionOptions": {
+          "all": "الكل",
+          "expense": "مصروف",
+          "received": "وارد"
+        },
+        "methodOptions": {
+          "all": "الكل",
+          "cash": "نقدا",
+          "card": "بطاقة",
+          "bank": "بنك"
+        },
+        "dateOptions": {
+          "thisMonth": "هذا الشهر",
+          "thisWeek": "هذا الأسبوع",
+          "today": "اليوم"
+        }
       }
     }
   },

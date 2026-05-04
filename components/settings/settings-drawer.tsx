@@ -20,6 +20,9 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer"
 import { SegmentedChoice } from "@/components/ui/segmented-choice"
+import { inputFieldClass } from "@/lib/design-system-classes"
+import { semanticInteractiveTextClass } from "@/lib/semantic-styles"
+import { cn } from "@/lib/utils"
 
 type SettingsDrawerProps = {
   boostDraft: { label: string; amount: string; expiresOn: string }
@@ -149,7 +152,10 @@ export function SettingsDrawer({
             {drawer === "boost" ? t("boosts.addPrimary") : t("drawer.save")}
           </Button>
           <DrawerClose asChild>
-            <button type="button" className="min-h-11 text-sm font-medium text-brand">
+            <button
+              type="button"
+              className={cn("min-h-11 text-sm font-medium", semanticInteractiveTextClass.brand)}
+            >
               {t("drawer.cancel")}
             </button>
           </DrawerClose>
@@ -234,7 +240,7 @@ function InputField({
         type={type}
         value={value}
         onChange={(event) => onValueChange(event.target.value)}
-        className="h-[3.25rem] w-full rounded-sm border border-border bg-surface-offset px-4 text-[1.0625rem] font-medium text-foreground shadow-ring outline-none placeholder:text-text-tertiary"
+        className={inputFieldClass}
       />
     </label>
   )
@@ -259,7 +265,7 @@ function DateField({
           type="date"
           value={value}
           onChange={(event) => onValueChange(event.target.value)}
-          className="h-[3.25rem] w-full rounded-sm border border-border bg-surface-offset px-4 pe-10 text-[1.0625rem] font-medium text-foreground shadow-ring outline-none"
+          className={cn(inputFieldClass, "pe-10")}
         />
         <HugeiconsIcon
           icon={Calendar03Icon}

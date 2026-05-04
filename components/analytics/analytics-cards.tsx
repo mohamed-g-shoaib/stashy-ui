@@ -24,6 +24,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { heroSurfaceClass, statTileClass } from "@/lib/design-system-classes"
+import { semanticProgressClass, semanticSurfaceClass, semanticTextClass } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
 
 export function PacingCard({ month }: { month: AnalyticsMonth }) {
@@ -36,9 +38,9 @@ export function PacingCard({ month }: { month: AnalyticsMonth }) {
         : t("pacing.onPace")
   const pacingToneClass =
     month.pacingDeltaPct < 0
-      ? "text-success"
+      ? semanticTextClass.stability
       : month.pacingDeltaPct > 0
-        ? "text-danger"
+        ? semanticTextClass.critical
         : "text-foreground"
 
   return (
@@ -80,10 +82,10 @@ export function PacingCard({ month }: { month: AnalyticsMonth }) {
             ariaLabel={t("pacing.barLabel")}
             fillClassName={cn(
               month.pacingDeltaPct < 0
-                ? "bg-success"
+                ? semanticProgressClass.stability
                 : month.pacingDeltaPct > 0
-                  ? "bg-danger"
-                  : "bg-brand",
+                  ? semanticProgressClass.critical
+                  : semanticProgressClass.brand,
               FILL_WIDTH_CLASS[month.budgetUsedPct],
             )}
             tickClassName={TICK_POSITION_CLASS[month.monthProgressPct]}
@@ -103,9 +105,9 @@ export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
   const t = useTranslations("Analytics")
   const projectedSavingsTone =
     month.projectedSavings > 0
-      ? "text-success"
+      ? semanticTextClass.stability
       : month.projectedSavings < 0
-        ? "text-danger"
+        ? semanticTextClass.critical
         : "text-foreground"
 
   return (
@@ -328,17 +330,37 @@ export function AnalyticsUpgradeGate() {
   return (
     <div className="flex min-h-[calc(100svh-14rem)] flex-col items-center justify-center gap-5 text-center">
       <LockIllustration />
-      <div className="space-y-2">
-        <h2 className="text-[1.375rem] font-semibold leading-[1.2] text-foreground text-balance">
-          {t("upgrade.title")}
-        </h2>
-        <p className="max-w-[26ch] text-sm leading-[1.6] text-text-secondary text-pretty">
-          {t("upgrade.description")}
-        </p>
+      <div className={cn("w-full max-w-[20rem] p-5", heroSurfaceClass)}>
+        <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full bg-brand-subtle px-3 py-1 shadow-ring">
+          <span className="size-2 rounded-full bg-brand" />
+          <span className="h-2 w-12 rounded-full bg-brand/40" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-[1.375rem] font-semibold leading-[1.2] text-foreground text-balance">
+            {t("upgrade.title")}
+          </h2>
+          <p className="mx-auto max-w-[26ch] text-sm leading-[1.6] text-text-secondary text-pretty">
+            {t("upgrade.description")}
+          </p>
+        </div>
+        <div className="mt-5 grid grid-cols-3 gap-2">
+          <div className={cn("flex flex-col gap-2 text-start", statTileClass)} aria-hidden="true">
+            <div className="h-2 w-8 rounded-full bg-text-tertiary/20" />
+            <div className="h-2 w-12 rounded-full bg-brand/45" />
+          </div>
+          <div className={cn("flex flex-col gap-2 text-start", statTileClass)} aria-hidden="true">
+            <div className="h-2 w-7 rounded-full bg-text-tertiary/20" />
+            <div className="h-2 w-10 rounded-full bg-info/40" />
+          </div>
+          <div className={cn("flex flex-col gap-2 text-start", statTileClass)} aria-hidden="true">
+            <div className="h-2 w-9 rounded-full bg-text-tertiary/20" />
+            <div className="h-2 w-11 rounded-full bg-warning/45" />
+          </div>
+        </div>
+        <Button type="button" className="mt-5 min-w-40">
+          {t("upgrade.cta")}
+        </Button>
       </div>
-      <Button type="button" className="min-w-40">
-        {t("upgrade.cta")}
-      </Button>
     </div>
   )
 }
@@ -377,14 +399,10 @@ function ComparisonRow({
         </div>
 
         <Badge
-          variant="secondary"
-          className={cn(
-            "h-auto rounded-full px-2.5 py-1 text-[0.6875rem] font-medium shadow-ring",
-            tone === "positive" &&
-              "bg-success-subtle text-success",
-            tone === "negative" && "bg-danger-subtle text-danger",
-            tone === "neutral" && "bg-surface-offset text-text-secondary",
-          )}
+          variant={
+            tone === "positive" ? "stability" : tone === "negative" ? "critical" : "neutral"
+          }
+          className="h-auto rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
         >
           {icon}
           <span dir="ltr" className="tabular-nums">
@@ -425,7 +443,7 @@ function SectionHeader({
 
 function HeroStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col gap-1 rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
+    <div className={cn("flex flex-col gap-1", statTileClass)}>
       <p className="text-xs font-medium text-text-secondary">{label}</p>
       <p
         dir="ltr"
@@ -447,7 +465,7 @@ function CompactStat({
   valueClassName?: string
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-1 rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
+    <div className={cn("flex min-w-0 flex-col gap-1", statTileClass)}>
       <p className="text-[0.6875rem] font-medium text-text-secondary">{label}</p>
       <p
         dir="ltr"
@@ -476,15 +494,14 @@ function InsightRow({
   description: string
 }) {
   return (
-    <div className="flex gap-3 rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
+    <div className={cn("flex gap-3", statTileClass)}>
       <span
         className={cn(
           "mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full shadow-ring",
-          tone === "positive" &&
-            "bg-success-subtle text-success",
-          tone === "negative" && "bg-danger-subtle text-danger",
-          tone === "warning" && "bg-warning-subtle text-warning",
-          tone === "neutral" && "bg-card text-text-secondary",
+          tone === "positive" && semanticSurfaceClass.stability,
+          tone === "negative" && semanticSurfaceClass.critical,
+          tone === "warning" && semanticSurfaceClass.pressure,
+          tone === "neutral" && semanticSurfaceClass.muted,
         )}
       >
         <HugeiconsIcon icon={icon} aria-hidden="true" size={18} />
@@ -497,9 +514,9 @@ function InsightRow({
             dir="ltr"
             className={cn(
               "shrink-0 text-sm font-semibold tabular-nums",
-              tone === "positive" && "text-success",
-              tone === "negative" && "text-danger",
-              tone === "warning" && "text-warning",
+              tone === "positive" && semanticTextClass.stability,
+              tone === "negative" && semanticTextClass.critical,
+              tone === "warning" && semanticTextClass.pressure,
               tone === "neutral" && "text-foreground",
             )}
           >
@@ -514,7 +531,7 @@ function InsightRow({
 
 function SummaryItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
+    <div className={statTileClass}>
       <p className="text-xs font-medium text-text-secondary">{label}</p>
       <p dir="ltr" className="mt-1 text-sm font-semibold text-foreground tabular-nums">
         {value}
@@ -526,8 +543,8 @@ function SummaryItem({ label, value }: { label: string; value: string }) {
 function MutedPill({ label }: { label: string }) {
   return (
     <Badge
-      variant="secondary"
-      className="h-auto w-fit rounded-full bg-surface-offset px-2.5 py-1 text-[0.6875rem] font-medium text-text-secondary shadow-ring"
+      variant="neutral"
+      className="h-auto w-fit rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
     >
       {label}
     </Badge>
@@ -563,11 +580,12 @@ function ProgressTrack({
 
 function LockIllustration() {
   return (
-    <div className="relative flex size-20 items-center justify-center rounded-full bg-surface-offset shadow-ring">
-      <div className="relative h-11 w-10 rounded-sm border-2 border-text-secondary bg-card shadow-ring">
-        <div className="absolute start-1/2 top-[-1.25rem] h-7 w-6 -translate-x-1/2 rounded-t-full border-2 border-b-0 border-text-secondary" />
-        <div className="absolute start-1/2 top-4 size-2.5 -translate-x-1/2 rounded-full bg-text-secondary" />
-        <div className="absolute start-1/2 top-[1.5rem] h-3 w-1 -translate-x-1/2 rounded-full bg-text-secondary" />
+    <div className="relative flex size-24 items-center justify-center rounded-full bg-brand-subtle shadow-ring">
+      <div className="absolute inset-3 rounded-full border border-brand/20" />
+      <div className="relative h-12 w-10 rounded-sm border-2 border-brand bg-card shadow-ring">
+        <div className="absolute start-1/2 top-[-1.2rem] h-7 w-6 -translate-x-1/2 rounded-t-full border-2 border-b-0 border-brand" />
+        <div className="absolute start-1/2 top-[1.05rem] size-2.5 -translate-x-1/2 rounded-full bg-brand" />
+        <div className="absolute start-1/2 top-[1.5rem] h-3 w-1 -translate-x-1/2 rounded-full bg-brand" />
       </div>
     </div>
   )

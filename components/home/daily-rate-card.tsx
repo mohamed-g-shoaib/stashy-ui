@@ -6,6 +6,8 @@ import type { DailyRate } from "@/components/home/types"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { statTileClass } from "@/lib/design-system-classes"
+import { semanticProgressClass, semanticTextClass } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
 
 type DailyRateCardProps = {
@@ -47,11 +49,13 @@ function DailyRateAmounts({ rate }: { rate: DailyRate }) {
 
 function MoneyBlock({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex min-w-0 flex-col gap-1 rounded-[var(--radius-sm)] bg-surface-offset p-3 text-start shadow-ring">
-      <p className="text-xs font-medium text-text-secondary">{label}</p>
+    <div className={cn("flex min-w-0 flex-col gap-1 text-start", statTileClass)}>
+      <p className="text-[0.6875rem] font-semibold tracking-[0.14em] text-text-tertiary uppercase">
+        {label}
+      </p>
       <p
         dir="ltr"
-        className="truncate text-[1.25rem] font-semibold leading-[1.1] text-foreground tabular-nums"
+        className="mt-1 truncate text-[1.25rem] font-semibold leading-[1.1] text-foreground tabular-nums"
       >
         {value}
       </p>
@@ -65,7 +69,7 @@ function DailyAllowanceBar({ rate, label }: { rate: DailyRate; label: string }) 
       className="flex h-4 overflow-hidden rounded-full bg-surface-offset shadow-ring"
       aria-label={label}
     >
-      <div className={cn("bg-brand", rate.fill)} />
+      <div className={cn(semanticProgressClass.brand, rate.fill)} />
       <div
         className={cn(
           "bg-[repeating-linear-gradient(135deg,var(--color-warning-subtle)_0,var(--color-warning-subtle)_4px,var(--color-warning)_4px,var(--color-warning)_6px)]",
@@ -89,8 +93,8 @@ function DailyRateStatus({ rate }: { rate: DailyRate }) {
         </span>
       </p>
       <Badge
-        variant={isOnTrack ? "secondary" : "destructive"}
-        className={cn("rounded-full", isOnTrack && "bg-success-subtle text-success")}
+        variant={isOnTrack ? "stability" : "critical"}
+        className="rounded-full"
       >
         {rate.status}
       </Badge>
@@ -112,7 +116,7 @@ function TomorrowRate({ rate }: { rate: DailyRate }) {
         {t("daily.tomorrow")}{" "}
         <span
           dir="ltr"
-          className={cn("tabular-nums", isOverspent ? "text-danger" : "text-foreground")}
+          className={cn("tabular-nums", isOverspent && semanticTextClass.critical)}
         >
           {rate.tomorrow}
         </span>
@@ -120,7 +124,10 @@ function TomorrowRate({ rate }: { rate: DailyRate }) {
       <HugeiconsIcon
         icon={ArrowUpRight01Icon}
         size={20}
-        className={cn("shrink-0", isOverspent ? "rotate-90 text-danger" : "text-success")}
+        className={cn(
+          "shrink-0",
+          isOverspent ? `rotate-90 ${semanticTextClass.critical}` : semanticTextClass.stability,
+        )}
         aria-hidden="true"
       />
     </div>

@@ -13,8 +13,15 @@ const badgeVariants = cva(
         secondary: "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
         destructive:
           "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 [a]:hover:bg-destructive/20",
-        outline: "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
-        ghost: "hover:bg-muted hover:text-muted-foreground",
+        neutral: "bg-surface-offset text-text-secondary shadow-ring",
+        recovery: "bg-info-subtle text-info shadow-ring",
+        stability: "bg-success-subtle text-success shadow-ring",
+        pressure: "bg-warning-subtle text-warning shadow-ring",
+        critical: "bg-danger-subtle text-danger shadow-ring",
+        brand: "bg-brand-subtle text-brand shadow-ring",
+        outline:
+          "border-border text-foreground [a]:hover:bg-surface-offset [a]:hover:text-text-secondary",
+        ghost: "hover:bg-surface-offset hover:text-text-secondary",
         link: "text-primary underline-offset-4 hover:underline",
       },
     },

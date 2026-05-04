@@ -14,6 +14,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
+import { pickerOptionClass } from "@/lib/design-system-classes"
 import { cn } from "@/lib/utils"
 
 type MonthPickerDrawerProps = {
@@ -52,7 +53,7 @@ export function MonthPickerDrawer({
                   <button
                     type="button"
                     className={cn(
-                      "flex min-h-14 items-center justify-between rounded-md border border-border bg-surface-offset px-4 py-3 text-start shadow-ring transition-[background-color,color,border-color,transform] duration-200 ease-[var(--ease-stashy)] active:scale-[0.96]",
+                      pickerOptionClass,
                       selected && "bg-card text-foreground",
                     )}
                     onClick={() => onSelectMonth(month.id)}

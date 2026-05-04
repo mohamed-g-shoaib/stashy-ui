@@ -4,11 +4,6 @@
     "heading": "A mobile design sandbox for Stashy.",
     "description": "Build app screens here with the same tokens, rhythm, and bilingual behavior used by the native product."
   },
-  "ThemeToggle": {
-    "fallbackLabel": "Theme",
-    "toLightLabel": "Light",
-    "toDarkLabel": "Dark"
-  },
   "LanguageToggle": {
     "label": "Arabic"
   },
@@ -89,11 +84,13 @@
     "nav": {
       "home": "Home",
       "tracker": "Tracker",
+      "history": "History",
       "analytics": "Analytics",
       "settings": "Settings"
     },
     "navPlaceholders": {
       "tracker": "Tracker flows will open here without leaving the mobile sandbox.",
+      "history": "History now lives on its own screen with filters and totals.",
       "analytics": "Analytics will reuse the same budget rhythm with richer charts.",
       "settings": "Settings stay close so locale and theme can be tested quickly."
     },
@@ -224,6 +221,89 @@
       "history": {
         "title": "History",
         "description": "Review recent spending and incoming money."
+      }
+    }
+  },
+  "History": {
+    "title": "History",
+    "overview": {
+      "title": "Overview",
+      "spent": "Total spent",
+      "received": "Total received",
+      "transactions": "Transactions",
+      "count": "{count} tx"
+    },
+    "filter": "Filter",
+    "filterActive": "Filter ({count})",
+    "resultsSummary": "{count} transactions match these filters",
+    "adjustFilters": "Adjust",
+    "emptyTitle": "No transactions match this view.",
+    "emptyDescription": "Change the filters or widen the date range to bring history back in view.",
+    "rangeBetween": "{from} to {to}",
+    "rangeFrom": "From {from}",
+    "rangeTo": "Until {to}",
+    "loadMore": "Load more",
+    "labels": {
+      "autoPay": "Auto-pay"
+    },
+    "budgetTypes": {
+      "variable": "Variable",
+      "fixed": "Fixed",
+      "major": "Major",
+      "received": "Received",
+      "injection": "Budget injection",
+      "transfer": "Transfer"
+    },
+    "fixedTypes": {
+      "internet": "Internet Bill",
+      "gas": "Gas"
+    },
+    "transactions": {
+      "market": "Market run",
+      "internet": "Internet bill",
+      "transfer": "Transfer",
+      "gas": "Gas refill",
+      "laptop": "Laptop",
+      "freelance": "Freelance pay",
+      "injection": "Budget injection"
+    },
+    "drawer": {
+      "filter": {
+        "title": "Filter history",
+        "description": "Refine one history view by type, direction, payment method, and time range.",
+        "type": "Type",
+        "direction": "Direction",
+        "method": "Payment Method",
+        "preset": "Preset",
+        "customRange": "Custom Range",
+        "from": "From",
+        "to": "To",
+        "clear": "Clear All",
+        "applyCount": "Apply ({count})",
+        "apply": "Apply",
+        "typeOptions": {
+          "all": "All",
+          "variable": "Variable",
+          "monthly": "Monthly",
+          "budget": "Budget",
+          "major": "Major"
+        },
+        "directionOptions": {
+          "all": "All",
+          "expense": "Expense",
+          "received": "Received"
+        },
+        "methodOptions": {
+          "all": "All",
+          "cash": "Cash",
+          "card": "Card",
+          "bank": "Bank"
+        },
+        "dateOptions": {
+          "thisMonth": "This month",
+          "thisWeek": "This week",
+          "today": "Today"
+        }
       }
     }
   },

@@ -37,8 +37,8 @@ export function SegmentedChoice<T extends string>({
             role="radio"
             aria-checked={selected}
             className={cn(
-              "flex min-h-12 items-center justify-center gap-2 rounded-full border border-border bg-surface-offset px-3 text-sm font-medium text-text-secondary shadow-ring transition-[background-color,color,border-color,transform] duration-200 ease-[var(--ease-stashy)] active:scale-[0.96]",
-              selected && "bg-card text-foreground",
+              "flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-sm)] border border-border bg-surface-offset px-3 text-sm font-medium text-text-secondary shadow-ring transition-[background-color,color,border-color,box-shadow,transform] duration-200 ease-[var(--ease-stashy)] active:scale-[0.96]",
+              selected && "border-brand/25 bg-card text-foreground shadow-ring-brand",
               optionClassName,
             )}
             onClick={() => onValueChange(option.value)}

@@ -1,36 +1,53 @@
-import {
-  BankIcon,
-  CreditCardIcon,
-  MoneyBag02Icon,
-  ShoppingBag02Icon,
-} from "@hugeicons/core-free-icons"
-
 import type {
   BudgetBucket,
   MajorExpense,
   MonthlyPayment,
-  TrackerTransaction,
-} from "@/components/tracker/types"
+} from "@/components/tracker/types";
 
 export const monthlyPayments: MonthlyPayment[] = [
-  { nameKey: "monthly.rent", amount: "3,000 EGP", status: "paid", date: "Apr 1" },
-  { nameKey: "monthly.spotify", amount: "100 EGP", status: "paid", date: "Apr 5" },
-  { nameKey: "monthly.netflix", amount: "80 EGP", status: "paid", date: "Apr 8" },
+  {
+    nameKey: "monthly.rent",
+    amount: "3,000 EGP",
+    status: "paid",
+    date: "Apr 1",
+  },
+  {
+    nameKey: "monthly.spotify",
+    amount: "100 EGP",
+    status: "paid",
+    date: "Apr 5",
+  },
+  {
+    nameKey: "monthly.netflix",
+    amount: "80 EGP",
+    status: "paid",
+    date: "Apr 8",
+  },
   {
     nameKey: "monthly.internet",
     amount: "260 EGP",
     status: "pending",
     date: "Apr 21",
   },
-  { nameKey: "monthly.gym", amount: "200 EGP", status: "pending", date: "Apr 24" },
-  { nameKey: "monthly.icloud", amount: "15 EGP", status: "pending", date: "Apr 26" },
+  {
+    nameKey: "monthly.gym",
+    amount: "200 EGP",
+    status: "pending",
+    date: "Apr 24",
+  },
+  {
+    nameKey: "monthly.icloud",
+    amount: "15 EGP",
+    status: "pending",
+    date: "Apr 26",
+  },
   {
     nameKey: "monthly.phone",
     amount: "300 EGP",
     status: "overdue",
     date: "Apr 10",
   },
-]
+];
 
 export const budgetBuckets: BudgetBucket[] = [
   {
@@ -73,7 +90,7 @@ export const budgetBuckets: BudgetBucket[] = [
     percentClass: "basis-[60%]",
     transactionCount: 3,
   },
-]
+];
 
 export const majorExpenses: MajorExpense[] = [
   {
@@ -100,73 +117,4 @@ export const majorExpenses: MajorExpense[] = [
     percent: "10%",
     isLarge: true,
   },
-]
-
-export const trackerTransactions: TrackerTransaction[] = [
-  {
-    descriptionKey: "transactions.market",
-    typeLabelKey: "transactionTypes.variable",
-    typeCategory: "variable",
-    amount: "-200 EGP",
-    date: "Fri, 17/Apr",
-    dateISO: "2026-04-17",
-    direction: "expense",
-    methodIcon: ShoppingBag02Icon,
-    methodTone: "cash",
-  },
-  {
-    descriptionKey: "transactions.internet",
-    typeLabelKey: "transactionTypes.monthlyInternet",
-    typeCategory: "monthly",
-    amount: "-800 EGP",
-    date: "Fri, 17/Apr",
-    dateISO: "2026-04-17",
-    direction: "expense",
-    methodIcon: CreditCardIcon,
-    methodTone: "card",
-  },
-  {
-    descriptionKey: "transactions.transfer",
-    typeLabelKey: "transactionTypes.variable",
-    typeCategory: "variable",
-    amount: "+1200 EGP",
-    date: "Fri, 17/Apr",
-    dateISO: "2026-04-17",
-    direction: "received",
-    methodIcon: BankIcon,
-    methodTone: "bank",
-  },
-  {
-    descriptionKey: "transactions.coffee",
-    typeLabelKey: "transactionTypes.budgetCoffee",
-    typeCategory: "budget",
-    amount: "-150 EGP",
-    date: "Thu, 16/Apr",
-    dateISO: "2026-04-16",
-    direction: "expense",
-    methodIcon: MoneyBag02Icon,
-    methodTone: "cash",
-  },
-  {
-    descriptionKey: "transactions.laptop",
-    typeLabelKey: "transactionTypes.major",
-    typeCategory: "major",
-    amount: "-3,000 EGP",
-    date: "Wed, 15/Apr",
-    dateISO: "2026-04-15",
-    direction: "expense",
-    methodIcon: CreditCardIcon,
-    methodTone: "card",
-  },
-  {
-    descriptionKey: "transactions.freelance",
-    typeLabelKey: "transactionTypes.variable",
-    typeCategory: "variable",
-    amount: "+500 EGP",
-    date: "Tue, 14/Apr",
-    dateISO: "2026-04-14",
-    direction: "received",
-    methodIcon: BankIcon,
-    methodTone: "bank",
-  },
-]
+];

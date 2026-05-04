@@ -25,7 +25,7 @@ export function LanguageToggle() {
       variant="outline"
       size="sm"
       aria-label={t("label")}
-      className="h-11 min-h-11 rounded-full px-3"
+      className="min-h-11 rounded-full px-3"
       onClick={() => {
         playSound("click-soft")
         React.startTransition(() => {

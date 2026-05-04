@@ -24,6 +24,8 @@ import type {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { heroSurfaceClass, statTileClass } from "@/lib/design-system-classes"
+import { paymentStatusSemantic, semanticTextClass } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
 
 type TrackerFixedTabProps = {
@@ -132,9 +134,9 @@ function SectionHeader({
     <button
       type="button"
       className={cn(
-        "flex min-h-12 items-center gap-2 text-start text-[1.0625rem] font-semibold",
-        tone === "danger" && "text-danger",
-        tone === "warning" && "text-warning",
+        "flex min-h-12 items-center gap-2 rounded-[var(--radius-sm)] bg-surface-offset px-3 py-2 text-start text-[1.0625rem] font-semibold shadow-ring",
+        tone === "danger" && semanticTextClass.critical,
+        tone === "warning" && semanticTextClass.pressure,
       )}
       onClick={onToggle}
       aria-expanded={expanded}
@@ -167,11 +169,13 @@ function MonthlyRow({ item }: { item: MonthlyPayment }) {
           </p>
           <p className="text-sm text-text-secondary">{item.date}</p>
         </div>
-        <div className="shrink-0 text-end">
-          <p className="text-[1.0625rem] font-semibold text-foreground tabular-nums">
+        <div className={cn("shrink-0 text-end", statTileClass)}>
+          <p dir="ltr" className="text-[1.0625rem] font-semibold text-foreground tabular-nums">
             {item.amount}
           </p>
-          <StatusBadge status={item.status} />
+          <div className="mt-1">
+            <StatusBadge status={item.status} />
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -183,13 +187,8 @@ function StatusBadge({ status }: { status: PaymentStatus }) {
 
   return (
     <Badge
-      className={cn(
-        "h-5 border-transparent px-2 text-[0.6875rem]",
-        status === "paid" && "bg-success-subtle text-success",
-        status === "pending" && "bg-warning-subtle text-warning",
-        status === "overdue" && "bg-danger-subtle text-danger",
-      )}
-      variant="secondary"
+      className="h-5 border-transparent px-2 text-[0.6875rem]"
+      variant={paymentStatusSemantic[status]}
     >
       {t(status)}
     </Badge>
@@ -213,15 +212,17 @@ function BudgetCard({ bucket }: { bucket: BudgetBucket }) {
               {bucket.spent}/{bucket.budgeted}
             </p>
           </div>
-          <span
-            dir="ltr"
-            className={cn(
-              "text-sm font-semibold tabular-nums",
-              bucket.percent >= 90 ? "text-warning" : "text-text-secondary",
-            )}
-          >
-            {bucket.percent}%
-          </span>
+          <div className={cn("shrink-0 text-end", statTileClass)}>
+            <span
+              dir="ltr"
+              className={cn(
+                "text-sm font-semibold tabular-nums",
+                bucket.percent >= 90 ? semanticTextClass.pressure : "text-text-secondary",
+              )}
+            >
+              {bucket.percent}%
+            </span>
+          </div>
         </div>
         <TrackerProgress valueClass={bucket.percentClass} tone={tone} />
         <Button
@@ -240,7 +241,7 @@ function BudgetCard({ bucket }: { bucket: BudgetBucket }) {
           {t("budgets.transactionCount", { count: bucket.transactionCount })}
         </Button>
         {transactionsOpen ? (
-          <div className="mt-2 rounded-[var(--radius-sm)] bg-surface-offset p-3 text-xs text-text-secondary shadow-ring">
+          <div className={cn("mt-2 text-xs text-text-secondary", statTileClass)}>
             {t("budgets.transactionPreview")}
           </div>
         ) : null}
@@ -260,8 +261,8 @@ function EmptySection({
 }) {
   return (
     <Card size="sm" className="py-4 text-center">
-      <CardContent className="px-4">
-        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-[var(--radius-sm)] border border-dashed border-border text-text-tertiary">
+      <CardContent className={cn("px-4", heroSurfaceClass)}>
+        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-[var(--radius-sm)] border border-dashed border-brand/25 bg-brand-subtle text-brand">
           <HugeiconsIcon icon={PackageIcon} aria-hidden="true" size={28} />
         </div>
         <h3 className="text-[1.0625rem] font-semibold text-foreground">{title}</h3>

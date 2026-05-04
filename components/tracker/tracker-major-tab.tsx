@@ -6,6 +6,9 @@ import { majorExpenses as initialMajorExpenses } from "@/components/tracker/trac
 import type { MajorExpense } from "@/components/tracker/types"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { heroSurfaceClass, statTileClass } from "@/lib/design-system-classes"
+import { semanticProgressClass, semanticSurfaceClass, semanticTextClass } from "@/lib/semantic-styles"
+import { cn } from "@/lib/utils"
 
 type TrackerMajorTabProps = {
   items?: MajorExpense[]
@@ -22,8 +25,8 @@ export function TrackerMajorTab({ items = initialMajorExpenses }: TrackerMajorTa
   if (items.length === 0) {
     return (
       <Card size="sm" className="py-4 text-center">
-        <CardContent className="px-4">
-          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-[var(--radius-sm)] border border-dashed border-border text-text-tertiary">
+        <CardContent className={cn("px-4", heroSurfaceClass)}>
+          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-[var(--radius-sm)] border border-dashed border-warning/35 bg-warning-subtle text-warning">
             <HugeiconsIcon icon={PackageIcon} aria-hidden="true" size={28} />
           </div>
           <h2 className="text-[1.0625rem] font-semibold text-foreground">
@@ -42,7 +45,12 @@ export function TrackerMajorTab({ items = initialMajorExpenses }: TrackerMajorTa
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-12 items-center gap-2 rounded-[var(--radius-sm)] border border-warning bg-warning-subtle px-card py-3 text-warning">
+      <div
+        className={cn(
+          "flex min-h-12 items-center gap-2 rounded-[var(--radius-sm)] border px-card py-3",
+          semanticSurfaceClass.pressure,
+        )}
+      >
         <HugeiconsIcon icon={Alert02Icon} aria-hidden="true" size={20} />
         <p className="text-sm font-semibold">{t("major.warning")}</p>
       </div>
@@ -75,9 +83,17 @@ export function TrackerMajorTab({ items = initialMajorExpenses }: TrackerMajorTa
       {items.map((expense) => (
         <Card key={expense.nameKey ?? expense.nameLabel} size="sm" className="py-3 shadow-ring">
           <CardContent className="flex items-center gap-3 px-4">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-warning-subtle text-warning shadow-ring">
+            <span
+              className={cn(
+                "flex size-11 shrink-0 items-center justify-center rounded-full shadow-ring",
+                semanticSurfaceClass.pressure,
+              )}
+            >
               <span
-                className="size-2.5 rounded-full bg-warning data-[large=false]:bg-border"
+                className={cn(
+                  "size-2.5 rounded-full data-[large=false]:bg-border",
+                  semanticProgressClass.pressure,
+                )}
                 data-large={expense.isLarge}
               />
             </span>
@@ -97,7 +113,10 @@ export function TrackerMajorTab({ items = initialMajorExpenses }: TrackerMajorTa
                 <p className="truncate text-sm text-text-secondary">
                   {expense.date} / {expense.methodKey ? t(expense.methodKey) : expense.methodLabel}
                 </p>
-                <p dir="ltr" className="shrink-0 text-xs font-semibold text-warning tabular-nums">
+                <p
+                  dir="ltr"
+                  className={cn("shrink-0 text-xs font-semibold tabular-nums", semanticTextClass.pressure)}
+                >
                   {expense.percent}
                 </p>
               </div>
@@ -119,8 +138,10 @@ function SummaryTile({
   numeric?: boolean
 }) {
   return (
-    <div className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
-      <p className="text-xs font-medium text-text-secondary">{label}</p>
+    <div className={statTileClass}>
+      <p className="text-[0.6875rem] font-semibold tracking-[0.14em] text-text-tertiary uppercase">
+        {label}
+      </p>
       <p
         dir={numeric ? "ltr" : undefined}
         className="mt-1 text-sm font-semibold text-foreground tabular-nums"

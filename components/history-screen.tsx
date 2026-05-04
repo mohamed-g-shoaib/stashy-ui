@@ -1,0 +1,337 @@
+"use client";
+
+import { FilterIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useLocale, useTranslations } from "next-intl";
+import * as React from "react";
+
+import { AppBottomNavigation } from "@/components/app-bottom-navigation";
+import { navItems } from "@/components/home/home-data";
+import { historyTransactions } from "@/components/history/history-data";
+import {
+  defaultHistoryFilterState,
+  getActiveHistoryFilterCount,
+} from "@/components/history/history-filter-controls";
+import { HistoryFilterDrawer } from "@/components/history/history-filter-drawer";
+import { HistoryOverviewCard } from "@/components/history/history-overview-card";
+import { HistoryRow } from "@/components/history/history-row";
+import type {
+  HistoryFilterState,
+  HistoryTransaction,
+} from "@/components/history/types";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { heroSurfaceClass, statTileClass } from "@/lib/design-system-classes";
+import { semanticSurfaceClass } from "@/lib/semantic-styles";
+import { getDirectionForLocale } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
+import type { Locale } from "@/i18n/routing";
+
+export function HistoryScreen() {
+  const t = useTranslations("History");
+  const tFilter = useTranslations("History.drawer.filter");
+  const locale = useLocale() as Locale;
+  const direction = getDirectionForLocale(locale);
+  const [filterState, setFilterState] = React.useState<HistoryFilterState>(
+    defaultHistoryFilterState,
+  );
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const items = historyTransactions;
+
+  const filteredItems = React.useMemo(
+    () => filterHistoryTransactions(items, filterState),
+    [filterState, items],
+  );
+  const filterCount = React.useMemo(
+    () => getActiveHistoryFilterCount(filterState),
+    [filterState],
+  );
+  const appliedFilters = React.useMemo(
+    () => getAppliedFilters(t, tFilter, filterState),
+    [filterState, t, tFilter],
+  );
+  const overview = React.useMemo(
+    () => getHistoryOverview(filteredItems),
+    [filteredItems],
+  );
+
+  return (
+    <div className="min-h-svh bg-background">
+      <div className="flex min-h-svh flex-col">
+        <header className="bg-background px-screen pt-5">
+          <h1 className="text-[1.5rem] font-semibold leading-[1.2] text-foreground">
+            {t("title")}
+          </h1>
+          <Separator className="mt-4 bg-border-subtle" />
+        </header>
+
+        <div className="sticky top-0 z-10 bg-background px-screen pb-3 pt-4">
+          <HistoryOverviewCard
+            spent={overview.spent}
+            received={overview.received}
+            count={overview.count}
+          />
+          <div className="mt-4 flex justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              size="xs"
+              className="h-11 min-h-11 rounded-full px-3"
+              onClick={() => setDrawerOpen(true)}
+            >
+              <HugeiconsIcon
+                icon={FilterIcon}
+                data-icon="inline-start"
+                aria-hidden="true"
+              />
+              {filterCount > 0
+                ? t("filterActive", { count: filterCount })
+                : t("filter")}
+            </Button>
+          </div>
+        </div>
+
+        <main className="flex-1 px-screen pb-32 pt-4">
+          <div className="flex flex-col gap-3">
+            {filterCount > 0 ? (
+              <Card size="sm" className="py-3 shadow-ring">
+                <CardContent className="flex flex-col gap-3 px-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-foreground">
+                      {t("resultsSummary", { count: filteredItems.length })}
+                    </p>
+                    <button
+                      type="button"
+                      className="text-sm font-medium text-brand"
+                      onClick={() => setDrawerOpen(true)}
+                    >
+                      {t("adjustFilters")}
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {appliedFilters.map((label) => (
+                      <span
+                        key={label}
+                        className={cn(
+                          "rounded-full px-2.5 py-1 text-[0.6875rem] font-medium shadow-ring",
+                          semanticSurfaceClass.neutral,
+                        )}
+                      >
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
+
+            {filteredItems.length > 0 ? (
+              filteredItems.map((transaction) => (
+                <HistoryRow key={transaction.id} transaction={transaction} />
+              ))
+            ) : (
+              <Card size="sm" className="py-6">
+                <CardContent
+                  className={cn(
+                    "flex flex-col items-center gap-3 px-4 text-center",
+                    heroSurfaceClass,
+                  )}
+                >
+                  <div
+                    className="grid w-full max-w-[14rem] grid-cols-3 gap-2"
+                    aria-hidden="true"
+                  >
+                    {[0, 1, 2].map((item) => (
+                      <div
+                        key={item}
+                        className={cn(
+                          "flex flex-col gap-2 text-start",
+                          statTileClass,
+                        )}
+                      >
+                        <div className="h-2 w-7 rounded-full bg-text-tertiary/20" />
+                        <div
+                          className={cn(
+                            "h-2 rounded-full",
+                            item === 0 && "w-10 bg-brand/45",
+                            item === 1 && "w-12 bg-info/40",
+                            item === 2 && "w-8 bg-warning/45",
+                          )}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-base font-semibold text-foreground">
+                    {t("emptyTitle")}
+                  </p>
+                  <p className="max-w-[26ch] text-sm leading-[1.6] text-text-secondary text-pretty">
+                    {t("emptyDescription")}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {filteredItems.length > 0 ? (
+              <Button type="button" variant="secondary" size="sm">
+                {t("loadMore")}
+              </Button>
+            ) : null}
+          </div>
+        </main>
+
+        <AppBottomNavigation activeValue="history" items={navItems} />
+      </div>
+
+      <HistoryFilterDrawer
+        open={drawerOpen}
+        direction={direction}
+        filterState={filterState}
+        onApplyFilters={(filters) => {
+          setFilterState(filters);
+        }}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDrawerOpen(false);
+          }
+        }}
+      />
+    </div>
+  );
+}
+
+function filterHistoryTransactions(
+  items: HistoryTransaction[],
+  filters: HistoryFilterState,
+) {
+  const { direction, from, method, preset, to, type } = filters;
+  const resolvedRange =
+    from || to
+      ? { from: from || null, to: to || null }
+      : getPresetRange(preset);
+
+  return items.filter((item) => {
+    if (item.isTransfer && type !== "all") {
+      return false;
+    }
+
+    if (type !== "all" && item.typeCategory !== type) {
+      return false;
+    }
+
+    if (direction !== "all" && item.direction !== direction) {
+      return false;
+    }
+
+    if (method !== "all" && item.methodTone !== method) {
+      return false;
+    }
+
+    if (!resolvedRange) {
+      return true;
+    }
+
+    return isWithinRange(item.dateISO, resolvedRange.from, resolvedRange.to);
+  });
+}
+
+function getPresetRange(preset: string) {
+  if (preset === "today") {
+    return { from: "2026-04-25", to: "2026-04-25" };
+  }
+
+  if (preset === "thisWeek") {
+    return { from: "2026-04-14", to: "2026-04-25" };
+  }
+
+  if (preset === "thisMonth") {
+    return { from: "2026-04-01", to: "2026-04-30" };
+  }
+
+  return null;
+}
+
+function isWithinRange(
+  dateISO: string,
+  from: string | null,
+  to: string | null,
+) {
+  if (from && dateISO < from) {
+    return false;
+  }
+
+  if (to && dateISO > to) {
+    return false;
+  }
+
+  return true;
+}
+
+function getAppliedFilters(
+  t: ReturnType<typeof useTranslations<"History">>,
+  tFilter: ReturnType<typeof useTranslations<"History.drawer.filter">>,
+  filters: HistoryFilterState,
+) {
+  const labels: string[] = [];
+
+  if (filters.type !== "all") {
+    labels.push(tFilter(`typeOptions.${filters.type}`));
+  }
+
+  if (filters.direction !== "all") {
+    labels.push(tFilter(`directionOptions.${filters.direction}`));
+  }
+
+  if (filters.method !== "all") {
+    labels.push(tFilter(`methodOptions.${filters.method}`));
+  }
+
+  if (filters.from || filters.to) {
+    labels.push(
+      filters.from && filters.to
+        ? t("rangeBetween", { from: filters.from, to: filters.to })
+        : filters.from
+          ? t("rangeFrom", { from: filters.from })
+          : t("rangeTo", { to: filters.to }),
+    );
+  } else if (filters.preset !== "thisMonth") {
+    labels.push(tFilter(`dateOptions.${filters.preset}`));
+  }
+
+  return labels;
+}
+
+function getHistoryOverview(items: HistoryTransaction[]) {
+  const spent = items
+    .filter(
+      (item) =>
+        !item.isTransfer &&
+        item.direction === "expense" &&
+        (item.typeCategory === "variable" || item.typeCategory === "major"),
+    )
+    .reduce((sum, item) => sum + parseAmount(item.amount), 0);
+
+  const received = items
+    .filter(
+      (item) =>
+        !item.isTransfer &&
+        item.direction === "received" &&
+        item.typeCategory === "variable",
+    )
+    .reduce((sum, item) => sum + parseAmount(item.amount), 0);
+
+  return {
+    spent: formatAmount(spent),
+    received: formatAmount(received),
+    count: items.length,
+  };
+}
+
+function parseAmount(value: string) {
+  const numeric = Number(value.replaceAll(/[^\d.-]/g, ""));
+  return Math.abs(numeric);
+}
+
+function formatAmount(value: number) {
+  return `${new Intl.NumberFormat("en").format(Math.round(value))} EGP`;
+}

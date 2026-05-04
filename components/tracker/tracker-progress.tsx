@@ -1,3 +1,4 @@
+import { semanticProgressClass } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
 
 type TrackerProgressProps = {
@@ -15,8 +16,8 @@ export function TrackerProgress({ valueClass, tone = "brand", className }: Track
 }
 
 const progressToneClass = {
-  brand: "bg-brand",
-  warning: "bg-warning",
-  danger: "bg-danger",
-  success: "bg-success",
+  brand: semanticProgressClass.brand,
+  warning: semanticProgressClass.pressure,
+  danger: semanticProgressClass.critical,
+  success: semanticProgressClass.stability,
 }

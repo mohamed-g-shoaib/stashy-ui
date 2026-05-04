@@ -29,6 +29,12 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { statTileClass } from "@/lib/design-system-classes"
+import {
+  semanticInteractiveTextClass,
+  semanticSurfaceClass,
+  semanticTextClass,
+} from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
 
 export function ProfileCard({ profile, onEdit }: { profile: ProfileState; onEdit: () => void }) {
@@ -49,13 +55,8 @@ export function ProfileCard({ profile, onEdit }: { profile: ProfileState; onEdit
               {profile.username}
             </p>
             <Badge
-              variant="secondary"
-              className={cn(
-                "rounded-full px-2.5 py-1 text-[0.6875rem] font-medium shadow-ring",
-                profile.status === "Active"
-                  ? "bg-success-subtle text-success"
-                  : "bg-surface-offset text-text-secondary",
-              )}
+              variant={profile.status === "Active" ? "stability" : "neutral"}
+              className="rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
             >
               {profile.status === "Active" ? t("profile.active") : t("profile.inactive")}
             </Badge>
@@ -110,16 +111,13 @@ export function BudgetManagementCard({
       onAction={onAdd}
     >
       {boosts.length === 0 ? (
-        <p className="rounded-[var(--radius-sm)] bg-surface-offset px-4 py-5 text-center text-sm leading-[1.6] text-text-secondary shadow-ring">
+        <p className={cn("px-4 py-5 text-center text-sm leading-[1.6] text-text-secondary", statTileClass)}>
           {t("boosts.empty")}
         </p>
       ) : (
         <div className="space-y-3">
           {boosts.map((boost) => (
-            <div
-              key={boost.id}
-              className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring"
-            >
+            <div key={boost.id} className={statTileClass}>
               <div className="flex items-start justify-between gap-3">
                 <p className="text-sm font-semibold text-foreground">{boost.label}</p>
                 <p dir="ltr" className="text-sm font-semibold text-foreground tabular-nums">
@@ -164,10 +162,13 @@ export function PaymentMethodsCard({
           deleteCandidateId === method.id ? (
             <div
               key={method.id}
-              className="rounded-[var(--radius-sm)] bg-danger-subtle p-3 shadow-ring"
+              className={cn(
+                "p-3 shadow-ring rounded-[var(--radius-sm)]",
+                semanticSurfaceClass.critical,
+              )}
             >
               <div className="flex flex-col gap-3">
-                <p className="text-sm font-semibold text-danger">
+                <p className={cn("text-sm font-semibold", semanticTextClass.critical)}>
                   {t("methods.confirmDelete", { name: method.name })}
                 </p>
                 <div className="flex gap-2">
@@ -186,10 +187,7 @@ export function PaymentMethodsCard({
               </div>
             </div>
           ) : (
-            <div
-              key={method.id}
-              className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring"
-            >
+            <div key={method.id} className={statTileClass}>
               <div className="flex items-center gap-3">
                 <MethodIcon icon={method.icon} />
                 <div className="min-w-0 flex-1">
@@ -197,8 +195,8 @@ export function PaymentMethodsCard({
                     <p className="text-sm font-semibold text-foreground">{method.name}</p>
                     {method.isDefault ? (
                       <Badge
-                        variant="secondary"
-                        className="rounded-full bg-brand-subtle px-2.5 py-1 text-[0.6875rem] font-medium text-brand shadow-ring"
+                        variant="brand"
+                        className="rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
                       >
                         {t("methods.default")}
                       </Badge>
@@ -226,14 +224,20 @@ export function PaymentMethodsCard({
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
-                    className="min-h-10 rounded-full px-2 text-sm font-medium text-brand transition-colors hover:text-brand-hover"
+                    className={cn(
+                      "min-h-10 rounded-full px-2 text-sm font-medium",
+                      semanticInteractiveTextClass.brand,
+                    )}
                     onClick={() => onEdit(method.id)}
                   >
                     {t("methods.edit")}
                   </button>
                   <button
                     type="button"
-                    className="min-h-10 rounded-full px-2 text-sm font-medium text-danger transition-colors hover:text-danger-hover"
+                    className={cn(
+                      "min-h-10 rounded-full px-2 text-sm font-medium",
+                      semanticInteractiveTextClass.critical,
+                    )}
                     onClick={() => onDeleteTap(method.id)}
                   >
                     {t("methods.delete")}
@@ -279,7 +283,7 @@ export function AppearanceCard({
       title={t("appearance.title")}
     >
       <div className="space-y-3">
-        <div className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
+        <div className={statTileClass}>
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <HugeiconsIcon
@@ -306,7 +310,7 @@ export function AppearanceCard({
           </div>
         </div>
 
-        <div className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
+        <div className={statTileClass}>
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <HugeiconsIcon
@@ -378,7 +382,7 @@ function SettingsCard({
   children: React.ReactNode
 }) {
   return (
-    <Card size="sm" className="py-4">
+    <Card size="sm" className="py-4 shadow-soft">
       <CardContent className="flex flex-col gap-4 px-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -439,7 +443,7 @@ function InfoRow({
   label: string
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
+    <div className={cn("flex items-center gap-3", statTileClass)}>
       <span className="flex size-10 items-center justify-center rounded-full bg-card text-text-secondary shadow-ring">
         <HugeiconsIcon icon={icon} aria-hidden="true" size={18} />
       </span>

@@ -4,20 +4,23 @@ import {
   ArrowUp01Icon,
   ChartAverageIcon,
   ChartLineData01Icon,
-  CreditCardIcon,
   HelpCircleIcon,
   Invoice03Icon,
   MoneyBag02Icon,
   Note03Icon,
   Wallet02Icon,
-} from "@hugeicons/core-free-icons"
-import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
-import { useTranslations } from "next-intl"
-import * as React from "react"
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
+import { useTranslations } from "next-intl";
+import * as React from "react";
 
-import type { AddActionKind, DailyScenario, DrawerKind } from "@/components/home/types"
-import { LanguageToggle } from "@/components/language-toggle"
-import { Button } from "@/components/ui/button"
+import type {
+  AddActionKind,
+  DailyScenario,
+  DrawerKind,
+} from "@/components/home/types";
+import { LanguageToggle } from "@/components/language-toggle";
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -26,22 +29,31 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from "@/components/ui/drawer"
-import { SegmentedChoice } from "@/components/ui/segmented-choice"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+} from "@/components/ui/drawer";
+import { SegmentedChoice } from "@/components/ui/segmented-choice";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  elevatedPanelClass,
+  inputFieldClass,
+  segmentedWellClass,
+  surfacePanelClass,
+  textAreaFieldClass,
+} from "@/lib/design-system-classes";
+import { semanticSurfaceClass, semanticTextClass } from "@/lib/semantic-styles";
+import { cn } from "@/lib/utils";
 
 type HomeDrawerProps = {
-  kind: DrawerKind | null
-  dailyScenario: DailyScenario
-  introCardVisible: boolean
-  majorScenario: "active" | "none"
-  direction: "ltr" | "rtl"
-  onDailyScenarioChange: (value: DailyScenario) => void
-  onIntroCardVisibleChange: (value: boolean) => void
-  onMajorScenarioChange: (value: "active" | "none") => void
-  onPreviewAddAction: (action: AddActionKind, amount: number) => void
-  onOpenChange: (open: boolean) => void
-}
+  kind: DrawerKind | null;
+  dailyScenario: DailyScenario;
+  introCardVisible: boolean;
+  majorScenario: "active" | "none";
+  direction: "ltr" | "rtl";
+  onDailyScenarioChange: (value: DailyScenario) => void;
+  onIntroCardVisibleChange: (value: boolean) => void;
+  onMajorScenarioChange: (value: "active" | "none") => void;
+  onPreviewAddAction: (action: AddActionKind, amount: number) => void;
+  onOpenChange: (open: boolean) => void;
+};
 
 export function HomeDrawer({
   kind,
@@ -55,26 +67,27 @@ export function HomeDrawer({
   onPreviewAddAction,
   onOpenChange,
 }: HomeDrawerProps) {
-  const t = useTranslations("Home.drawer")
-  const open = kind !== null
-  const title = kind ? t(`${kind}.title`) : t("add.title")
-  const description = kind ? t(`${kind}.description`) : t("add.description")
-  const [selectedAction, setSelectedAction] = React.useState<AddActionKind>("spend")
-  const [step, setStep] = React.useState<"choose" | "details">("choose")
-  const [amount, setAmount] = React.useState("700")
-  const [method, setMethod] = React.useState<"cash" | "card" | "bank">("cash")
-  const [note, setNote] = React.useState("")
+  const t = useTranslations("Home.drawer");
+  const open = kind !== null;
+  const title = kind ? t(`${kind}.title`) : t("add.title");
+  const description = kind ? t(`${kind}.description`) : t("add.description");
+  const [selectedAction, setSelectedAction] =
+    React.useState<AddActionKind>("spend");
+  const [step, setStep] = React.useState<"choose" | "details">("choose");
+  const [amount, setAmount] = React.useState("700");
+  const [method, setMethod] = React.useState<"cash" | "card" | "bank">("cash");
+  const [note, setNote] = React.useState("");
 
   const resetAddFlow = React.useCallback(() => {
-    setStep("choose")
-    setAmount(defaultAmounts[selectedAction])
-    setNote("")
-  }, [selectedAction])
+    setStep("choose");
+    setAmount(defaultAmounts[selectedAction]);
+    setNote("");
+  }, [selectedAction]);
 
   const closeAddFlow = React.useCallback(() => {
-    resetAddFlow()
-    onOpenChange(false)
-  }, [onOpenChange, resetAddFlow])
+    resetAddFlow();
+    onOpenChange(false);
+  }, [onOpenChange, resetAddFlow]);
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="bottom">
@@ -104,9 +117,9 @@ export function HomeDrawer({
               onMethodChange={setMethod}
               onNoteChange={setNote}
               onSelectedActionChange={(action) => {
-                setSelectedAction(action)
-                setAmount(defaultAmounts[action])
-                setNote("")
+                setSelectedAction(action);
+                setAmount(defaultAmounts[action]);
+                setNote("");
               }}
             />
           ) : kind === "help" ? (
@@ -121,16 +134,16 @@ export function HomeDrawer({
               step={step}
               onBack={() => {
                 if (step === "choose") {
-                  closeAddFlow()
-                  return
+                  closeAddFlow();
+                  return;
                 }
 
-                setStep("choose")
+                setStep("choose");
               }}
               onContinue={() => setStep("details")}
               onSave={() => {
-                onPreviewAddAction(selectedAction, Number(amount) || 0)
-                closeAddFlow()
+                onPreviewAddAction(selectedAction, Number(amount) || 0);
+                closeAddFlow();
               }}
             />
           </DrawerFooter>
@@ -145,7 +158,7 @@ export function HomeDrawer({
         )}
       </DrawerContent>
     </Drawer>
-  )
+  );
 }
 
 function AddOptions({
@@ -159,42 +172,46 @@ function AddOptions({
   onNoteChange,
   onSelectedActionChange,
 }: {
-  amount: string
-  method: "cash" | "card" | "bank"
-  note: string
-  selectedAction: AddActionKind
-  step: "choose" | "details"
-  onAmountChange: (value: string) => void
-  onMethodChange: (value: "cash" | "card" | "bank") => void
-  onNoteChange: (value: string) => void
-  onSelectedActionChange: (action: AddActionKind) => void
+  amount: string;
+  method: "cash" | "card" | "bank";
+  note: string;
+  selectedAction: AddActionKind;
+  step: "choose" | "details";
+  onAmountChange: (value: string) => void;
+  onMethodChange: (value: "cash" | "card" | "bank") => void;
+  onNoteChange: (value: string) => void;
+  onSelectedActionChange: (action: AddActionKind) => void;
 }) {
-  const t = useTranslations("Home.drawer.add")
+  const t = useTranslations("Home.drawer.add");
   const options = [
-    { key: "spend", icon: MoneyBag02Icon, tone: "bg-brand-subtle text-brand" },
-    { key: "receive", icon: ArrowDown01Icon, tone: "bg-success-subtle text-success" },
-    { key: "injection", icon: Note03Icon, tone: "bg-info-subtle text-info" },
-    { key: "major", icon: Invoice03Icon, tone: "bg-warning-subtle text-warning" },
-  ] as const
-  const parsedAmount = Number(amount) || 0
+    { key: "spend", icon: MoneyBag02Icon, tone: semanticSurfaceClass.brand },
+    {
+      key: "receive",
+      icon: ArrowDown01Icon,
+      tone: semanticSurfaceClass.recovery,
+    },
+    { key: "injection", icon: Note03Icon, tone: semanticSurfaceClass.recovery },
+    { key: "major", icon: Invoice03Icon, tone: semanticSurfaceClass.pressure },
+  ] as const;
+  const parsedAmount = Number(amount) || 0;
   const responseTone =
     selectedAction === "spend" && parsedAmount > 615.38
-      ? "text-danger"
+      ? semanticTextClass.critical
       : selectedAction === "receive" || selectedAction === "injection"
-        ? "text-success"
-        : "text-foreground"
+        ? semanticTextClass.recovery
+        : "text-foreground";
 
   const methodOptions = (["cash", "card", "bank"] as const).map((option) => ({
     value: option,
     label: t(`methods.${option}`),
-  }))
+  }));
 
   return (
     <div className="grid gap-3">
       {step === "choose" ? (
         <>
           {options.map((item) => {
-            const selected = item.key === selectedAction
+            const selected = item.key === selectedAction;
 
             return (
               <button
@@ -208,37 +225,50 @@ function AddOptions({
                 <span
                   className={`flex size-11 shrink-0 items-center justify-center rounded-full shadow-ring ${item.tone}`}
                 >
-                  <HugeiconsIcon icon={item.icon} aria-hidden="true" size={20} />
+                  <HugeiconsIcon
+                    icon={item.icon}
+                    aria-hidden="true"
+                    size={20}
+                  />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-foreground">{t(`${item.key}.label`)}</p>
+                  <p className="text-sm font-semibold text-foreground">
+                    {t(`${item.key}.label`)}
+                  </p>
                   <p className="mt-1 text-sm leading-[1.5] text-text-secondary text-pretty">
                     {t(`${item.key}.description`)}
                   </p>
                 </div>
               </button>
-            )
+            );
           })}
         </>
       ) : null}
       {step === "details" ? (
         <>
-          <div className="rounded-md border border-border bg-card p-3 shadow-soft">
-            <p className={`text-sm font-semibold ${responseTone}`}>{t("impactTitle")}</p>
-            <p className={`mt-1 text-sm leading-[1.5] text-pretty ${responseTone}`}>
+          <div className={elevatedPanelClass}>
+            <p className={`text-sm font-semibold ${responseTone}`}>
+              {t("impactTitle")}
+            </p>
+            <p
+              className={`mt-1 text-sm leading-[1.5] text-pretty ${responseTone}`}
+            >
               {getOutcomePreview(t, selectedAction, parsedAmount)}
             </p>
             <p className="mt-2 text-xs leading-[1.5] text-text-secondary text-pretty">
               {t("previewMeta", { method: t(`methods.${method}`) })}
             </p>
           </div>
-          <FormField label={t("fields.amount")} hint={t(`${selectedAction}.amountHint`)}>
+          <FormField
+            label={t("fields.amount")}
+            hint={t(`${selectedAction}.amountHint`)}
+          >
             <input
               type="number"
               inputMode="decimal"
               value={amount}
               onChange={(event) => onAmountChange(event.target.value)}
-              className="h-[3.25rem] w-full rounded-sm border border-border bg-surface-offset px-4 text-[1.0625rem] font-medium text-foreground shadow-ring outline-none placeholder:text-text-tertiary"
+              className={inputFieldClass}
             />
           </FormField>
           <div className="space-y-2">
@@ -257,13 +287,13 @@ function AddOptions({
               value={note}
               onChange={(event) => onNoteChange(event.target.value)}
               placeholder={t(`${selectedAction}.notePlaceholder`)}
-              className="min-h-24 w-full rounded-sm border border-border bg-surface-offset px-4 py-3 text-sm leading-[1.5] text-foreground shadow-ring outline-none placeholder:text-text-tertiary"
+              className={textAreaFieldClass}
             />
           </FormField>
         </>
       ) : null}
     </div>
-  )
+  );
 }
 
 function AddFooter({
@@ -272,12 +302,12 @@ function AddFooter({
   onContinue,
   onSave,
 }: {
-  step: "choose" | "details"
-  onBack: () => void
-  onContinue: () => void
-  onSave: () => void
+  step: "choose" | "details";
+  onBack: () => void;
+  onContinue: () => void;
+  onSave: () => void;
 }) {
-  const t = useTranslations("Home.drawer.add")
+  const t = useTranslations("Home.drawer.add");
 
   return (
     <div className="grid grid-cols-2 gap-2">
@@ -288,7 +318,7 @@ function AddFooter({
         {step === "choose" ? t("continue") : t("savePreview")}
       </Button>
     </div>
-  )
+  );
 }
 
 function FormField({
@@ -296,9 +326,9 @@ function FormField({
   hint,
   children,
 }: {
-  label: string
-  hint?: string
-  children: React.ReactNode
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
 }) {
   return (
     <label className="block space-y-2">
@@ -306,11 +336,13 @@ function FormField({
         {label}
       </span>
       {hint ? (
-        <span className="block text-sm leading-[1.5] text-text-secondary">{hint}</span>
+        <span className="block text-sm leading-[1.5] text-text-secondary">
+          {hint}
+        </span>
       ) : null}
       {children}
     </label>
-  )
+  );
 }
 
 function getOutcomePreview(
@@ -321,22 +353,22 @@ function getOutcomePreview(
   if (action === "spend") {
     return amount > 615.38
       ? t("spend.previewOverspent", { amount: formatAmount(amount) })
-      : t("spend.previewTrack", { amount: formatAmount(amount) })
+      : t("spend.previewTrack", { amount: formatAmount(amount) });
   }
 
   if (action === "receive") {
-    return t("receive.preview", { amount: formatAmount(amount) })
+    return t("receive.preview", { amount: formatAmount(amount) });
   }
 
   if (action === "injection") {
-    return t("injection.preview", { amount: formatAmount(amount) })
+    return t("injection.preview", { amount: formatAmount(amount) });
   }
 
-  return t("major.preview", { amount: formatAmount(amount) })
+  return t("major.preview", { amount: formatAmount(amount) });
 }
 
 function formatAmount(value: number) {
-  return `${new Intl.NumberFormat("en").format(value)} EGP`
+  return `${new Intl.NumberFormat("en").format(value)} EGP`;
 }
 
 const defaultAmounts: Record<AddActionKind, string> = {
@@ -344,20 +376,28 @@ const defaultAmounts: Record<AddActionKind, string> = {
   receive: "500",
   injection: "1200",
   major: "1800",
-}
+};
 
 function HelpContent({ dailyScenario }: { dailyScenario: DailyScenario }) {
-  const t = useTranslations("Home.drawer.help")
+  const t = useTranslations("Home.drawer.help");
 
   return (
     <div className="grid gap-3">
-      <div className="rounded-md bg-surface-offset p-3 shadow-ring">
+      <div className={surfacePanelClass}>
         <div className="flex items-start gap-3">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-brand shadow-ring">
-            <HugeiconsIcon icon={ChartAverageIcon} aria-hidden="true" size={20} />
+          <span
+            className={`flex size-11 shrink-0 items-center justify-center rounded-full bg-card shadow-ring ${semanticTextClass.brand}`}
+          >
+            <HugeiconsIcon
+              icon={ChartAverageIcon}
+              aria-hidden="true"
+              size={20}
+            />
           </span>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-foreground">{t("todayRate.title")}</p>
+            <p className="text-sm font-semibold text-foreground">
+              {t("todayRate.title")}
+            </p>
             <p className="mt-1 text-sm leading-[1.5] text-text-secondary text-pretty">
               {t("todayRate.description")}
             </p>
@@ -365,13 +405,17 @@ function HelpContent({ dailyScenario }: { dailyScenario: DailyScenario }) {
         </div>
       </div>
 
-      <div className="rounded-md bg-surface-offset p-3 shadow-ring">
+      <div className={surfacePanelClass}>
         <div className="flex items-start gap-3">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-success shadow-ring">
+          <span
+            className={`flex size-11 shrink-0 items-center justify-center rounded-full bg-card shadow-ring ${semanticTextClass.recovery}`}
+          >
             <HugeiconsIcon icon={ArrowUp01Icon} aria-hidden="true" size={20} />
           </span>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-foreground">{t("remaining.title")}</p>
+            <p className="text-sm font-semibold text-foreground">
+              {t("remaining.title")}
+            </p>
             <p className="mt-1 text-sm leading-[1.5] text-text-secondary text-pretty">
               {t("remaining.description")}
             </p>
@@ -379,13 +423,17 @@ function HelpContent({ dailyScenario }: { dailyScenario: DailyScenario }) {
         </div>
       </div>
 
-      <div className="rounded-md bg-surface-offset p-3 shadow-ring">
+      <div className={surfacePanelClass}>
         <div className="flex items-start gap-3">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-warning shadow-ring">
+          <span
+            className={`flex size-11 shrink-0 items-center justify-center rounded-full bg-card shadow-ring ${semanticTextClass.pressure}`}
+          >
             <HugeiconsIcon icon={Invoice03Icon} aria-hidden="true" size={20} />
           </span>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-foreground">{t("major.title")}</p>
+            <p className="text-sm font-semibold text-foreground">
+              {t("major.title")}
+            </p>
             <p className="mt-1 text-sm leading-[1.5] text-text-secondary text-pretty">
               {t("major.description")}
             </p>
@@ -394,13 +442,17 @@ function HelpContent({ dailyScenario }: { dailyScenario: DailyScenario }) {
       </div>
 
       <div className="rounded-md border border-border bg-card p-3 shadow-ring">
-        <p className="text-sm font-semibold text-foreground">{t("tomorrow.title")}</p>
+        <p className="text-sm font-semibold text-foreground">
+          {t("tomorrow.title")}
+        </p>
         <p className="mt-1 text-sm leading-[1.5] text-text-secondary text-pretty">
-          {dailyScenario === "overspent" ? t("tomorrow.overspent") : t("tomorrow.onTrack")}
+          {dailyScenario === "overspent"
+            ? t("tomorrow.overspent")
+            : t("tomorrow.onTrack")}
         </p>
       </div>
     </div>
-  )
+  );
 }
 
 function SettingsControls({
@@ -411,28 +463,32 @@ function SettingsControls({
   majorScenario,
   onMajorChange,
 }: {
-  value: DailyScenario
-  onValueChange: (value: DailyScenario) => void
-  introCardVisible: boolean
-  onIntroCardVisibleChange: (value: boolean) => void
-  majorScenario: "active" | "none"
-  onMajorChange: (value: "active" | "none") => void
+  value: DailyScenario;
+  onValueChange: (value: DailyScenario) => void;
+  introCardVisible: boolean;
+  onIntroCardVisibleChange: (value: boolean) => void;
+  majorScenario: "active" | "none";
+  onMajorChange: (value: "active" | "none") => void;
 }) {
-  const t = useTranslations("Home.drawer")
+  const t = useTranslations("Home.drawer");
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap gap-2">
         <LanguageToggle />
       </div>
-      <div className="flex flex-col gap-2 rounded-md bg-surface-offset p-3 text-start shadow-ring">
-        <p className="text-sm font-semibold text-foreground">{t("settings.previewLabel")}</p>
+      <div className={cn("flex flex-col gap-2 text-start", surfacePanelClass)}>
+        <p className="text-sm font-semibold text-foreground">
+          {t("settings.previewLabel")}
+        </p>
         <Tabs
           value={value}
-          onValueChange={(nextValue) => onValueChange(nextValue as DailyScenario)}
+          onValueChange={(nextValue) =>
+            onValueChange(nextValue as DailyScenario)
+          }
           className="gap-3"
         >
-          <TabsList className="grid h-11 w-full grid-cols-2 rounded-sm bg-card p-1">
+          <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
             <TabsTrigger value="track" className="rounded-xs text-xs">
               {t("settings.trackPreview")}
             </TabsTrigger>
@@ -442,13 +498,17 @@ function SettingsControls({
           </TabsList>
         </Tabs>
         <div className="mt-2 h-px bg-border-subtle" />
-        <p className="mt-1 text-sm font-semibold text-foreground">{t("settings.introLabel")}</p>
+        <p className="mt-1 text-sm font-semibold text-foreground">
+          {t("settings.introLabel")}
+        </p>
         <Tabs
           value={introCardVisible ? "visible" : "hidden"}
-          onValueChange={(nextValue) => onIntroCardVisibleChange(nextValue === "visible")}
+          onValueChange={(nextValue) =>
+            onIntroCardVisibleChange(nextValue === "visible")
+          }
           className="gap-3"
         >
-          <TabsList className="grid h-11 w-full grid-cols-2 rounded-sm bg-card p-1">
+          <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
             <TabsTrigger value="visible" className="rounded-xs text-xs">
               {t("settings.show")}
             </TabsTrigger>
@@ -461,13 +521,17 @@ function SettingsControls({
           {t("settings.introHint")}
         </p>
         <div className="mt-2 h-px bg-border-subtle" />
-        <p className="mt-1 text-sm font-semibold text-foreground">{t("settings.majorLabel")}</p>
+        <p className="mt-1 text-sm font-semibold text-foreground">
+          {t("settings.majorLabel")}
+        </p>
         <Tabs
           value={majorScenario}
-          onValueChange={(nextValue) => onMajorChange(nextValue as "active" | "none")}
+          onValueChange={(nextValue) =>
+            onMajorChange(nextValue as "active" | "none")
+          }
           className="gap-3"
         >
-          <TabsList className="grid h-11 w-full grid-cols-2 rounded-sm bg-card p-1">
+          <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
             <TabsTrigger value="active" className="rounded-xs text-xs">
               {t("settings.show")}
             </TabsTrigger>
@@ -478,28 +542,38 @@ function SettingsControls({
         </Tabs>
       </div>
     </div>
-  )
+  );
 }
 
 function DrawerPreview({ kind }: { kind: DrawerKind | null }) {
-  const t = useTranslations("Home.drawer")
+  const t = useTranslations("Home.drawer");
 
   if (kind === "filter") {
-    return <FilterTabs />
+    return <FilterTabs />;
   }
 
   return (
-    <div className="flex items-center gap-3 rounded-md bg-surface-offset p-3 text-start shadow-ring">
-      <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-brand shadow-ring">
-        <HugeiconsIcon icon={getDrawerPreviewIcon(kind)} size={22} aria-hidden="true" />
+    <div
+      className={cn("flex items-center gap-3 text-start", surfacePanelClass)}
+    >
+      <span
+        className={`flex size-11 shrink-0 items-center justify-center rounded-full bg-card shadow-ring ${semanticTextClass.brand}`}
+      >
+        <HugeiconsIcon
+          icon={getDrawerPreviewIcon(kind)}
+          size={22}
+          aria-hidden="true"
+        />
       </span>
-      <p className="text-sm leading-[1.5] text-text-secondary">{t("preview")}</p>
+      <p className="text-sm leading-[1.5] text-text-secondary">
+        {t("preview")}
+      </p>
     </div>
-  )
+  );
 }
 
 function FilterTabs() {
-  const t = useTranslations("Home.drawer")
+  const t = useTranslations("Home.drawer");
 
   return (
     <Tabs defaultValue="all" className="gap-3">
@@ -515,25 +589,21 @@ function FilterTabs() {
         </TabsTrigger>
       </TabsList>
     </Tabs>
-  )
+  );
 }
 
 function getDrawerPreviewIcon(kind: DrawerKind | null): IconSvgElement {
   if (kind === "add") {
-    return Add01Icon
+    return Add01Icon;
   }
 
   if (kind === "help") {
-    return HelpCircleIcon
+    return HelpCircleIcon;
   }
 
   if (kind === "fixed") {
-    return Wallet02Icon
+    return Wallet02Icon;
   }
 
-  if (kind === "history") {
-    return CreditCardIcon
-  }
-
-  return ChartLineData01Icon
+  return ChartLineData01Icon;
 }

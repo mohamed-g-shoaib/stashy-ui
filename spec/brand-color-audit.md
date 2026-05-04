@@ -1,7 +1,7 @@
 > **LLM Context & Usage Guide**
 > **File Purpose:** The semantic color audit and accent philosophy for Stashy.
 > **How to Use:** Read this before assigning any product accent color. It maps actions, states, risks, and financial meanings to consistent visual families so the interface feels human, readable, and branded.
-> **Constraint Reminder:** This file is intentionally compact. Extend it by adding approved semantic roles and mappings instead of scattering new color choices across implementation files.
+> **Constraint Reminder:** This file is a working product-design document inside an `audit -> create -> audit -> redo` cycle. Extend it by adding approved semantic roles and mappings instead of scattering new color choices across implementation files.
 
 # Stashy Brand Color Audit
 
@@ -16,7 +16,28 @@ Stashy should feel like a **calm financial desk with human signals built in**. T
 
 This is how Stashy stays colorful without becoming noisy.
 
-## 2. Base Harmony Audit
+## 2. How This Document Is Used
+
+This file is not only an audit sheet. It is also the semantic creation map for the app.
+
+Use it in this order:
+
+1. audit existing UI against product truth
+2. create or revise semantic mappings
+3. audit the created result against real Stashy logic
+4. redo weak, confusing, or contradictory treatments
+
+## 3. Brand Placement
+
+Stashy's visual position should sit between three useful influences:
+
+- **Slite** for eye comfort and warm editorial calm
+- **Cursor** for precise product seriousness and disciplined control surfaces
+- **Convex** for confident system-state signaling and operational clarity
+
+Stashy should land in its own spot: **a warm financial control surface with human-readable consequences**.
+
+## 4. Base Harmony Audit
 
 | Layer | Role | Direction |
 | --- | --- | --- |
@@ -28,7 +49,7 @@ This is how Stashy stays colorful without becoming noisy.
 | Shadows and overlays | Depth | Paper-stack layering, not glass or neon |
 | Charts and badges | Meaning | Must reuse semantic families from this audit |
 
-## 3. Semantic Families
+## 5. Semantic Families
 
 | Family | Meaning | Accent role | Typical use |
 | --- | --- | --- | --- |
@@ -40,7 +61,25 @@ This is how Stashy stays colorful without becoming noisy.
 | Recovery | Restorative positive inflow | Harbor | Income, received, budget injection, resolved/synced info |
 | Muted info | Secondary system status | Fog-adjacent neutrals | Metadata, archived, inactive, draft, empty states |
 
-## 4. Product Accent Matrix
+## 6. App-Wide Coverage Map
+
+| Subsystem | Coverage focus |
+| --- | --- |
+| Auth and onboarding | verification, blocked entry, conflict, invalid session, setup-required |
+| Dashboard | base/current rate, remaining today, overspend, emergency, tomorrow impact, major warning, payment totals |
+| Add transaction | type selection, direction, major confirmation, budget injection, transfer creation |
+| Fixed expenses | manual vs recurring vs installment, due, pending, paid, overdue, completed, delete-cascade resolution |
+| Fixed tracker | progress, low remaining, on track, full spent, over budget, future-start, completed installment |
+| History | spent/all/fixed/variable/major/transfer filters, merged transfers, empty states |
+| Payment methods | active, default, deleted, soft-deleted historical presence, create limits |
+| Analysis | pacing, overpaced, underpaced, projections, month-over-month comparison, Pro lock |
+| Snapshots | close month, already closed, historical comparison availability |
+| Offline sync | in-progress, success, duplicate, queue-full, stale, failed, retryable |
+| System status | ok, forced update, maintenance mode |
+| Plan gating | free limit reached, upgrade available, Pro-required feature access |
+| Errors and validation | field error, blocked action, conflict, retryable server failure |
+
+## 7. Product Accent Matrix
 
 | Product meaning | Semantic family | Notes |
 | --- | --- | --- |
@@ -67,7 +106,52 @@ This is how Stashy stays colorful without becoming noisy.
 | Archived / inactive / draft | Muted info | Quiet and intentionally low-emphasis |
 | Plan upgrade required | Brand or Pressure | Prefer brand when upsell is product-led; Pressure only if it blocks a task and needs immediate attention |
 
-## 5. Usage Rules By UI Pattern
+## 8. Literal Action And State Matrix
+
+| Action or state | Semantic family | UI intent |
+| --- | --- | --- |
+| Add variable expense | Critical | Show money leaving without looking punitive by default |
+| Add variable received | Recovery | Show budget relief and positive inflow |
+| Add fixed expense transaction | Stability or Critical | Stability for the category, Critical only if overrun or overdue context appears |
+| Add fixed refund/received | Recovery on top of Stability | Reads as correction or relief within a fixed bucket |
+| Add major expense | Pressure at entry, then Pressure/Critical if consequences deepen | Must feel consequential before submission |
+| Confirm major expense preview | Pressure | This is a deliberation moment, not an error state |
+| Trigger budget injection | Recovery | Intervention and rescue, distinct from normal income |
+| Create transfer | Neutral structural | Show movement, not win/loss |
+| Delete transaction | Critical | Irreversible/destructive |
+| Delete fixed expense cascade step 1 | Pressure | Requires review and branching resolution |
+| Resolve pending fixed transactions | Pressure or Critical | Depends on whether the choice is reclassify vs hard delete |
+| Fixed due soon / pending | Muted info | Needs visibility, not alarm |
+| Fixed paid | Stability | Reliable and complete |
+| Fixed low remaining | Pressure | Near limit, not yet failure |
+| Fixed over budget | Critical | Actual overrun |
+| Installment completed | Stability | Completed lifecycle |
+| Future-start recurring/installment | Muted info | Exists, but not active for totals yet |
+| Dashboard on track | Stability | Calm confidence |
+| Dashboard low remaining | Pressure | Early caution |
+| Overspent today | Critical | Immediate consequence |
+| Emergency mode | Critical | Highest daily-budget stress state |
+| Tomorrow's rate impact | Pressure | Consequence-warning, not failure banner |
+| Major expenses >25% | Pressure | Controlled caution |
+| Payment method soft-deleted but historically present | Muted info | Historical artifact, not active control |
+| Analysis locked on free | Brand or Pressure | Upsell with clarity, no panic |
+| No month-over-month comparison yet | Muted info | Missing history, not failure |
+| Snapshot already closed | Muted info or Stability | Resolved historical action |
+| Sync in progress | Muted info | Background trust state |
+| Sync duplicate | Muted info | Benign technical state |
+| Sync success | Recovery | Trust restored |
+| Sync queue full / stale daily rate | Critical | Product integrity risk |
+| Sync failure with retry | Critical | Trust-threatening but recoverable |
+| Email verification required | Pressure | Clear attention-needed gate |
+| Email conflict | Pressure | Blocked but not destructive |
+| Forced update required | Pressure or Critical | Product-blocking state |
+| Maintenance mode | Pressure or Critical | Planned caution vs unavailable system |
+| Validation error 422 | Pressure | Action rejected, guide correction |
+| Forbidden 403 plan-gated | Brand or Pressure | Upgrade or blocked-access state |
+| Conflict 409 onboarding/budget missing | Pressure | Route user to required setup |
+| Generic retryable 500 | Critical | System failure, but not user fault |
+
+## 9. Usage Rules By UI Pattern
 
 | UI pattern | Allowed treatment |
 | --- | --- |
@@ -79,7 +163,14 @@ This is how Stashy stays colorful without becoming noisy.
 | Strong backgrounds | Reserve for CTAs, critical pills, or high-signal confirmations |
 | Charts | Reuse semantic families in a stable legend order; never invent separate chart-only meanings |
 
-## 6. Misuse Constraints
+## 10. Chart And Data Rules
+
+- Budget structure series should stay readable and low-noise before adding semantic emphasis.
+- Use Stability for healthy fixed progress, Pressure for major burden, Critical for overspend or failure conditions, and Recovery for received/injection recovery paths.
+- Do not create a separate “analytics palette” that breaks from the rest of the app.
+- Month-over-month deltas should use direction-aware semantics only when the delta is clearly good or bad in context.
+
+## 11. Misuse Constraints
 
 - Do not use Recovery for generic “good looking” decoration.
 - Do not use Critical for every negative number if the UI already communicates a structural category rather than risk.
@@ -88,7 +179,7 @@ This is how Stashy stays colorful without becoming noisy.
 - Do not use bright fintech green or alarm red outside the approved muted families.
 - Do not let chart palettes drift away from badge and alert semantics.
 
-## 7. Implementation Rules For Follow-Up Cleanup
+## 12. Implementation Rules For Follow-Up Cleanup
 
 1. No hardcoded hex colors in feature components when a token exists.
 2. Semantic roles must map through tokens, not inline business logic picking colors ad hoc.
