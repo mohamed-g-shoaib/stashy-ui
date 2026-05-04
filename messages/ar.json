@@ -226,6 +226,7 @@
   },
   "History": {
     "title": "السجل",
+    "dailyTotal": "إجمالي اليوم",
     "overview": {
       "title": "نظرة عامة",
       "spent": "إجمالي المصروف",
@@ -252,7 +253,8 @@
       "major": "كبير",
       "received": "وارد",
       "injection": "دعم للميزانية",
-      "transfer": "تحويل"
+      "transfer": "تحويل",
+      "refund": "مسترجع"
     },
     "fixedTypes": {
       "internet": "فاتورة الإنترنت",
@@ -265,7 +267,8 @@
       "gas": "تعبئة وقود",
       "laptop": "لابتوب",
       "freelance": "دخل عمل حر",
-      "injection": "دعم للميزانية"
+      "injection": "دعم للميزانية",
+      "refund": "مسترجع"
     },
     "drawer": {
       "filter": {

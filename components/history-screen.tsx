@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { heroSurfaceClass, statTileClass } from "@/lib/design-system-classes";
-import { semanticSurfaceClass } from "@/lib/semantic-styles";
+import { semanticSurfaceClass, semanticTextClass } from "@/lib/semantic-styles";
 import { getDirectionForLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import type { Locale } from "@/i18n/routing";
@@ -93,7 +93,7 @@ export function HistoryScreen() {
         </div>
 
         <main className="flex-1 px-screen pb-32 pt-4">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-6">
             {filterCount > 0 ? (
               <Card size="sm" className="py-3 shadow-ring">
                 <CardContent className="flex flex-col gap-3 px-4">
@@ -127,8 +127,48 @@ export function HistoryScreen() {
             ) : null}
 
             {filteredItems.length > 0 ? (
-              filteredItems.map((transaction) => (
-                <HistoryRow key={transaction.id} transaction={transaction} />
+              groupTransactionsByDate(filteredItems, locale).map((group, index, array) => (
+                <React.Fragment key={group.dateISO}>
+                  {group.transactions.length >= 2 ? (
+                    <div className={cn("overflow-hidden", heroSurfaceClass)}>
+                      <div className="flex items-center justify-between px-4 pb-2 pt-3">
+                        <h2 className="text-[0.625rem] font-bold tracking-[0.05em] text-text-secondary uppercase">
+                          {group.dateLabel}
+                        </h2>
+                        <div className="flex items-center gap-1.5 text-[0.625rem] font-bold tracking-[0.05em] text-text-tertiary uppercase">
+                          <span>{t("dailyTotal")}</span>
+                          <span
+                            className={cn(
+                              "tabular-nums",
+                              group.totalNumeric >= 0
+                                ? semanticTextClass.stability
+                                : semanticTextClass.critical,
+                            )}
+                          >
+                            {group.totalAmount}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1.5 p-1.5 pt-0">
+                        {group.transactions.map((transaction) => (
+                          <HistoryRow key={transaction.id} transaction={transaction} />
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    group.transactions.map((transaction) => (
+                      <HistoryRow
+                        key={transaction.id}
+                        transaction={transaction}
+                        isStandalone
+                        showDate
+                      />
+                    ))
+                  )}
+                  {index < array.length - 1 && (
+                    <Separator className="mt-2 opacity-50" />
+                  )}
+                </React.Fragment>
               ))
             ) : (
               <Card size="sm" className="py-6">
@@ -173,7 +213,7 @@ export function HistoryScreen() {
             )}
 
             {filteredItems.length > 0 ? (
-              <Button type="button" variant="secondary" size="sm">
+              <Button type="button" variant="secondary" size="sm" className="mt-2">
                 {t("loadMore")}
               </Button>
             ) : null}
@@ -327,11 +367,61 @@ function getHistoryOverview(items: HistoryTransaction[]) {
   };
 }
 
+function groupTransactionsByDate(items: HistoryTransaction[], locale: string) {
+  const groups: Record<string, {
+    dateISO: string;
+    dateLabel: string;
+    transactions: HistoryTransaction[];
+    totalNumeric: number;
+  }> = {};
+
+  const dateFormatter = new Intl.DateTimeFormat(locale, {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+  });
+
+  items.forEach((item) => {
+    if (!groups[item.dateISO]) {
+      const date = new Date(item.dateISO);
+      groups[item.dateISO] = {
+        dateISO: item.dateISO,
+        dateLabel: isNaN(date.getTime()) ? item.date : dateFormatter.format(date),
+        transactions: [],
+        totalNumeric: 0,
+      };
+    }
+
+    groups[item.dateISO].transactions.push(item);
+    
+    // Calculate daily total: expenses are negative, received/transfers are positive
+    const numeric = parseAmount(item.amount);
+    if (item.direction === "expense") {
+      groups[item.dateISO].totalNumeric -= numeric;
+    } else {
+      groups[item.dateISO].totalNumeric += numeric;
+    }
+  });
+
+  return Object.values(groups)
+    .sort((a, b) => b.dateISO.localeCompare(a.dateISO))
+    .map((group) => ({
+      ...group,
+      totalAmount: formatAmount(group.totalNumeric, true),
+    }));
+}
+
 function parseAmount(value: string) {
   const numeric = Number(value.replaceAll(/[^\d.-]/g, ""));
   return Math.abs(numeric);
 }
 
-function formatAmount(value: number) {
-  return `${new Intl.NumberFormat("en").format(Math.round(value))} EGP`;
+function formatAmount(value: number, showSign = false) {
+  const formatted = new Intl.NumberFormat("en").format(Math.round(Math.abs(value)));
+  const currency = "EGP";
+  
+  if (!showSign) return `${formatted} ${currency}`;
+  
+  const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+  return `${sign}${formatted} ${currency}`;
 }

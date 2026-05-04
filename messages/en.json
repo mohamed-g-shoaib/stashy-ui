@@ -226,6 +226,7 @@
   },
   "History": {
     "title": "History",
+    "dailyTotal": "Daily total",
     "overview": {
       "title": "Overview",
       "spent": "Total spent",
@@ -252,7 +253,8 @@
       "major": "Major",
       "received": "Received",
       "injection": "Budget injection",
-      "transfer": "Transfer"
+      "transfer": "Transfer",
+      "refund": "Refund"
     },
     "fixedTypes": {
       "internet": "Internet Bill",
@@ -265,7 +267,8 @@
       "gas": "Gas refill",
       "laptop": "Laptop",
       "freelance": "Freelance pay",
-      "injection": "Budget injection"
+      "injection": "Budget injection",
+      "refund": "Refund"
     },
     "drawer": {
       "filter": {

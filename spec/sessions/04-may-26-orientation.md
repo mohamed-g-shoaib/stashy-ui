@@ -162,6 +162,69 @@ Fresh chat started from `AGENTS.md` with the goal of re-orienting on the current
 
 ---
 
+# Session 2 — History Screen Localization & Layout Refinement
+
+**Time:** 19:25-19:35
+
+---
+
+## Status at Session Start
+
+After moving the History functionality to a dedicated `/transactions` screen, the immediate next goal was to refine its visual consistency and RTL support. Specifically, the Arabic localization for the daily total summary was missing, and the transaction grouping UI needed better alignment with the design system's semantic color rules.
+
+---
+
+## Completed This Session
+
+- **Arabic Localization**: Added `dailyTotal` translation keys to both `en.json` ("Daily total") and `ar.json` ("إجمالي اليوم") within the `History` namespace.
+- **Shared Day Card UI**: Refactored the `HistoryScreen` grouping logic to move the date header and daily total summary inside a shared `Card` per day, improving information density and alignment.
+- **Semantic Color Implementation**: 
+    - Updated the daily total amount to use `semanticTextClass.stability` for positive/zero balances and `semanticTextClass.critical` for negative balances.
+    - Refactored `HistoryRow` to remove the badge for transaction types (Fixed, Major). Instead, the row's background color now uses `semanticSurfaceClass` based on the budget type (e.g., success-subtle for Fixed, warning-subtle for Major), making the visual identity the primary category indicator.
+- **Locale-Aware Formatting**: Updated the `groupTransactionsByDate` logic to use `useLocale()` and `Intl.DateTimeFormat`, ensuring day headers (e.g., "Fri, 17/Apr") are properly localized and consistent with the current language.
+- **RTL & Layout Polish**:
+    - Simplified `HistoryRow` from a nested `Card` to a flexible `div` to improve nested-container optics.
+    - Converted "Auto-pay" status to a compact icon/text indicator instead of a bulky badge.
+    - Ensured logical CSS classes are used throughout for consistent RTL rendering.
+
+---
+
+## Decisions Made
+
+- **Visual State as Label**: Transaction categories (Fixed vs Major) are now primarily conveyed through semantic background colors rather than text badges, reducing UI noise.
+- **Date Formatting Source**: The `dateISO` field is now the source of truth for date rendering via standard `Intl` formatters, moving away from hardcoded strings in the data layer.
+- **Tightened Information Density**: Groups of transactions share a single card surface with tighter internal spacing (`gap-1.5`) to match the mobile-first "Figma in code" philosophy.
+
+---
+
+# Session 3 — History UX Finalization
+
+**Time:** 22:50-23:10
+
+---
+
+## Status at Session Start
+
+History screen was functional but lacked logical depth for varying daily transaction counts and full data representation.
+
+---
+
+## Completed This Session
+
+- **Intelligent Grouping**: Implemented threshold-based logic; days with 2+ transactions use grouped cards, while singular entries render as standalone cards with integrated dates.
+- **Visual Hygiene**: Added `Separator` between days and implemented case-insensitive label deduplication to hide category badges when they match transaction notes.
+- **Data Expansion**: Fully populated `history-data.ts` with all core Stashy types (Major, Fixed, Transfer, Injection, Refund, Variable) and added corresponding EN/AR translations.
+- **Depth Patterns**: Applied `heroSurfaceClass` and `shadow-soft` across all history card variants for consistent design system compliance.
+
+---
+
+## Decisions Made
+
+- **Contextual Date Rendering**: Date visibility is now dynamic; it moves inside the singular card for standalone entries to preserve vertical space.
+- **Zero Redundancy**: Label deduplication is enforced at the component level to prevent repetitive "category-as-description" text.
+
+---
+
 ## Open Blockers
 
-1. Owner: User/Codex follow-up — full `pnpm format:check` is still expected to remain blocked by the previously documented markdown formatting issues in the spec/wireframe docs until those files are intentionally normalized.
+1. None.
