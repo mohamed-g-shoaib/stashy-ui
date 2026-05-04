@@ -115,7 +115,7 @@ export function HistoryScreen() {
                         key={label}
                         className={cn(
                           "rounded-full px-2.5 py-1 text-[0.6875rem] font-medium shadow-ring",
-                          semanticSurfaceClass.neutral,
+                          semanticSurfaceClass.quiet,
                         )}
                       >
                         {label}
@@ -141,8 +141,8 @@ export function HistoryScreen() {
                             className={cn(
                               "tabular-nums",
                               group.totalNumeric >= 0
-                                ? semanticTextClass.stability
-                                : semanticTextClass.critical,
+                                ? semanticTextClass.income
+                                : semanticTextClass.expense,
                             )}
                           >
                             {group.totalAmount}
@@ -195,7 +195,7 @@ export function HistoryScreen() {
                           className={cn(
                             "h-2 rounded-full",
                             item === 0 && "w-10 bg-brand/45",
-                            item === 1 && "w-12 bg-info/40",
+                            item === 1 && "w-12 bg-injection/40",
                             item === 2 && "w-8 bg-warning/45",
                           )}
                         />

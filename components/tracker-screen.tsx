@@ -2,12 +2,6 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
-import {
-  BankIcon,
-  CreditCardIcon,
-  MoneyBag02Icon,
-} from "@hugeicons/core-free-icons";
-
 import { AppBottomNavigation } from "@/components/app-bottom-navigation";
 import { navItems } from "@/components/home/home-data";
 import {
@@ -130,7 +124,6 @@ function applyTrackerAction({
   >;
 }) {
   if (action.kind === "monthlyPayment") {
-    const methodTone = action.method;
     setMonthlyItems((current) => [
       {
         nameLabel: action.name,
@@ -184,14 +177,6 @@ function applyTrackerAction({
   ]);
   setActiveTab("major");
   setDrawer(null);
-}
-
-function getMethodIcon(method: "cash" | "card" | "bank") {
-  if (method === "cash") {
-    return MoneyBag02Icon;
-  }
-
-  return method === "card" ? CreditCardIcon : BankIcon;
 }
 
 function formatAmount(value: number) {

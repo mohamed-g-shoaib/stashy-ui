@@ -4,7 +4,6 @@ import {
   Wallet01Icon,
   ArrowDownLeft01Icon,
   PackageReceiveIcon,
-  BitcoinIcon,
 } from "@hugeicons/core-free-icons";
 
 import type { HistoryTransaction } from "./types";
@@ -117,18 +116,5 @@ export const historyTransactions: HistoryTransaction[] = [
     direction: "expense",
     methodIcon: CreditCardIcon,
     methodTone: "card",
-  },
-  {
-    id: "txn-freelance-001",
-    descriptionKey: "freelance",
-    note: "UI Design project payment",
-    budgetTypeKey: "received",
-    typeCategory: "monthly",
-    amount: "15,000 EGP",
-    date: "Mon, 13/Apr",
-    dateISO: "2026-04-13",
-    direction: "received",
-    methodIcon: BitcoinIcon,
-    methodTone: "bank",
   },
 ];

@@ -17,14 +17,20 @@ type HistoryRowProps = {
   isStandalone?: boolean;
 };
 
-type TypeTone = "neutral" | "stability" | "pressure";
+type TypeTone =
+  | "variable"
+  | "fixed"
+  | "major"
+  | "transfer"
+  | "income"
+  | "injection";
 
 const typeSemanticMap: Record<HistoryTransactionType, TypeTone> = {
-  variable: "neutral",
-  monthly: "stability",
-  budget: "stability",
-  major: "pressure",
-  transfer: "neutral",
+  variable: "variable",
+  monthly: "fixed",
+  budget: "fixed",
+  major: "major",
+  transfer: "transfer",
 };
 
 export function HistoryRow({
@@ -34,13 +40,8 @@ export function HistoryRow({
 }: HistoryRowProps) {
   const t = useTranslations("History");
   const locale = useLocale();
-  const typeTone = typeSemanticMap[transaction.typeCategory];
-  const amountTone =
-    transaction.direction === "received"
-      ? semanticTextClass.recovery
-      : transaction.direction === "expense"
-        ? semanticTextClass.critical
-        : semanticTextClass.neutral;
+  const typeTone = getSurfaceTone(transaction);
+  const amountTone = getAmountTone(transaction);
 
   const description = transaction.descriptionKey
     ? t(`transactions.${transaction.descriptionKey}`)
@@ -128,7 +129,7 @@ export function HistoryRow({
               </span>
             )}
             {transaction.isAutoPay && (
-              <div className="flex items-center gap-1 text-[0.625rem] font-bold text-success uppercase tracking-wider">
+              <div className="flex items-center gap-1 text-[0.625rem] font-bold text-fixed uppercase tracking-wider">
                 <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} />
                 {t("labels.autoPay")}
               </div>
@@ -143,4 +144,32 @@ export function HistoryRow({
       </div>
     </div>
   );
+}
+
+function getSurfaceTone(transaction: HistoryTransaction): TypeTone {
+  if (transaction.budgetTypeKey === "injection") {
+    return "injection";
+  }
+
+  if (transaction.direction === "received") {
+    return "income";
+  }
+
+  return typeSemanticMap[transaction.typeCategory];
+}
+
+function getAmountTone(transaction: HistoryTransaction) {
+  if (transaction.budgetTypeKey === "injection") {
+    return "text-foreground";
+  }
+
+  if (transaction.direction === "received") {
+    return semanticTextClass.income;
+  }
+
+  if (transaction.direction === "expense") {
+    return semanticTextClass.expense;
+  }
+
+  return "text-foreground";
 }

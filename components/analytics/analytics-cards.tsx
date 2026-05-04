@@ -38,9 +38,9 @@ export function PacingCard({ month }: { month: AnalyticsMonth }) {
         : t("pacing.onPace")
   const pacingToneClass =
     month.pacingDeltaPct < 0
-      ? semanticTextClass.stability
+      ? semanticTextClass.fixed
       : month.pacingDeltaPct > 0
-        ? semanticTextClass.critical
+        ? semanticTextClass.expense
         : "text-foreground"
 
   return (
@@ -82,9 +82,9 @@ export function PacingCard({ month }: { month: AnalyticsMonth }) {
             ariaLabel={t("pacing.barLabel")}
             fillClassName={cn(
               month.pacingDeltaPct < 0
-                ? semanticProgressClass.stability
+                ? semanticProgressClass.fixed
                 : month.pacingDeltaPct > 0
-                  ? semanticProgressClass.critical
+                  ? semanticProgressClass.expense
                   : semanticProgressClass.brand,
               FILL_WIDTH_CLASS[month.budgetUsedPct],
             )}
@@ -105,9 +105,9 @@ export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
   const t = useTranslations("Analytics")
   const projectedSavingsTone =
     month.projectedSavings > 0
-      ? semanticTextClass.stability
+      ? semanticTextClass.income
       : month.projectedSavings < 0
-        ? semanticTextClass.critical
+        ? semanticTextClass.expense
         : "text-foreground"
 
   return (
@@ -350,7 +350,7 @@ export function AnalyticsUpgradeGate() {
           </div>
           <div className={cn("flex flex-col gap-2 text-start", statTileClass)} aria-hidden="true">
             <div className="h-2 w-7 rounded-full bg-text-tertiary/20" />
-            <div className="h-2 w-10 rounded-full bg-info/40" />
+            <div className="h-2 w-10 rounded-full bg-injection/40" />
           </div>
           <div className={cn("flex flex-col gap-2 text-start", statTileClass)} aria-hidden="true">
             <div className="h-2 w-9 rounded-full bg-text-tertiary/20" />
@@ -400,7 +400,7 @@ function ComparisonRow({
 
         <Badge
           variant={
-            tone === "positive" ? "stability" : tone === "negative" ? "critical" : "neutral"
+            tone === "positive" ? "income" : tone === "negative" ? "expense" : "quiet"
           }
           className="h-auto rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
         >
@@ -498,10 +498,10 @@ function InsightRow({
       <span
         className={cn(
           "mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full shadow-ring",
-          tone === "positive" && semanticSurfaceClass.stability,
-          tone === "negative" && semanticSurfaceClass.critical,
-          tone === "warning" && semanticSurfaceClass.pressure,
-          tone === "neutral" && semanticSurfaceClass.muted,
+          tone === "positive" && semanticSurfaceClass.income,
+          tone === "negative" && semanticSurfaceClass.expense,
+          tone === "warning" && semanticSurfaceClass.warning,
+          tone === "neutral" && semanticSurfaceClass.quiet,
         )}
       >
         <HugeiconsIcon icon={icon} aria-hidden="true" size={18} />
@@ -514,9 +514,9 @@ function InsightRow({
             dir="ltr"
             className={cn(
               "shrink-0 text-sm font-semibold tabular-nums",
-              tone === "positive" && semanticTextClass.stability,
-              tone === "negative" && semanticTextClass.critical,
-              tone === "warning" && semanticTextClass.pressure,
+              tone === "positive" && semanticTextClass.income,
+              tone === "negative" && semanticTextClass.expense,
+              tone === "warning" && semanticTextClass.warning,
               tone === "neutral" && "text-foreground",
             )}
           >
@@ -543,7 +543,7 @@ function SummaryItem({ label, value }: { label: string; value: string }) {
 function MutedPill({ label }: { label: string }) {
   return (
     <Badge
-      variant="neutral"
+      variant="quiet"
       className="h-auto w-fit rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
     >
       {label}

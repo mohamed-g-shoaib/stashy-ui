@@ -28,8 +28,8 @@ export function SandboxHome() {
         </div>
         <div className="grid grid-cols-3 gap-2">
           <PreviewTile icon={Wallet02Icon} tone={semanticSurfaceClass.brand} />
-          <PreviewTile icon={Calendar03Icon} tone={semanticSurfaceClass.pressure} />
-          <PreviewTile icon={Note03Icon} tone={semanticSurfaceClass.recovery} />
+          <PreviewTile icon={Calendar03Icon} tone={semanticSurfaceClass.warning} />
+          <PreviewTile icon={Note03Icon} tone={semanticSurfaceClass.injection} />
         </div>
 
         <div className="flex flex-wrap items-center gap-2">

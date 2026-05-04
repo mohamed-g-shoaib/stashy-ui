@@ -184,21 +184,23 @@ function AddOptions({
 }) {
   const t = useTranslations("Home.drawer.add");
   const options = [
-    { key: "spend", icon: MoneyBag02Icon, tone: semanticSurfaceClass.brand },
+    { key: "spend", icon: MoneyBag02Icon, tone: semanticSurfaceClass.expense },
     {
       key: "receive",
       icon: ArrowDown01Icon,
-      tone: semanticSurfaceClass.recovery,
+      tone: semanticSurfaceClass.income,
     },
-    { key: "injection", icon: Note03Icon, tone: semanticSurfaceClass.recovery },
-    { key: "major", icon: Invoice03Icon, tone: semanticSurfaceClass.pressure },
+    { key: "injection", icon: Note03Icon, tone: semanticSurfaceClass.injection },
+    { key: "major", icon: Invoice03Icon, tone: semanticSurfaceClass.warning },
   ] as const;
   const parsedAmount = Number(amount) || 0;
   const responseTone =
     selectedAction === "spend" && parsedAmount > 615.38
-      ? semanticTextClass.critical
-      : selectedAction === "receive" || selectedAction === "injection"
-        ? semanticTextClass.recovery
+      ? semanticTextClass.expense
+      : selectedAction === "receive"
+        ? semanticTextClass.income
+        : selectedAction === "injection"
+          ? semanticTextClass.injection
         : "text-foreground";
 
   const methodOptions = (["cash", "card", "bank"] as const).map((option) => ({
@@ -408,7 +410,7 @@ function HelpContent({ dailyScenario }: { dailyScenario: DailyScenario }) {
       <div className={surfacePanelClass}>
         <div className="flex items-start gap-3">
           <span
-            className={`flex size-11 shrink-0 items-center justify-center rounded-full bg-card shadow-ring ${semanticTextClass.recovery}`}
+            className={`flex size-11 shrink-0 items-center justify-center rounded-full bg-card shadow-ring ${semanticTextClass.income}`}
           >
             <HugeiconsIcon icon={ArrowUp01Icon} aria-hidden="true" size={20} />
           </span>
@@ -426,7 +428,7 @@ function HelpContent({ dailyScenario }: { dailyScenario: DailyScenario }) {
       <div className={surfacePanelClass}>
         <div className="flex items-start gap-3">
           <span
-            className={`flex size-11 shrink-0 items-center justify-center rounded-full bg-card shadow-ring ${semanticTextClass.pressure}`}
+            className={`flex size-11 shrink-0 items-center justify-center rounded-full bg-card shadow-ring ${semanticTextClass.warning}`}
           >
             <HugeiconsIcon icon={Invoice03Icon} aria-hidden="true" size={20} />
           </span>

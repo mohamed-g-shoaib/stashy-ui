@@ -101,7 +101,7 @@ function getDailyRate(
       explanation: t("daily.explanationTrack"),
       tomorrow: null,
       status: t("daily.statusTrack"),
-      statusTone: "success",
+      statusTone: "fixed",
       fill: "basis-[75%]",
       spentFill: "basis-[25%]",
     }
@@ -114,7 +114,7 @@ function getDailyRate(
     explanation: t("daily.explanationOverspent"),
     tomorrow: "742 EGP",
     status: t("daily.statusOverspent"),
-    statusTone: "danger",
+    statusTone: "expense",
     fill: "basis-[8%]",
     spentFill: "basis-[92%]",
   }

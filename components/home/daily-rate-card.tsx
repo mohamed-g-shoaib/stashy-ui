@@ -82,7 +82,7 @@ function DailyAllowanceBar({ rate, label }: { rate: DailyRate; label: string }) 
 
 function DailyRateStatus({ rate }: { rate: DailyRate }) {
   const t = useTranslations("Home")
-  const isOnTrack = rate.statusTone === "success"
+  const isOnTrack = rate.statusTone === "fixed"
 
   return (
     <div className="flex items-center justify-between gap-3 text-sm">
@@ -93,7 +93,7 @@ function DailyRateStatus({ rate }: { rate: DailyRate }) {
         </span>
       </p>
       <Badge
-        variant={isOnTrack ? "stability" : "critical"}
+        variant={isOnTrack ? "fixed" : "expense"}
         className="rounded-full"
       >
         {rate.status}
@@ -104,7 +104,7 @@ function DailyRateStatus({ rate }: { rate: DailyRate }) {
 
 function TomorrowRate({ rate }: { rate: DailyRate }) {
   const t = useTranslations("Home")
-  const isOverspent = rate.statusTone === "danger"
+  const isOverspent = rate.statusTone === "expense"
 
   if (!rate.tomorrow) {
     return null
@@ -116,7 +116,7 @@ function TomorrowRate({ rate }: { rate: DailyRate }) {
         {t("daily.tomorrow")}{" "}
         <span
           dir="ltr"
-          className={cn("tabular-nums", isOverspent && semanticTextClass.critical)}
+          className={cn("tabular-nums", isOverspent && semanticTextClass.expense)}
         >
           {rate.tomorrow}
         </span>
@@ -124,10 +124,10 @@ function TomorrowRate({ rate }: { rate: DailyRate }) {
       <HugeiconsIcon
         icon={ArrowUpRight01Icon}
         size={20}
-        className={cn(
-          "shrink-0",
-          isOverspent ? `rotate-90 ${semanticTextClass.critical}` : semanticTextClass.stability,
-        )}
+          className={cn(
+            "shrink-0",
+            isOverspent ? `rotate-90 ${semanticTextClass.expense}` : semanticTextClass.fixed,
+          )}
         aria-hidden="true"
       />
     </div>

@@ -68,7 +68,7 @@ function MonthlySection({ items }: { items: MonthlyPayment[] }) {
           count: items.length,
           total: getMonthlyTotal(items),
         })}
-        tone="danger"
+        tone="fixed"
         expanded={expanded}
         onToggle={() => setExpanded((value) => !value)}
       />
@@ -135,8 +135,9 @@ function SectionHeader({
       type="button"
       className={cn(
         "flex min-h-12 items-center gap-2 rounded-[var(--radius-sm)] bg-surface-offset px-3 py-2 text-start text-[1.0625rem] font-semibold shadow-ring",
-        tone === "danger" && semanticTextClass.critical,
-        tone === "warning" && semanticTextClass.pressure,
+        tone === "quiet" && "text-foreground",
+        tone === "warning" && semanticTextClass.warning,
+        tone === "fixed" && semanticTextClass.fixed,
       )}
       onClick={onToggle}
       aria-expanded={expanded}
@@ -145,7 +146,7 @@ function SectionHeader({
       <span dir="ltr" className="shrink-0 text-xs font-semibold text-current tabular-nums">
         {summary}
       </span>
-      {tone !== "neutral" ? (
+      {tone !== "quiet" ? (
         <HugeiconsIcon icon={Alert02Icon} aria-hidden="true" size={18} />
       ) : null}
       <HugeiconsIcon
@@ -198,7 +199,7 @@ function StatusBadge({ status }: { status: PaymentStatus }) {
 function BudgetCard({ bucket }: { bucket: BudgetBucket }) {
   const t = useTranslations("Tracker")
   const [transactionsOpen, setTransactionsOpen] = React.useState(false)
-  const tone = bucket.percent >= 100 ? "danger" : bucket.percent >= 90 ? "warning" : "brand"
+  const tone = bucket.percent >= 100 ? "expense" : bucket.percent >= 90 ? "warning" : "fixed"
 
   return (
     <Card size="sm" className="py-4">
@@ -217,7 +218,7 @@ function BudgetCard({ bucket }: { bucket: BudgetBucket }) {
               dir="ltr"
               className={cn(
                 "text-sm font-semibold tabular-nums",
-                bucket.percent >= 90 ? semanticTextClass.pressure : "text-text-secondary",
+                bucket.percent >= 90 ? semanticTextClass.warning : semanticTextClass.fixed,
               )}
             >
               {bucket.percent}%

@@ -1,187 +1,239 @@
 > **LLM Context & Usage Guide**
 > **File Purpose:** The semantic color audit and accent philosophy for Stashy.
-> **How to Use:** Read this before assigning any product accent color. It maps actions, states, risks, and financial meanings to consistent visual families so the interface feels human, readable, and branded.
-> **Constraint Reminder:** This file is a working product-design document inside an `audit -> create -> audit -> redo` cycle. Extend it by adding approved semantic roles and mappings instead of scattering new color choices across implementation files.
+> **How to Use:** Read this before assigning any product accent color. It defines how Stashy turns product meaning into human-readable color while staying inside one warm, controlled brand identity.
+> **Constraint Reminder:** This file is part of an `audit -> create -> audit -> redo` system-building cycle. Do not treat the current UI as authority if it conflicts with this document.
 
 # Stashy Brand Color Audit
 
-## 1. Color Philosophy
+## 1. Core Philosophy
 
-Stashy should feel like a **calm financial desk with human signals built in**. The base palette stays warm and quiet, while accents do the work of meaning:
+Stashy should feel like a **warm money desk with readable consequences**.
 
-- good outcomes should feel reassuring, not gamified
-- risk should feel visible, not hostile
-- intervention states should feel restorative, not generic
-- structure states should distinguish category identity without pretending every category is an emotion
+The base UI stays quiet and comfortable. Accents do the work of meaning.
 
-This is how Stashy stays colorful without becoming noisy.
+That meaning must follow human instinct:
 
-## 2. How This Document Is Used
+- green reads as gain, relief, or healthy status
+- red reads as loss, damage, overdue, or danger
+- blue reads as intervention, trust, or system information
+- yellow / ochre reads as caution, burden, or review
+- teal reads as stability, structure, and reliability
+- warm grey can represent variable day-to-day spending better than green when the category itself is not inherently positive
 
-This file is not only an audit sheet. It is also the semantic creation map for the app.
+## 2. The Big Fix
 
-Use it in this order:
+The old mapping problem was simple:
 
-1. audit existing UI against product truth
-2. create or revise semantic mappings
-3. audit the created result against real Stashy logic
-4. redo weak, confusing, or contradictory treatments
+- category colors were being asked to do emotional-state work
+- emotional-state colors were being diluted by category styling
 
-## 3. Brand Placement
+Stashy now uses a **two-axis semantic model**.
 
-Stashy's visual position should sit between three useful influences:
+### Axis A — Structural Identity
 
-- **Slite** for eye comfort and warm editorial calm
-- **Cursor** for precise product seriousness and disciplined control surfaces
-- **Convex** for confident system-state signaling and operational clarity
+This answers:
 
-Stashy should land in its own spot: **a warm financial control surface with human-readable consequences**.
+**What is this thing?**
 
-## 4. Base Harmony Audit
+- Variable
+- Fixed
+- Major
+- Transfer
+
+### Axis B — Consequence Meaning
+
+This answers:
+
+**What does this mean right now?**
+
+- income / received
+- expense / outcome
+- injection / intervention
+- warning / review
+- emergency / destructive
+- pending / inactive / archived
+
+If both are present, consequence meaning wins for the high-signal element, while structural identity may still appear in a chip, border, icon well, or chart legend.
+
+## 3. Brand Position
+
+Stashy sits between:
+
+- **Slite**: warm comfort and editorial calm
+- **Cursor**: controlled product seriousness and precision
+- **Convex**: strong state legibility and operational sharpness
+
+But the destination is distinct:
+
+**a warm, consequence-aware financial control surface**
+
+## 4. Harmony Audit
 
 | Layer | Role | Direction |
 | --- | --- | --- |
-| Page background | Long-session comfort | Warm, parchment-adjacent, never pure white |
-| Cards and sheets | Main reading plane | Slightly lighter and cleaner than the page ground |
-| Nested surfaces | Grouping and controls | Soft separation without gray SaaS coldness |
-| Borders and dividers | Structure | Warm, visible, low-shout |
-| Text tiers | Hierarchy | Strong walnut primary, softer brown-gray secondary, muted tertiary |
-| Shadows and overlays | Depth | Paper-stack layering, not glass or neon |
-| Charts and badges | Meaning | Must reuse semantic families from this audit |
+| Page ground | Long-session comfort | Warm parchment, never white-white |
+| Main card | Core reading plane | Cleaner and lighter than the page |
+| Nested surface | Grouping and controls | Slightly darker or denser than main card, still warm |
+| Borders | Structure | Warm visible separators, never cold gray |
+| Text tiers | Hierarchy | Dark walnut primary, softer brown-gray secondary, dusty tertiary |
+| Shadows | Depth | Paper-stack softness, not glass or neon |
+| Charts | Interpretation | Quiet by default, semantic when meaning matters |
 
-## 5. Semantic Families
+## 5. Accent Families
 
-| Family | Meaning | Accent role | Typical use |
+| Family | Role | Direction |
+| --- | --- | --- |
+| Brand | Primary product-owned emphasis | Clay / terracotta warmth |
+| Variable structure | Day-to-day living bucket | Ledger Gray / warm mineral grey |
+| Fixed structure | Stability and recurring order | Teal |
+| Major structure | Heavy burden category | Deep Ochre |
+| Income / recovery | Positive inflow and relief | Meadow green |
+| Injection / intervention | Rescue, reserve support, budget rescue | Mulberry reserve |
+| Expense / critical | Money leaving, overdue, destructive, emergency | Brick red |
+| Warning / review | Attention, pressure, due-soon, deliberation | Amber / ochre |
+| Transfer / movement | Reallocation, movement, non-win/non-loss | Iris / muted violet-slate |
+| Quiet status | Inactive, archived, draft, historical, disabled | Fog neutrals |
+
+## 6. Working Color Vocabulary
+
+These names are design-facing semantic anchors. Final implementation tokens can map to them later.
+
+| Name | Suggested character | Typical job |
+| --- | --- | --- |
+| Clay | Warm terracotta-brown | Brand CTA, active navigation, strongest owned emphasis |
+| Ledger Gray | Warm mineral grey | Variable category identity |
+| Teal Ledger | Soft blue-green | Fixed category identity, reliability |
+| Ochre Ledger | Earthy dark yellow | Major category identity, burden |
+| Meadow | Muted green | Income, received, healthy recovery |
+| Mulberry Reserve | Muted plum-brown | Budget injection, reserve support, deliberate rescue |
+| Brick | Warm red clay | Expense, overdue, destructive, emergency |
+| Amber | Dusty amber | Warning, caution, preview, due-soon |
+| Iris | Muted violet-slate | Transfer, movement, pair relationships |
+| Fog | Warm dusty neutral | Draft, inactive, archived, secondary system states |
+
+## 7. App-Wide Coverage Map
+
+| Subsystem | Needs semantic coverage for |
+| --- | --- |
+| Auth and onboarding | verification, conflict, blocked entry, expired session, setup required |
+| Dashboard | rate health, remaining today, overspend, emergency, tomorrow impact, major burden |
+| Add transaction | type selection, direction, major preview, budget injection, transfer creation |
+| Fixed expenses | manual vs recurring vs installment, pending, paid, overdue, low remaining, completed |
+| Transactions / history | spent, all, variable, fixed, major, transfer, received, merged rows |
+| Analytics | pacing, projections, deltas, comparison, gated insights |
+| Payment methods | active, default, deleted, soft-deleted historical presence |
+| Offline sync | queued, syncing, synced, duplicate, stale, failed, retry |
+| System state | maintenance, forced update, version block, service unavailability |
+| Plan state | free limit, Pro-required, upgrade path |
+| Destructive flows | delete, cascade decision, hard delete confirmation |
+
+## 8. Structural Identity Map
+
+These colors identify category or object type. They should not automatically imply “good” or “bad.”
+
+| Structural thing | Family | Why |
+| --- | --- | --- |
+| Variable category | Variable structure / Ledger Gray | Day-to-day living money; vague, flexible, and ongoing without implying success |
+| Fixed category | Fixed structure / Teal Ledger | Stable, bounded, recurring, trustworthy |
+| Major category | Major structure / Ochre Ledger | Significant burden, deliberate, weighty |
+| Transfer | Transfer / Iris | Movement between buckets, neither gain nor loss |
+| Payment method grouping | Brand or quiet neutral | Product-owned organization, not semantic emotion |
+
+## 9. Consequence Meaning Map
+
+These colors communicate what is happening, not what category the record belongs to.
+
+| Meaning | Family | Why |
+| --- | --- | --- |
+| Income / received | Income / recovery / Meadow | Human expectation: gain, relief, added headroom |
+| Expense / outcome | Expense / critical / Brick | Human expectation: money leaving, loss, cost |
+| Budget injection | Injection / intervention / Mulberry Reserve | Rescue and support, distinct from normal income and distinct from transfer movement |
+| Warning / review | Warning / Amber | Needs attention without reading as failure |
+| Emergency mode | Expense / critical / Brick | Highest-stress budget state |
+| Destructive action | Expense / critical / Brick | Irreversible or lossful action |
+| Healthy / paid / completed | Income / recovery or Fixed structure | Choose by meaning: recovery for gain, teal for reliable completion |
+| Pending / inactive / archived / draft | Quiet status / Fog | Low emotional temperature, still legible |
+
+## 10. Literal Product Mapping
+
+| Action or state | Primary family | Secondary family | Notes |
 | --- | --- | --- | --- |
-| Brand | Primary intentional action | Clay | Main CTA, active nav, strongest product-owned emphasis |
-| Neutral | Operational/default | Biscuit and Mocha | Variable, unselected states, quiet chips, default rows |
-| Stability | Reliable, paid, on-plan | Sage | Fixed budget structure, paid, healthy progress |
-| Pressure | Large burden, caution, review | Amber | Major expenses, threshold warnings, pressure states |
-| Critical | Loss, overdue, destructive, overspend | Burnt Clay | Expense danger, emergency mode, overdue, delete, sync failure |
-| Recovery | Restorative positive inflow | Harbor | Income, received, budget injection, resolved/synced info |
-| Muted info | Secondary system status | Fog-adjacent neutrals | Metadata, archived, inactive, draft, empty states |
+| Variable expense | Expense / Brick | Variable / Ledger Gray | Red amount or alert, warm-grey chip if category identity is needed |
+| Variable received | Income / Meadow | Variable / Ledger Gray | Green value with variable identity support |
+| Fixed expense | Expense / Brick | Fixed / Teal Ledger | Teal category, red consequence |
+| Fixed received / refund | Income / Meadow | Fixed / Teal Ledger | Recovery inside a fixed bucket |
+| Major expense | Warning / Amber | Major / Ochre Ledger | Deliberate and heavy before it becomes a crisis |
+| Major overuse warning (>25%) | Warning / Amber | Major / Ochre Ledger | Consequence warning, not generic yellow decoration |
+| Budget injection | Injection / Mulberry Reserve | none | Must feel distinct from ordinary income and from transfer |
+| Transfer out/in pair | Transfer / Iris | Source/target labels | Movement, not win/loss |
+| Paid fixed item | Fixed / Teal Ledger | Income / Meadow optional | Teal first, green only if explicitly emphasizing success |
+| Pending fixed item | Warning / Amber or Fog | Fixed / Teal Ledger | Use amber if action is due soon, fog if merely waiting |
+| Overdue fixed item | Expense / Brick | Fixed / Teal Ledger | Risk state overrides category calm |
+| Low remaining fixed bucket | Warning / Amber | Fixed / Teal Ledger | Near limit, not yet failure |
+| Over budget fixed bucket | Expense / Brick | Fixed / Teal Ledger | True overrun |
+| Dashboard on track | Fixed / Teal Ledger or Meadow | none | Calm health, avoid confetti-green tone |
+| Dashboard low remaining | Warning / Amber | none | Early caution |
+| Overspent today | Expense / Brick | none | Immediate consequence |
+| Emergency mode | Expense / Brick | Injection / Mulberry Reserve CTA | Crisis state plus clear intervention path |
+| Tomorrow's rate impact | Warning / Amber | Expense / Brick if severe | Consequence preview |
+| Sync in progress | Fog or Brand | none | Trust activity, not success yet |
+| Sync success | Meadow or Brand | none | Trust restored, keep it restrained |
+| Sync stale / failed | Expense / Brick | Warning / Amber optional | Trust problem; must be visible |
+| Email verification required | Warning / Amber | none | Needs action, not danger |
+| Session expired | Warning / Amber | none | Attention needed, not punitive |
+| Maintenance planned | Warning / Amber | none | Controlled service interruption |
+| Service unavailable | Expense / Brick | none | Hard availability problem |
+| Plan upgrade required | Brand / Clay | Warning / Amber if blocking | Upsell should stay branded unless it interrupts a flow |
+| Draft / archived / inactive | Fog | none | Quiet informational state |
+| Delete transaction | Expense / Brick | none | Destructive |
+| Fixed delete cascade review | Warning / Amber | Fixed / Teal Ledger | Review before irreversible choice |
+| Hard delete in cascade | Expense / Brick | none | True destructive end state |
 
-## 6. App-Wide Coverage Map
+## 11. Layout And Component Rules
 
-| Subsystem | Coverage focus |
-| --- | --- |
-| Auth and onboarding | verification, blocked entry, conflict, invalid session, setup-required |
-| Dashboard | base/current rate, remaining today, overspend, emergency, tomorrow impact, major warning, payment totals |
-| Add transaction | type selection, direction, major confirmation, budget injection, transfer creation |
-| Fixed expenses | manual vs recurring vs installment, due, pending, paid, overdue, completed, delete-cascade resolution |
-| Fixed tracker | progress, low remaining, on track, full spent, over budget, future-start, completed installment |
-| History | spent/all/fixed/variable/major/transfer filters, merged transfers, empty states |
-| Payment methods | active, default, deleted, soft-deleted historical presence, create limits |
-| Analysis | pacing, overpaced, underpaced, projections, month-over-month comparison, Pro lock |
-| Snapshots | close month, already closed, historical comparison availability |
-| Offline sync | in-progress, success, duplicate, queue-full, stale, failed, retryable |
-| System status | ok, forced update, maintenance mode |
-| Plan gating | free limit reached, upgrade available, Pro-required feature access |
-| Errors and validation | field error, blocked action, conflict, retryable server failure |
+### 11.1 Rows
 
-## 7. Product Accent Matrix
+- Category chip can show structural identity.
+- Amount should show consequence meaning.
+- If both exist, do not force one color to carry both jobs.
 
-| Product meaning | Semantic family | Notes |
-| --- | --- | --- |
-| Variable category | Neutral | Category identity only; direction still controls positive/negative meaning when needed |
-| Fixed category | Stability | Structural identity; use Sage family for fixed context and paid/healthy progress |
-| Major category | Pressure | Caution and budget burden, not automatic danger |
-| Expense / outcome | Critical | Human expectation: money leaving should feel loss-aware |
-| Received / income | Recovery | Human expectation: positive inflow should feel relieving and clear |
-| Budget injection | Recovery | Distinct from normal income in copy, but same restorative family |
-| Transfer | Mixed structural | Use structural styling with clear directional labels; do not color it as pure success or failure |
-| Overspending today | Critical | Pair with explicit labels, not color alone |
-| Emergency mode | Critical | Strongest non-destructive warning state in the product |
-| Fixed paid | Stability | Reinforces reliability and completion |
-| Pending | Muted info | Not success, not danger |
-| Overdue | Critical | More severe than pending |
-| Major warning >25% | Pressure | Threshold caution, still separate from emergency |
-| Healthy pacing / recovered state | Stability or Recovery | Choose based on whether the state is structural stability or restored budget headroom |
-| Sync in progress | Muted info or Recovery | Low-drama status until success/failure resolves |
-| Sync success | Recovery | Small confirmation, not celebratory green |
-| Sync failure | Critical | Must be visible because stale rate affects trust |
-| Maintenance mode | Pressure or Critical | Use Pressure for planned maintenance, Critical if service is unavailable |
-| Auth/session expired | Pressure | Needs user attention, but not a destructive action |
-| Destructive actions | Critical | Delete, remove, irreversible confirmations |
-| Archived / inactive / draft | Muted info | Quiet and intentionally low-emphasis |
-| Plan upgrade required | Brand or Pressure | Prefer brand when upsell is product-led; Pressure only if it blocks a task and needs immediate attention |
+### 11.2 Cards
 
-## 8. Literal Action And State Matrix
+- Most cards stay warm-neutral.
+- Semantic tinting should appear only when the whole card is about a state, warning, or result.
 
-| Action or state | Semantic family | UI intent |
-| --- | --- | --- |
-| Add variable expense | Critical | Show money leaving without looking punitive by default |
-| Add variable received | Recovery | Show budget relief and positive inflow |
-| Add fixed expense transaction | Stability or Critical | Stability for the category, Critical only if overrun or overdue context appears |
-| Add fixed refund/received | Recovery on top of Stability | Reads as correction or relief within a fixed bucket |
-| Add major expense | Pressure at entry, then Pressure/Critical if consequences deepen | Must feel consequential before submission |
-| Confirm major expense preview | Pressure | This is a deliberation moment, not an error state |
-| Trigger budget injection | Recovery | Intervention and rescue, distinct from normal income |
-| Create transfer | Neutral structural | Show movement, not win/loss |
-| Delete transaction | Critical | Irreversible/destructive |
-| Delete fixed expense cascade step 1 | Pressure | Requires review and branching resolution |
-| Resolve pending fixed transactions | Pressure or Critical | Depends on whether the choice is reclassify vs hard delete |
-| Fixed due soon / pending | Muted info | Needs visibility, not alarm |
-| Fixed paid | Stability | Reliable and complete |
-| Fixed low remaining | Pressure | Near limit, not yet failure |
-| Fixed over budget | Critical | Actual overrun |
-| Installment completed | Stability | Completed lifecycle |
-| Future-start recurring/installment | Muted info | Exists, but not active for totals yet |
-| Dashboard on track | Stability | Calm confidence |
-| Dashboard low remaining | Pressure | Early caution |
-| Overspent today | Critical | Immediate consequence |
-| Emergency mode | Critical | Highest daily-budget stress state |
-| Tomorrow's rate impact | Pressure | Consequence-warning, not failure banner |
-| Major expenses >25% | Pressure | Controlled caution |
-| Payment method soft-deleted but historically present | Muted info | Historical artifact, not active control |
-| Analysis locked on free | Brand or Pressure | Upsell with clarity, no panic |
-| No month-over-month comparison yet | Muted info | Missing history, not failure |
-| Snapshot already closed | Muted info or Stability | Resolved historical action |
-| Sync in progress | Muted info | Background trust state |
-| Sync duplicate | Muted info | Benign technical state |
-| Sync success | Recovery | Trust restored |
-| Sync queue full / stale daily rate | Critical | Product integrity risk |
-| Sync failure with retry | Critical | Trust-threatening but recoverable |
-| Email verification required | Pressure | Clear attention-needed gate |
-| Email conflict | Pressure | Blocked but not destructive |
-| Forced update required | Pressure or Critical | Product-blocking state |
-| Maintenance mode | Pressure or Critical | Planned caution vs unavailable system |
-| Validation error 422 | Pressure | Action rejected, guide correction |
-| Forbidden 403 plan-gated | Brand or Pressure | Upgrade or blocked-access state |
-| Conflict 409 onboarding/budget missing | Pressure | Route user to required setup |
-| Generic retryable 500 | Critical | System failure, but not user fault |
+### 11.3 Charts
 
-## 9. Usage Rules By UI Pattern
+- Structural comparisons may use Ledger Gray, Teal Ledger, Ochre Ledger, and Iris.
+- Outcome overlays should use Meadow, Brick, Mulberry Reserve, and Amber only where interpretation depends on them.
+- Charts must not invent a separate rainbow system.
 
-| UI pattern | Allowed treatment |
-| --- | --- |
-| Text labels | Use the family's readable text color only when the label carries semantic meaning |
-| Icons | May inherit semantic text color for status and transaction cues |
-| Chips and badges | Preferred place for structural and transactional accent cues |
-| Soft backgrounds | Use subtle family surfaces for cards, alerts, and grouped callouts |
-| Borders | Use when a card needs semantic emphasis without full tinting |
-| Strong backgrounds | Reserve for CTAs, critical pills, or high-signal confirmations |
-| Charts | Reuse semantic families in a stable legend order; never invent separate chart-only meanings |
+### 11.4 Badges And Chips
 
-## 10. Chart And Data Rules
+- Structural chips identify type.
+- Consequence chips identify status.
+- Avoid mixing both into one ambiguous pill if the distinction matters.
 
-- Budget structure series should stay readable and low-noise before adding semantic emphasis.
-- Use Stability for healthy fixed progress, Pressure for major burden, Critical for overspend or failure conditions, and Recovery for received/injection recovery paths.
-- Do not create a separate “analytics palette” that breaks from the rest of the app.
-- Month-over-month deltas should use direction-aware semantics only when the delta is clearly good or bad in context.
+### 11.5 Primary Actions
 
-## 11. Misuse Constraints
+- Product-owned primary CTA stays in Brand / Clay.
+- Injection-related CTA may use Mulberry Reserve if the action is specifically restorative.
+- Destructive CTAs stay Brick.
 
-- Do not use Recovery for generic “good looking” decoration.
-- Do not use Critical for every negative number if the UI already communicates a structural category rather than risk.
-- Do not use Pressure and Critical interchangeably.
-- Do not color Variable as positive or negative by default; only the transaction direction should carry that meaning.
-- Do not use bright fintech green or alarm red outside the approved muted families.
-- Do not let chart palettes drift away from badge and alert semantics.
+## 12. Misuse Constraints
 
-## 12. Implementation Rules For Follow-Up Cleanup
+- Do not color fixed as green by default; teal is the better signal for stability.
+- Do not color variable with green or orange by default if the app wants users to read it as a flexible spending structure rather than a positive state.
+- Do not use the same green for normal income and emergency injection.
+- Do not use red for every negative number if the UI is only identifying a category, not a consequence.
+- Do not let transfer inherit success or danger colors unless a specific leg is being emphasized.
+- Do not let charts become more colorful than the product logic deserves.
+- Do not rely on color alone; pair status with labels, icons, wording, or placement.
 
-1. No hardcoded hex colors in feature components when a token exists.
-2. Semantic roles must map through tokens, not inline business logic picking colors ad hoc.
-3. Badges, charts, alerts, progress bars, and transaction rows must consume the same semantic families.
-4. If a new product state appears, document it here before adding a new accent treatment.
+## 13. Implementation Rules
+
+1. No hardcoded hex values in feature components when a governed token exists.
+2. Map structural identity and consequence meaning through separate helpers when both are needed.
+3. Use one semantic system for badges, alerts, charts, rows, cards, and progress components.
+4. Add new product states to this file before inventing a new accent treatment in code.
+5. Audit “first read meaning” after implementation: can a user skim and understand the screen in seconds?

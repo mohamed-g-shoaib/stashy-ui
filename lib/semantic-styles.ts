@@ -1,54 +1,135 @@
+const semanticRoles = {
+  brand: {
+    surface: "bg-brand-subtle text-brand",
+    text: "text-brand",
+    progress: "bg-brand",
+    token: "var(--color-brand)",
+  },
+  variable: {
+    surface: "bg-variable-subtle text-variable",
+    text: "text-variable",
+    progress: "bg-variable",
+    token: "var(--color-variable)",
+  },
+  fixed: {
+    surface: "bg-fixed-subtle text-fixed",
+    text: "text-fixed",
+    progress: "bg-fixed",
+    token: "var(--color-fixed)",
+  },
+  major: {
+    surface: "bg-major-subtle text-major",
+    text: "text-major",
+    progress: "bg-major",
+    token: "var(--color-major)",
+  },
+  income: {
+    surface: "bg-income-subtle text-income",
+    text: "text-income",
+    progress: "bg-income",
+    token: "var(--color-income)",
+  },
+  injection: {
+    surface: "bg-injection-subtle text-injection",
+    text: "text-injection",
+    progress: "bg-injection",
+    token: "var(--color-injection)",
+  },
+  expense: {
+    surface: "bg-expense-subtle text-expense",
+    text: "text-expense",
+    progress: "bg-expense",
+    token: "var(--color-expense)",
+  },
+  warning: {
+    surface: "bg-warning-subtle text-warning",
+    text: "text-warning",
+    progress: "bg-warning",
+    token: "var(--color-warning)",
+  },
+  transfer: {
+    surface: "bg-transfer-subtle text-transfer",
+    text: "text-transfer",
+    progress: "bg-transfer",
+    token: "var(--color-transfer)",
+  },
+  quiet: {
+    surface: "bg-surface-offset text-text-secondary",
+    text: "text-text-secondary",
+    progress: "bg-text-secondary",
+    token: "var(--color-surface-offset)",
+  },
+} as const
+
 export const semanticSurfaceClass = {
-  brand: "bg-brand-subtle text-brand",
-  neutral: "bg-surface-offset text-text-secondary",
-  muted: "bg-card text-text-secondary",
-  stability: "bg-success-subtle text-success",
-  pressure: "bg-warning-subtle text-warning",
-  critical: "bg-danger-subtle text-danger",
-  recovery: "bg-info-subtle text-info",
+  brand: semanticRoles.brand.surface,
+  variable: semanticRoles.variable.surface,
+  fixed: semanticRoles.fixed.surface,
+  major: semanticRoles.major.surface,
+  income: semanticRoles.income.surface,
+  injection: semanticRoles.injection.surface,
+  expense: semanticRoles.expense.surface,
+  warning: semanticRoles.warning.surface,
+  transfer: semanticRoles.transfer.surface,
+  quiet: semanticRoles.quiet.surface,
 } as const
 
 export const semanticTextClass = {
-  brand: "text-brand",
-  neutral: "text-foreground",
-  muted: "text-text-secondary",
-  stability: "text-success",
-  pressure: "text-warning",
-  critical: "text-danger",
-  recovery: "text-info",
+  brand: semanticRoles.brand.text,
+  variable: semanticRoles.variable.text,
+  fixed: semanticRoles.fixed.text,
+  major: semanticRoles.major.text,
+  income: semanticRoles.income.text,
+  injection: semanticRoles.injection.text,
+  expense: semanticRoles.expense.text,
+  warning: semanticRoles.warning.text,
+  transfer: semanticRoles.transfer.text,
+  quiet: semanticRoles.quiet.text,
 } as const
 
 export const semanticInteractiveTextClass = {
   brand: "text-brand transition-colors hover:text-brand-hover",
-  critical: "text-danger transition-colors hover:text-danger-hover",
+  expense: "text-expense transition-colors hover:text-expense-hover",
 } as const
 
 export const semanticProgressClass = {
-  brand: "bg-brand",
-  neutral: "bg-text-secondary",
-  stability: "bg-success",
-  pressure: "bg-warning",
-  critical: "bg-danger",
-  recovery: "bg-info",
+  brand: semanticRoles.brand.progress,
+  variable: semanticRoles.variable.progress,
+  fixed: semanticRoles.fixed.progress,
+  major: semanticRoles.major.progress,
+  income: semanticRoles.income.progress,
+  injection: semanticRoles.injection.progress,
+  expense: semanticRoles.expense.progress,
+  warning: semanticRoles.warning.progress,
+  transfer: semanticRoles.transfer.progress,
+  quiet: semanticRoles.quiet.progress,
 } as const
 
 export const semanticColorToken = {
-  brand: "var(--color-brand)",
-  neutral: "var(--color-surface-offset)",
-  stability: "var(--color-success)",
-  pressure: "var(--color-warning)",
-  critical: "var(--color-danger)",
-  recovery: "var(--color-info)",
+  brand: semanticRoles.brand.token,
+  variable: semanticRoles.variable.token,
+  fixed: semanticRoles.fixed.token,
+  major: semanticRoles.major.token,
+  income: semanticRoles.income.token,
+  injection: semanticRoles.injection.token,
+  expense: semanticRoles.expense.token,
+  warning: semanticRoles.warning.token,
+  transfer: semanticRoles.transfer.token,
+  quiet: semanticRoles.quiet.token,
 } as const
 
 export const paymentStatusSemantic = {
-  paid: "stability",
-  pending: "pressure",
-  overdue: "critical",
+  paid: "fixed",
+  pending: "warning",
+  overdue: "expense",
 } as const
 
 export const transactionToneSemantic = {
-  variable: "neutral",
-  fixed: "stability",
-  received: "recovery",
+  variable: "variable",
+  fixed: "fixed",
+  major: "major",
+  transfer: "transfer",
+  received: "income",
+  injection: "injection",
+  expense: "expense",
 } as const

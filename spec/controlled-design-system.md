@@ -14,6 +14,7 @@ The design system exists to do three jobs at once:
 1. Keep the interface comfortable for long budgeting sessions.
 2. Make financial meaning legible without loud, exhausting color.
 3. Preserve one recognizable Stashy brand mood across every screen.
+4. Separate category identity from live consequence so the interface stays human-logical.
 
 ## 2. Working Mode
 
@@ -36,7 +37,8 @@ The visual system must be governed in this order:
 
 1. `spec/DESIGN.md` for tokens, spacing, typography, component defaults, and base visual language.
 2. `spec/brand-color-audit.md` for semantic accent meanings and approved usage families.
-3. Shared UI primitives and tokenized styles in implementation.
+3. `spec/mobile-direction-research.md` for external pattern synthesis, hierarchy direction, and modern mobile product signals.
+4. Shared UI primitives and tokenized styles in implementation.
 
 If a component conflicts with these specs, the component is wrong, not the spec.
 
@@ -67,11 +69,15 @@ The rule is simple: **borrow principles, not costumes**.
 Use color through these layers, in this order:
 
 1. **Foundation tokens**: backgrounds, surfaces, borders, text, overlay, shadow, brand action.
-2. **Semantic families**: success, warning, danger, recovery, info, structure, neutral, premium if needed later.
-3. **Product mappings**: income, expense, injection, fixed, variable, major, overdue, pending, sync, destructive, archived, and similar states.
-4. **Component usage**: cards, chips, charts, pills, banners, tabs, rows, icons, progress indicators.
+2. **Semantic families**: brand, variable structure, fixed structure, major structure, income/recovery, injection/intervention, expense/critical, warning/review, transfer/movement, quiet status.
+3. **Meaning axes**:
+   - structural identity: what this thing is
+   - consequence meaning: what is happening right now
+4. **Product mappings**: income, expense, injection, fixed, variable, major, overdue, pending, sync, destructive, archived, and similar states.
+5. **Component usage**: cards, chips, charts, pills, banners, tabs, rows, icons, progress indicators.
 
 Do not skip directly from product meaning to a raw color choice.
+Do not collapse structural identity and consequence meaning into one ambiguous color if both matter.
 
 ## 7. Design-System Coverage Rule
 
@@ -108,6 +114,7 @@ Overrides are allowed only when one of the following is true:
 - Hardcoded hex values in feature components when a token exists.
 - Local status colors that contradict the semantic audit.
 - Using the same accent family for opposing meanings in the same context.
+- Using a category color to fake a live state meaning when that state should have its own semantic signal.
 - Treating chart colors as separate from the product semantic system.
 - Letting copied reference aesthetics override Stashy's approved brand identity.
 
@@ -116,6 +123,7 @@ Overrides are allowed only when one of the following is true:
 - Shared primitives should expose the system, not fight it.
 - Feature screens should inherit tokens and semantic roles instead of redefining them locally.
 - Badges, alerts, charts, progress bars, and callouts must map through the same semantic families described in `spec/brand-color-audit.md`.
+- When both category identity and consequence meaning are present, shared primitives should support both layers instead of forcing one color to do both jobs.
 - If a new UI pattern needs color, document the meaning first, then implement the token usage.
 
 ## 11. Execution Order For Implementation

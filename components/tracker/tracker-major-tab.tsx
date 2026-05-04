@@ -26,7 +26,7 @@ export function TrackerMajorTab({ items = initialMajorExpenses }: TrackerMajorTa
     return (
       <Card size="sm" className="py-4 text-center">
         <CardContent className={cn("px-4", heroSurfaceClass)}>
-          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-[var(--radius-sm)] border border-dashed border-warning/35 bg-warning-subtle text-warning">
+          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-[var(--radius-sm)] border border-dashed border-major/35 bg-major-subtle text-major">
             <HugeiconsIcon icon={PackageIcon} aria-hidden="true" size={28} />
           </div>
           <h2 className="text-[1.0625rem] font-semibold text-foreground">
@@ -48,13 +48,13 @@ export function TrackerMajorTab({ items = initialMajorExpenses }: TrackerMajorTa
       <div
         className={cn(
           "flex min-h-12 items-center gap-2 rounded-[var(--radius-sm)] border px-card py-3",
-          semanticSurfaceClass.pressure,
+          semanticSurfaceClass.warning,
         )}
       >
         <HugeiconsIcon icon={Alert02Icon} aria-hidden="true" size={20} />
         <p className="text-sm font-semibold">{t("major.warning")}</p>
       </div>
-      <Card size="sm" className="border-warning/35 py-4">
+      <Card size="sm" className="border-major/35 py-4">
         <CardContent className="flex flex-col gap-4 px-4">
           <div className="space-y-1">
             <p className="text-[1.0625rem] font-semibold text-foreground">
@@ -86,13 +86,13 @@ export function TrackerMajorTab({ items = initialMajorExpenses }: TrackerMajorTa
             <span
               className={cn(
                 "flex size-11 shrink-0 items-center justify-center rounded-full shadow-ring",
-                semanticSurfaceClass.pressure,
+                semanticSurfaceClass.major,
               )}
             >
               <span
                 className={cn(
                   "size-2.5 rounded-full data-[large=false]:bg-border",
-                  semanticProgressClass.pressure,
+                  semanticProgressClass.major,
                 )}
                 data-large={expense.isLarge}
               />
@@ -115,7 +115,7 @@ export function TrackerMajorTab({ items = initialMajorExpenses }: TrackerMajorTa
                 </p>
                 <p
                   dir="ltr"
-                  className={cn("shrink-0 text-xs font-semibold tabular-nums", semanticTextClass.pressure)}
+                  className={cn("shrink-0 text-xs font-semibold tabular-nums", semanticTextClass.major)}
                 >
                   {expense.percent}
                 </p>

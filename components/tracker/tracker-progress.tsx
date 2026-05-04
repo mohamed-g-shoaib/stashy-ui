@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 
 type TrackerProgressProps = {
   valueClass: string
-  tone?: "brand" | "warning" | "danger" | "success"
+  tone?: "brand" | "variable" | "warning" | "expense" | "fixed" | "major" | "income" | "injection" | "transfer" | "quiet"
   className?: string
 }
 
@@ -17,7 +17,13 @@ export function TrackerProgress({ valueClass, tone = "brand", className }: Track
 
 const progressToneClass = {
   brand: semanticProgressClass.brand,
-  warning: semanticProgressClass.pressure,
-  danger: semanticProgressClass.critical,
-  success: semanticProgressClass.stability,
+  variable: semanticProgressClass.variable,
+  warning: semanticProgressClass.warning,
+  expense: semanticProgressClass.expense,
+  fixed: semanticProgressClass.fixed,
+  major: semanticProgressClass.major,
+  income: semanticProgressClass.income,
+  injection: semanticProgressClass.injection,
+  transfer: semanticProgressClass.transfer,
+  quiet: semanticProgressClass.quiet,
 }

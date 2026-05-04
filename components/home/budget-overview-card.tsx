@@ -29,15 +29,15 @@ export function BudgetOverviewCard({
             label={t("budget.variable")}
             value="7,960 EGP"
             caption={t("budget.variableCaption")}
-            markerClassName={semanticProgressClass.brand}
-            valueClassName={semanticTextClass.brand}
+            markerClassName={semanticProgressClass.variable}
+            valueClassName={semanticTextClass.variable}
           />
           <BudgetMetric
             label={t("budget.fixed")}
             value="1,240 EGP"
             caption={t("budget.fixedCaption")}
-            markerClassName={semanticProgressClass.stability}
-            valueClassName={semanticTextClass.stability}
+            markerClassName={semanticProgressClass.fixed}
+            valueClassName={semanticTextClass.fixed}
           />
         </div>
 
@@ -45,14 +45,14 @@ export function BudgetOverviewCard({
           <div
             className={cn(
               "flex items-center justify-between rounded-[var(--radius-sm)] px-3 py-2.5 shadow-ring",
-              semanticSurfaceClass.pressure,
+              semanticSurfaceClass.warning,
             )}
           >
             <div className="flex items-center gap-2">
               <span
                 className={cn(
                   "size-2 shrink-0 rounded-full",
-                  semanticProgressClass.pressure,
+                  semanticProgressClass.major,
                 )}
               />
               <p className="text-xs font-semibold">

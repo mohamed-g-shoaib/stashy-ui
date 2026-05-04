@@ -43,7 +43,7 @@ export function FallbackScreen({
                   className={cn(
                     "h-2 rounded-full",
                     item === 0 && "w-10 bg-brand/55",
-                    item === 1 && "w-12 bg-info/45",
+                    item === 1 && "w-12 bg-injection/45",
                     item === 2 && "w-9 bg-warning/55",
                   )}
                 />

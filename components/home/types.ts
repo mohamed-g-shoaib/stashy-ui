@@ -11,7 +11,7 @@ export type DailyRate = {
   explanation: string;
   tomorrow: string | null;
   status: string;
-  statusTone: "success" | "danger";
+  statusTone: "fixed" | "expense";
   fill: string;
   spentFill: string;
 };

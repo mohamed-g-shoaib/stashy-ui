@@ -29,6 +29,7 @@
 - [18- branding](#18--branding): Brand strategy, positioning, voice, identity coherence, and brand-system documentation.
 - [19- brand-designer](#19--brand-designer): Visual brand systems, palette presentation, logo/identity thinking, and brand-guideline structure.
 - [20- brand-storytelling](#20--brand-storytelling): Brand narrative, movement framing, and memorable identity storytelling.
+- [21- deep-research](#21--deep-research): Multi-source research, evidence tracking, comparative analysis, and structured design-direction synthesis.
 
 ---
 
@@ -492,3 +493,24 @@ Brand narrative skill for turning product identity into a memorable story that g
 3. Make the core narrative memorable enough that it can be repeated consistently across touchpoints.
 4. Use concrete tension and stakes instead of vague mission language.
 5. Let the narrative clarify why certain visual and tonal choices belong to the brand.
+
+### 21- deep-research
+
+**Structure**: `SKILL.md` + folders (`reference`, `templates`, `scripts`)
+**Triggers**: deep research, comprehensive analysis, multi-source comparison, trend analysis, research report, state of the art
+**Pairs With**: branding, color-expert, frontend-design
+**Summary**:
+Structured research workflow for questions that need more than a quick lookup, especially when Stashy must make informed product, brand, or design-system decisions from multiple sources.
+
+- Covers scoped research planning, source retrieval, triangulation, synthesis, and packaging into a durable report
+- Emphasizes evidence-backed conclusions instead of vague trend-chasing or single-source design opinions
+- Useful for comparing external product directions, validating design-system choices, and turning research into implementation-facing specs
+- Helps keep long-running design and brand decisions resumable by documenting assumptions, findings, and recommendations clearly
+
+**Top 5 Rules (By Priority)**:
+
+1. Use deep research when the decision requires multiple sources, synthesis, and evidence rather than a simple lookup.
+2. Triangulate major conclusions across more than one credible source before treating them as guidance.
+3. Convert raw findings into practical design or product decisions instead of stopping at summary.
+4. Keep assumptions explicit so later implementation work knows what was inferred versus directly evidenced.
+5. Package results into a clear, resumable artifact that future agents can continue without redoing the entire research pass.

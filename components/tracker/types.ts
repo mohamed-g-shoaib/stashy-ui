@@ -1,6 +1,6 @@
 export type TrackerTab = "fixed" | "major";
 export type PaymentStatus = "paid" | "pending" | "overdue";
-export type WarningTone = "neutral" | "warning" | "danger";
+export type WarningTone = "quiet" | "warning" | "fixed";
 
 export type MonthlyPayment = {
   nameKey?: string;

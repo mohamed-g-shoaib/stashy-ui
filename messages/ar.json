@@ -266,7 +266,6 @@
       "transfer": "تحويل",
       "gas": "تعبئة وقود",
       "laptop": "لابتوب",
-      "freelance": "دخل عمل حر",
       "injection": "دعم للميزانية",
       "refund": "مسترجع"
     },
@@ -388,8 +387,7 @@
       "internet": "فاتورة الإنترنت",
       "transfer": "تحويل بنكي",
       "coffee": "مشوار قهوة",
-      "laptop": "لابتوب",
-      "freelance": "دخل عمل حر"
+      "laptop": "لابتوب"
     },
     "transactionTypes": {
       "variable": "متغير",

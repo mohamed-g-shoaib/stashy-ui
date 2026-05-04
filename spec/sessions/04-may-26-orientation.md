@@ -215,6 +215,12 @@ History screen was functional but lacked logical depth for varying daily transac
 - **Visual Hygiene**: Added `Separator` between days and implemented case-insensitive label deduplication to hide category badges when they match transaction notes.
 - **Data Expansion**: Fully populated `history-data.ts` with all core Stashy types (Major, Fixed, Transfer, Injection, Refund, Variable) and added corresponding EN/AR translations.
 - **Depth Patterns**: Applied `heroSurfaceClass` and `shadow-soft` across all history card variants for consistent design system compliance.
+- **Research Skill Registration**: Added the new `deep-research` skill to `spec/skills.md` using the existing index and documentation format so future agents can intentionally invoke multi-source design and product research workflows.
+- **External Direction Spec**: Created `spec/mobile-direction-research.md` to capture the current mobile design signals that matter for Stashy, grounded in Apple HIG, Android / Material 3 guidance, Google’s Material 3 Expressive direction, and official product signals from Monzo, Revolut, and Cash App.
+- **Semantic Reset**: Rewrote `spec/brand-color-audit.md` around a two-axis model: structural identity (`variable`, `fixed`, `major`, `transfer`) versus consequence meaning (`income`, `expense`, `injection`, `warning`, `emergency`, quiet statuses). This replaces the earlier blur between category colors and emotional-state colors.
+- **Governance Alignment**: Updated `spec/controlled-design-system.md` so the controlled system now explicitly requires separating category identity from live consequence, recognizes `mobile-direction-research.md` as a design input source, and forbids using category accents to fake state meaning.
+- **Design Source-of-Truth Update**: Updated `spec/DESIGN.md` so the main design-system document now reflects the new semantic set: Moss for variable identity, Teal Ledger for fixed identity, Ochre Ledger for major identity, Meadow for income, Harbor for injection/trust, Brick for expense/emergency, Amber for review states, and Iris for transfers.
+- **Index Alignment**: Updated `spec/index.md` so the new research spec is part of the standard repository orientation path.
 
 ---
 
@@ -222,6 +228,137 @@ History screen was functional but lacked logical depth for varying daily transac
 
 - **Contextual Date Rendering**: Date visibility is now dynamic; it moves inside the singular card for standalone entries to preserve vertical space.
 - **Zero Redundancy**: Label deduplication is enforced at the component level to prevent repetitive "category-as-description" text.
+- **Meaning Beats Category**: Stashy will no longer let category color stand in for state meaning. If an item is both `fixed` and `overdue`, the interface must be able to show teal identity and red consequence without treating that as a contradiction.
+- **Variable Is Structural, Not Celebratory**: Variable is now treated as day-to-day living structure, not as a positive or premium accent. Its identity family is Moss rather than orange or generic neutral.
+- **Fixed Must Read Stable, Not Positive**: Fixed is now anchored to a teal stability family instead of green, because green is reserved primarily for gain, relief, and recovery states.
+- **Injection Must Be Distinct From Income**: Budget injection is no longer grouped mentally with ordinary received income. Both are positive, but injection now belongs to a blue intervention/trust family so users can feel the difference between “I earned more” and “I rescued the budget.”
+- **Research Is Now Part of Design-System Work**: For future brand and semantic-color decisions, official platform guidance and current product patterns are now treated as inputs to Stashy’s own system-building process, not as decoration or optional inspiration.
+
+---
+
+## Open Blockers
+
+1. None.
+
+---
+
+# Session 5 — Variable Neutralization And Injection Separation
+
+**Time:** 23:43-23:58
+
+---
+
+## Status at Session Start
+
+The semantic reset was implemented, but the user correctly pointed out that `variable` was still reading too close to a positive category color and that `budget injection` needed to stay unmistakably distinct from both `income` and `transfer`. The remaining implementation work was therefore not a generic cleanup pass; it was a semantic-correction pass to make the controlled system more human-logical.
+
+---
+
+## Completed This Session
+
+- Re-ran the required repo startup sequence and reloaded the color/design skills before changing the active semantic system again.
+- Updated `spec/brand-color-audit.md` so Variable is now explicitly defined as a warm gray structural family rather than a green-leaning family, and clarified that this better matches variable spending as flexible structure rather than positive state.
+- Updated `spec/DESIGN.md` so the design-system source of truth now uses `Ledger Gray #7a7266` for Variable and `Harbor #4f739c` for Injection, including the runtime token examples, transaction semantics table, quick reference, and agent prompt guide.
+- Updated `app/globals.css` to implement the revised runtime tokens:
+  - `--color-variable` now maps to a warm ledger gray with a matching subtle background.
+  - `--color-injection` now uses a more deliberate intervention blue so it stays clearly separate from both Meadow income and Iris transfer.
+- Removed the remaining migration-only helper aliases from `lib/semantic-styles.ts` so the shared semantic exports now expose only the governed families (`brand`, `variable`, `fixed`, `major`, `income`, `injection`, `expense`, `warning`, `transfer`, `quiet`).
+- Removed the matching compatibility badge variants from `components/ui/badge.tsx`.
+- Updated the last alias-dependent feature usage:
+  - `components/settings/settings-sections.tsx` now uses `fixed`, `quiet`, and `expense` directly instead of older alias names.
+  - `components/analytics/analytics-cards.tsx` now uses the `quiet` badge variant instead of `neutral`.
+  - `components/tracker/types.ts` and `components/tracker/tracker-fixed-tab.tsx` now use `quiet / warning / fixed` instead of the older `neutral / danger` framing for section tone.
+- Expanded `components/tracker/tracker-progress.tsx` so the shared progress primitive can now express the full governed family set, including `variable`, `injection`, `transfer`, and `quiet`.
+- Verification after the semantic-correction pass:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes
+  - targeted repo search confirms no remaining active app-code usage of the old semantic helper aliases (`stability`, `recovery`, `pressure`, `critical`) or the earlier `neutral`/`danger` component-level compatibility pattern
+- Reworked the injection family again after user review:
+  - Replaced the blue Harbor direction with a new dedicated `Mulberry Reserve` family for budget injection.
+  - Updated `app/globals.css`, `spec/DESIGN.md`, and `spec/brand-color-audit.md` so injection is now a reserve/rescue accent distinct from both income and transfer.
+  - Removed the now-dead `Harbor` token from the live CSS theme layer to keep implementation aligned with the governed spec.
+- Fixed the History surface mapping bug for budget injection rows in `components/history/history-row.tsx`:
+  - Injection entries were still inheriting the generic `budget/fixed` card surface because row background tone was driven only by `typeCategory`.
+  - Added explicit injection-aware surface and amount tone helpers so rows like `Emergency car repair top-up` now render with the injection family instead of the fixed-family background.
+- Refined the same History injection row again after visual review:
+  - Changed the injection numeric amount from the injection accent color back to the default foreground.
+  - This keeps green/red reserved for true positive/negative direction while letting injection read as a special neutral intervention with its identity carried by the card surface instead of the number itself.
+- Removed the static `Freelance pay` mock entry and its now-unused translation keys:
+  - Deleted the `txn-freelance-001` row from `components/history/history-data.ts`.
+  - Removed `freelance` transaction labels from both `messages/en.json` and `messages/ar.json` where they were no longer referenced.
+- Verification after the injection-family change:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes
+  - targeted repo search confirms no remaining active `Harbor` references in the live spec or app implementation surface
+  - targeted repo search confirms no remaining `freelance` references in the live app messages or static data
+
+---
+
+## Decisions Made
+
+- **Variable Should Read Structural And Vague**: Variable is now anchored to a warm gray family so it reads as flexible day-to-day structure instead of green-coded positivity.
+- **Injection Should Feel Like Intervention, Not Income**: Injection now uses a clearer intervention blue so users can distinguish “budget rescue” from ordinary money received.
+- **Injection Should Be Its Own Reserve Accent**: Injection no longer inherits the blue trust/info lane; it now uses a dedicated mulberry reserve family so it reads as a distinct budget-rescue action rather than income, transfer, or generic system information.
+- **Injection Rows Must Override Generic Budget Surface Mapping**: In History, injection semantics now win over the generic `budget` structural mapping so budget top-ups do not masquerade as fixed/budget cards.
+- **Injection Amounts Should Not Pretend To Be Income**: When an injection is being presented as a rescue/top-up rather than ordinary received money, the row can keep the injection surface while the amount itself stays in the default foreground instead of green or accented text.
+- **Semantic Helper Cleanup Is Complete**: The migration-only alias layer has now been removed from active shared exports, so future implementation work should use the explicit governed semantic families only.
+
+---
+
+## Open Blockers
+
+1. None.
+
+---
+
+# Session 4 — Semantic Color System Implementation Reset
+
+**Time:** 23:10-23:42
+
+---
+
+## Status at Session Start
+
+The spec layer had already been reset around the new controlled Stashy semantics, but the live implementation still reflected the older mapping model where `fixed` leaned green-as-positive, `variable` remained under-defined, and `income` versus `budget injection` were still visually too close. The immediate goal was to move the actual app toward the new two-axis model: structural identity for categories and consequence meaning for live financial states.
+
+---
+
+## Completed This Session
+
+- Rebuilt the semantic token layer in `app/globals.css` around the new Stashy families: `variable`, `fixed`, `major`, `income`, `injection`, `expense`, `warning`, `transfer`, and quiet statuses, while preserving compatibility aliases where shared primitives still rely on older shadcn-style names.
+- Rewrote `lib/semantic-styles.ts` so the semantic helper system now exposes the new category/state roles directly instead of only the earlier `stability / pressure / recovery / critical` vocabulary.
+- Expanded `components/ui/badge.tsx` with first-class variants for `variable`, `fixed`, `major`, `income`, `injection`, `expense`, `warning`, `transfer`, and `quiet`, while keeping compatibility aliases mapped to the new roles.
+- Updated Home semantic presentation:
+  - `components/home/budget-overview-card.tsx` now renders Variable in Moss, Fixed in Teal Ledger, and Major in the warning/major family.
+  - `components/home/daily-rate-card.tsx`, `components/home/types.ts`, and `components/home-screen.tsx` now use `fixed` versus `expense` status semantics instead of the older success/danger framing.
+  - `components/home/home-drawer.tsx` now clearly separates spend, receive, injection, and major option tones so received income and budget injection no longer share the same meaning layer.
+- Updated History semantics:
+  - `components/history/history-row.tsx` now separates type identity (`variable`, `fixed`, `major`, `transfer`) from transaction direction (`income` vs `expense`) and moves auto-pay into the fixed family instead of a generic “success” color.
+  - `components/history-screen.tsx` now uses income/expense for daily totals and swaps old placeholder accent bars to injection/warning-aligned colors.
+- Updated Tracker semantics:
+  - `components/tracker/tracker-progress.tsx` now supports the new progress families directly.
+  - `components/tracker/tracker-fixed-tab.tsx` now treats monthly/fixed summaries as fixed structure, pending as warning, overdue as expense, and healthy bucket progress as fixed instead of generic brand/success.
+  - `components/tracker/tracker-major-tab.tsx` now uses the major family for structural emphasis and warning for consequence emphasis.
+- Updated Analytics and supporting shell surfaces:
+  - `components/analytics/analytics-cards.tsx` now uses fixed/income/expense/warning/injection semantics instead of the earlier generic stability/recovery/critical mapping.
+  - `components/sandbox-home.tsx`, `components/fallback-screen.tsx`, and `components/settings/settings-sections.tsx` were updated where old semantic leftovers still existed.
+- Cleaned unrelated validation blockers exposed during the pass:
+  - typed state-updater narrowing in `components/history/history-filter-controls.tsx`
+  - two unused declarations in `components/tracker-screen.tsx`
+- Verification after implementation reset:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes
+  - targeted repo search confirms no remaining feature-level usage of the old `stability / pressure / critical / recovery` helper calls or stale `success / danger` home status tones in app code
+
+---
+
+## Decisions Made
+
+- The semantic implementation now follows the spec-level model: category identity and live consequence are allowed to coexist instead of one color faking both jobs.
+- `Fixed` is now implemented as a teal stability family rather than a positive green family.
+- `Income` and `budget injection` are now visually distinct in implementation, with income using Meadow and injection using Harbor.
+- `Major` now has its own structural identity family instead of borrowing the same tone as generic warning everywhere.
+- Compatibility aliases remain in the helper layer temporarily so the system can evolve without requiring a risky all-files-at-once rewrite, but new work should target the explicit semantic families first.
 
 ---
 

@@ -24,9 +24,9 @@ export const defaultHistoryFilterState: HistoryFilterState = {
 };
 
 const filterOptions = {
-  type: ["all", "variable", "monthly", "budget", "major"],
-  direction: ["all", "expense", "received"],
-  method: ["all", "cash", "card", "bank"],
+  type: ["all", "variable", "monthly", "budget", "major"] as const,
+  direction: ["all", "expense", "received"] as const,
+  method: ["all", "cash", "card", "bank"] as const,
 };
 
 const filterGridClass = {
@@ -35,7 +35,7 @@ const filterGridClass = {
   method: "grid-cols-2",
 };
 
-const datePresetOptions = ["thisMonth", "thisWeek", "today"];
+const datePresetOptions = ["thisMonth", "thisWeek", "today"] as const;
 
 export function getActiveHistoryFilterCount(filters: HistoryFilterState) {
   return Object.entries(filters).filter(
@@ -67,7 +67,7 @@ export function HistoryFilterControls({
         kind="type"
         value={filters.type}
         onValueChange={(value) =>
-          setFilters((current) => ({ ...current, type: value }))
+          setFilters((current) => ({ ...current, type: value as HistoryFilterState["type"] }))
         }
       />
       <FilterGroup
@@ -75,7 +75,7 @@ export function HistoryFilterControls({
         kind="direction"
         value={filters.direction}
         onValueChange={(value) =>
-          setFilters((current) => ({ ...current, direction: value }))
+          setFilters((current) => ({ ...current, direction: value as HistoryFilterState["direction"] }))
         }
       />
       <FilterGroup
@@ -83,7 +83,7 @@ export function HistoryFilterControls({
         kind="method"
         value={filters.method}
         onValueChange={(value) =>
-          setFilters((current) => ({ ...current, method: value }))
+          setFilters((current) => ({ ...current, method: value as HistoryFilterState["method"] }))
         }
       />
       <div className={cn("text-start", surfacePanelClass)}>
@@ -93,7 +93,7 @@ export function HistoryFilterControls({
         <Tabs
           value={filters.preset}
           onValueChange={(value) =>
-            setFilters((current) => ({ ...current, preset: value }))
+            setFilters((current) => ({ ...current, preset: value as HistoryFilterState["preset"] }))
           }
           className="gap-0"
         >

@@ -35,10 +35,14 @@ This is a Stashy-owned palette, curated from the references but tailored for a b
 - **Mocha** (`#686055`): secondary text and explanatory copy
 - **Fog** (`#968c7d`): tertiary text, metadata, placeholders
 - **Clay** (`#9b654b`): primary brand color and single highest-signal action
-- **Sage** (`#5e7962`): fixed / paid / healthy financial state
-- **Amber** (`#b3883b`): major purchase and pressure state
-- **Harbor** (`#637f8a`): received income / injection / informational state
-- **Berry** (`#8a657b`): tertiary data accent, sparing use only
+- **Ledger Gray** (`#7a7266`): variable category identity
+- **Teal Ledger** (`#5f7f78`): fixed category identity and stable structure
+- **Ochre Ledger** (`#9a7a33`): major category identity and burden signal
+- **Meadow** (`#5f8f59`): received income and healthy recovery
+- **Mulberry Reserve** (`#8a657b`): budget injection and reserve intervention state
+- **Brick** (`#b15d45`): expense, overdue, destructive, and emergency state
+- **Amber** (`#b3883b`): warning, due-soon, and review state
+- **Iris** (`#7b6f96`): transfer and movement state
 
 ### 2.2 Runtime Token Mapping
 
@@ -59,69 +63,61 @@ These are the implementation tokens used in CSS and Tailwind:
 --color-brand: #9b654b;
 --color-brand-hover: #875740;
 --color-brand-subtle: #ead9cc;
-```
-
-### 2.3 Financial Semantics
-
-The key product colors are not decorative categories. They communicate budgeting meaning, and their full semantic governance now lives in `spec/brand-color-audit.md`.
-
-#### Variable Spending
-
-Variable is intentionally the calmest category. It should feel neutral and operational rather than celebratory or alarming.
-
-- Background: **Biscuit**
-- Text: **Mocha**
-
-#### Fixed Expenses
-
-Fixed needs to feel stable and reliable.
-
-- Base color: **Sage** `#5e7962`
-- Subtle surface: `#dde8de`
-
-```css
---color-success: #5e7962;
---color-success-hover: #4f6752;
---color-success-subtle: #dde8de;
-```
-
-#### Major Purchases / Budget Pressure
-
-Major needs visible caution without reading as an error.
-
-- Base color: **Amber** `#b3883b`
-- Subtle surface: `#f2e5c8`
-
-```css
+--color-variable: #7a7266;
+--color-variable-subtle: #ece4d8;
+--color-fixed: #5f7f78;
+--color-fixed-subtle: #dde8e4;
+--color-major: #9a7a33;
+--color-major-subtle: #f1e5c9;
+--color-income: #5f8f59;
+--color-income-subtle: #dfead9;
+--color-injection: #8a657b;
+--color-injection-subtle: #ecdee6;
+--color-expense: #b15d45;
+--color-expense-subtle: #f2ddd7;
 --color-warning: #b3883b;
---color-warning-hover: #9c7632;
 --color-warning-subtle: #f2e5c8;
+--color-transfer: #7b6f96;
+--color-transfer-subtle: #e8e2f0;
 ```
 
-#### Emergency / Overspend / Destructive
+### 2.3 Structural And Semantic Accent System
 
-Emergency needs warmth and seriousness, not neon red panic.
+The key product colors are not decorative categories. They communicate budgeting meaning, and their full governance lives in `spec/brand-color-audit.md`.
 
-- Base color: **Burnt Clay** `#b85c3f`
-- Subtle surface: `#f3ddd4`
+Stashy uses a **two-axis color model**:
 
-```css
---color-danger: #b85c3f;
---color-danger-hover: #9f4f37;
---color-danger-subtle: #f3ddd4;
-```
+- **Structural identity** answers: what is this thing?
+- **Consequence meaning** answers: what does this mean right now?
 
-#### Received Income / Budget Injection / Informational Recovery
+If both are present, consequence meaning should own the high-signal element such as the amount, warning strip, or alert state. Structural identity may still appear in a chip, border, icon well, legend, or secondary label.
 
-These are positive but not identical to “fixed paid.” They should feel fresh, clean, and restorative.
+#### Structural Identity Colors
 
-- Base color: **Harbor** `#637f8a`
-- Subtle surface: `#dfe8ec`
+- **Variable**: **Ledger Gray** `#7a7266`
+- **Fixed**: **Teal Ledger** `#5f7f78`
+- **Major**: **Ochre Ledger** `#9a7a33`
+- **Transfer**: **Iris** `#7b6f96`
 
-```css
---color-info: #637f8a;
---color-info-subtle: #dfe8ec;
-```
+These colors identify category or object type. They should not automatically imply good or bad.
+
+#### Consequence Meaning Colors
+
+- **Income / received / relief**: **Meadow** `#5f8f59`
+- **Budget injection / reserve intervention**: **Mulberry Reserve** `#8a657b`
+- **Expense / overdue / destructive / emergency**: **Brick** `#b15d45`
+- **Warning / review / due-soon**: **Amber** `#b3883b`
+- **Quiet status / inactive / archived / draft**: **Fog** `#968c7d`
+
+These colors communicate what is happening, not what category the record belongs to.
+
+#### Examples
+
+- A **fixed overdue** item may use a teal category chip but a brick amount or alert.
+- A **variable received** item may use a moss category marker but a meadow amount.
+- A **budget injection** should not reuse normal income styling blindly; it should feel more like intervention than ordinary gain.
+
+**Rule:** never force one color to perform both category identity and consequence meaning when the interface needs to communicate both.
 
 ### 2.4 Surfaces
 
@@ -329,14 +325,16 @@ Placeholder: --color-text-tertiary
 
 ### 7.6 Transaction Type Semantics
 
-| Type                  | Background | Text      |
-| --------------------- | ---------- | --------- |
-| Variable              | `#f0e6d8`  | `#686055` |
-| Fixed                 | `#dde8de`  | `#5e7962` |
-| Major                 | `#f2e5c8`  | `#b3883b` |
-| Received              | `#dfe8ec`  | `#637f8a` |
-| Budget Injection      | `#dfe8ec`  | `#637f8a` |
-| Emergency / Overspend | `#f3ddd4`  | `#b85c3f` |
+| Meaning or type | Background | Text |
+| --- | --- | --- |
+| Variable identity | `#ece4d8` | `#7a7266` |
+| Fixed identity | `#dde8e4` | `#5f7f78` |
+| Major identity | `#f1e5c9` | `#9a7a33` |
+| Income / received | `#dfead9` | `#5f8f59` |
+| Budget injection | `#ecdee6` | `#8a657b` |
+| Warning / review | `#f2e5c8` | `#b3883b` |
+| Expense / overdue / emergency | `#f2ddd7` | `#b15d45` |
+| Transfer / movement | `#e8e2f0` | `#7b6f96` |
 
 ### 7.7 Bottom Navigation
 
@@ -413,10 +411,14 @@ The system should feel composed and tactile, not playful.
 - Secondary text: `Mocha #686055`
 - Tertiary text: `Fog #968c7d`
 - Primary action: `Clay #9b654b`
-- Fixed / healthy: `Sage #5e7962`
-- Major / pressure: `Amber #b3883b`
-- Income / injection: `Harbor #637f8a`
-- Emergency / overspend: `Burnt Clay #b85c3f`
+- Variable identity: `Ledger Gray #7a7266`
+- Fixed identity: `Teal Ledger #5f7f78`
+- Major identity: `Ochre Ledger #9a7a33`
+- Income / recovery: `Meadow #5f8f59`
+- Injection / reserve: `Mulberry Reserve #8a657b`
+- Warning / review: `Amber #b3883b`
+- Expense / emergency: `Brick #b15d45`
+- Transfer / movement: `Iris #7b6f96`
 
 ### Governance Reminder
 
@@ -426,5 +428,5 @@ The system should feel composed and tactile, not playful.
 ### Example Mobile Prompt
 
 ```text
-Mobile portrait budgeting app with a warm ledger-desk identity. Background Oat (#f4eee6). Cards in Cream (#fcf8f2) with warm borders (#e3d7c6) and soft paper-stack shadows. Typography uses Google Sans Flex with a dominant 56pt hero number in Walnut (#2f2a24). Primary CTA uses Clay (#9b654b) with cream text. Variable states stay neutral and soft, fixed states use Sage, major states use Amber, received or budget injection states use Harbor, and emergency states use Burnt Clay. The page should feel calm, branded, and easy on the eyes, not bright white and not dark. Mobile spacing remains 16pt horizontal with strong touch targets and strict RTL-safe logical layout behavior.
+Mobile portrait budgeting app with a warm ledger-desk identity. Background Oat (#f4eee6). Cards in Cream (#fcf8f2) with warm borders (#e3d7c6) and soft paper-stack shadows. Typography uses Google Sans Flex with a dominant 56pt hero number in Walnut (#2f2a24). Primary CTA uses Clay (#9b654b) with cream text. Variable identity uses Ledger Gray, fixed identity uses Teal Ledger, major identity uses Ochre Ledger, positive income uses Meadow, budget injection uses Mulberry Reserve, warning states use Amber, expense and emergency states use Brick, and transfer states use Iris. Category identity and live consequence should not be collapsed into one color when both matter. The page should feel calm, branded, and easy on the eyes, not bright white and not dark. Mobile spacing remains 16pt horizontal with strong touch targets and strict RTL-safe logical layout behavior.
 ```

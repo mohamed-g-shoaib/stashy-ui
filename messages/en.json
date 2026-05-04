@@ -266,7 +266,6 @@
       "transfer": "Transfer",
       "gas": "Gas refill",
       "laptop": "Laptop",
-      "freelance": "Freelance pay",
       "injection": "Budget injection",
       "refund": "Refund"
     },
@@ -388,8 +387,7 @@
       "internet": "Internet bill",
       "transfer": "Wire transfer",
       "coffee": "Coffee run",
-      "laptop": "Laptop",
-      "freelance": "Freelance pay"
+      "laptop": "Laptop"
     },
     "transactionTypes": {
       "variable": "Variable",

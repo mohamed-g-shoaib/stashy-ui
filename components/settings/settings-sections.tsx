@@ -55,7 +55,7 @@ export function ProfileCard({ profile, onEdit }: { profile: ProfileState; onEdit
               {profile.username}
             </p>
             <Badge
-              variant={profile.status === "Active" ? "stability" : "neutral"}
+              variant={profile.status === "Active" ? "fixed" : "quiet"}
               className="rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
             >
               {profile.status === "Active" ? t("profile.active") : t("profile.inactive")}
@@ -164,11 +164,11 @@ export function PaymentMethodsCard({
               key={method.id}
               className={cn(
                 "p-3 shadow-ring rounded-[var(--radius-sm)]",
-                semanticSurfaceClass.critical,
+                semanticSurfaceClass.expense,
               )}
             >
               <div className="flex flex-col gap-3">
-                <p className={cn("text-sm font-semibold", semanticTextClass.critical)}>
+                <p className={cn("text-sm font-semibold", semanticTextClass.expense)}>
                   {t("methods.confirmDelete", { name: method.name })}
                 </p>
                 <div className="flex gap-2">
@@ -236,7 +236,7 @@ export function PaymentMethodsCard({
                     type="button"
                     className={cn(
                       "min-h-10 rounded-full px-2 text-sm font-medium",
-                      semanticInteractiveTextClass.critical,
+                      semanticInteractiveTextClass.expense,
                     )}
                     onClick={() => onDeleteTap(method.id)}
                   >
