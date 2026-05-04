@@ -1,4 +1,3 @@
-export type ThemeValue = "light" | "dark" | "system"
 export type LanguageValue = "English" | "Arabic"
 
 export type PaymentMethod = {

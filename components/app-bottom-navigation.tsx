@@ -15,7 +15,7 @@ export function AppBottomNavigation({ activeValue, items, onSelect }: AppBottomN
   const t = useTranslations("Home")
 
   return (
-    <nav className="fixed bottom-0 start-0 end-0 z-30 mx-auto w-full max-w-sm rounded-t-[1.5rem] border-t border-border-subtle bg-card px-2 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 shadow-[0_-8px_24px_rgba(20,20,19,0.04)] dark:shadow-[0_-8px_24px_rgba(0,0,0,0.2)]">
+    <nav className="fixed bottom-0 start-0 end-0 z-30 mx-auto w-full max-w-sm rounded-t-[var(--radius-xl)] border-t border-border-subtle bg-card px-2 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 shadow-card">
       <div className="grid w-full grid-cols-4 gap-0 rounded-none bg-transparent p-0">
         {items.map((item) => {
           const active = item.value === activeValue

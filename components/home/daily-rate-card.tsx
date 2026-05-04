@@ -1,26 +1,23 @@
-import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { useTranslations } from "next-intl";
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { useTranslations } from "next-intl"
 
-import type { DailyRate } from "@/components/home/types";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+import type { DailyRate } from "@/components/home/types"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 
 type DailyRateCardProps = {
-  rate: DailyRate;
-};
+  rate: DailyRate
+}
 
 export function DailyRateCard({ rate }: DailyRateCardProps) {
-  const t = useTranslations("Home");
+  const t = useTranslations("Home")
   const showsTomorrow = rate.tomorrow !== null
 
   return (
-    <Card
-      size="sm"
-      className="rounded-md border border-border bg-card py-4 shadow-soft"
-    >
+    <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
         <p className="text-sm leading-[1.6] text-text-secondary text-pretty">{rate.explanation}</p>
         <DailyRateAmounts rate={rate} />
@@ -34,23 +31,23 @@ export function DailyRateCard({ rate }: DailyRateCardProps) {
         ) : null}
       </CardContent>
     </Card>
-  );
+  )
 }
 
 function DailyRateAmounts({ rate }: { rate: DailyRate }) {
-  const t = useTranslations("Home");
+  const t = useTranslations("Home")
 
   return (
     <div className="grid grid-cols-2 gap-3">
       <MoneyBlock label={t("daily.remaining")} value={rate.remaining} />
       <MoneyBlock label={t("daily.allowance")} value={rate.allowance} />
     </div>
-  );
+  )
 }
 
 function MoneyBlock({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex min-w-0 flex-col gap-1 rounded-sm bg-surface-offset p-3 text-start shadow-ring">
+    <div className="flex min-w-0 flex-col gap-1 rounded-[var(--radius-sm)] bg-surface-offset p-3 text-start shadow-ring">
       <p className="text-xs font-medium text-text-secondary">{label}</p>
       <p
         dir="ltr"
@@ -59,16 +56,10 @@ function MoneyBlock({ label, value }: { label: string; value: string }) {
         {value}
       </p>
     </div>
-  );
+  )
 }
 
-function DailyAllowanceBar({
-  rate,
-  label,
-}: {
-  rate: DailyRate;
-  label: string;
-}) {
+function DailyAllowanceBar({ rate, label }: { rate: DailyRate; label: string }) {
   return (
     <div
       className="flex h-4 overflow-hidden rounded-full bg-surface-offset shadow-ring"
@@ -78,17 +69,16 @@ function DailyAllowanceBar({
       <div
         className={cn(
           "bg-[repeating-linear-gradient(135deg,var(--color-warning-subtle)_0,var(--color-warning-subtle)_4px,var(--color-warning)_4px,var(--color-warning)_6px)]",
-          "dark:bg-[repeating-linear-gradient(135deg,var(--color-warning-subtle-dark)_0,var(--color-warning-subtle-dark)_4px,var(--color-warning-dark)_4px,var(--color-warning-dark)_6px)]",
           rate.spentFill,
         )}
       />
     </div>
-  );
+  )
 }
 
 function DailyRateStatus({ rate }: { rate: DailyRate }) {
-  const t = useTranslations("Home");
-  const isOnTrack = rate.statusTone === "success";
+  const t = useTranslations("Home")
+  const isOnTrack = rate.statusTone === "success"
 
   return (
     <div className="flex items-center justify-between gap-3 text-sm">
@@ -100,21 +90,17 @@ function DailyRateStatus({ rate }: { rate: DailyRate }) {
       </p>
       <Badge
         variant={isOnTrack ? "secondary" : "destructive"}
-        className={cn(
-          "rounded-full",
-          isOnTrack &&
-            "bg-success-subtle text-success dark:bg-success-subtle-dark dark:text-success-dark",
-        )}
+        className={cn("rounded-full", isOnTrack && "bg-success-subtle text-success")}
       >
         {rate.status}
       </Badge>
     </div>
-  );
+  )
 }
 
 function TomorrowRate({ rate }: { rate: DailyRate }) {
-  const t = useTranslations("Home");
-  const isOverspent = rate.statusTone === "danger";
+  const t = useTranslations("Home")
+  const isOverspent = rate.statusTone === "danger"
 
   if (!rate.tomorrow) {
     return null
@@ -126,12 +112,7 @@ function TomorrowRate({ rate }: { rate: DailyRate }) {
         {t("daily.tomorrow")}{" "}
         <span
           dir="ltr"
-          className={cn(
-            "tabular-nums",
-            isOverspent
-              ? "text-danger dark:text-danger-dark"
-              : "text-foreground",
-          )}
+          className={cn("tabular-nums", isOverspent ? "text-danger" : "text-foreground")}
         >
           {rate.tomorrow}
         </span>
@@ -139,14 +120,9 @@ function TomorrowRate({ rate }: { rate: DailyRate }) {
       <HugeiconsIcon
         icon={ArrowUpRight01Icon}
         size={20}
-        className={cn(
-          "shrink-0",
-          isOverspent
-            ? "rotate-90 text-danger dark:text-danger-dark"
-            : "text-success dark:text-success-dark",
-        )}
+        className={cn("shrink-0", isOverspent ? "rotate-90 text-danger" : "text-success")}
         aria-hidden="true"
       />
     </div>
-  );
+  )
 }

@@ -43,10 +43,10 @@ DAILY TRACKING (Example: Jan 7 morning, 25 days remaining)
 └─────────────────────────────────────┘
 
     Today's Rate (Jan 7) = (Effective Variable Budget - 1,500) ÷ 25 = 276 EGP/day
-    
+
     Status: 🟢 ON TRACK
     Target for Jan 7: 276 EGP (reality-based)
-    
+
     ✓ Variable spending today lowers Remaining Today
     ✓ Budget-state changes (income/major/fixed overspend) can recalculate Today's Rate
     ✓ Day boundary updates also recalculate rates
@@ -62,10 +62,10 @@ DAILY TRACKING (Example: Jan 7 morning, 25 days remaining)
     Today's Rate (Jan 7) = 276 EGP/day (UNCHANGED by variable spending today)
     Spent Today = 300 EGP
     Overspent = 24 EGP
-    
+
     Status: 🔴 OVER BUDGET
     Remaining for Jan 7: -24 EGP (negative)
-    
+
     ✓ Today's rate stays 276 EGP (your target)
     ✓ "Tomorrow's Rate Impact" card appears (if not in emergency mode)
     ✓ Shows tomorrow's rate: (8,400 - 1,800) ÷ 24 = 275 EGP/day
@@ -97,7 +97,7 @@ SCENARIO B: Received 500 EGP on Jan 5 (with 26 days left)
 
 ## Diagram 2: Fixed vs Variable Expense Flow
 
-```
+````
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                    TRANSACTION TYPE ROUTING                                 │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -220,7 +220,7 @@ Fixed Transactions
         ├─ Tracking Page (detailed)
         ├─ Fixed Expenses Page (inline)
         └─ Dashboard Mini-Card (quick view)
-```
+````
 
 ---
 
@@ -338,18 +338,19 @@ SETUP PHASE
     │  ├─→ Add Fixed Expense
     │  │   ├─ Name: "Coffee"
     │  │   ├─ Budget: 500 EGP/month
-    │  │   ├─ Toggle: Manual (not auto-pay)
-    │  │   └─ Payment Method: Cash
+    │  │   ├─ Type: manual
+    │  │   └─ Payment Method: none
     │  │
     │  └─→ Add Fixed Expense
     │      ├─ Name: "Spotify"
     │      ├─ Budget: 100 EGP/month
-    │      ├─ Toggle: Auto-Pay ✓
-    │      └─ Day of Month: 5
+    │      ├─ Type: recurring
+    │      ├─ Payment Method: Visa
+    │      └─ start_date day: 5
     │
     └─→ Fixed Expenses Table:
-        ├─ Coffee: 500 EGP, Manual
-        └─ Spotify: 100 EGP, Auto (due 5th)
+        ├─ Coffee: 500 EGP, manual
+        └─ Spotify: 100 EGP, recurring (due-day from start_date)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -391,13 +392,25 @@ AUTO-PAY MECHANISM
     ├─ Mobile dashboard mount triggers POST /api/v1/fixed-expenses/catch-up
     │  │
     │  └─→ Server Auto-Pay Catch-Up runs:
-    │      ├─ Check: Is there a transaction for Spotify on Jan 5?
-    │      ├─ If NO: Insert auto-payment transaction
+    │      ├─ Derive due date from start_date for evaluated month
+    │      ├─ Check: Is there a current-month fixed transaction for Spotify?
+    │      ├─ If NO and due date <= today: Insert auto-payment transaction
     │      │  └─ Spotify | 100 EGP | Expense | Jan 5
-    │      └─ If YES: Skip (idempotent)
+    │      └─ If YES: Return existing (idempotent)
     │
     └─→ Tracking Page updates:
         └─ Spotify shows: ✓ Paid (Jan 5)
+
+PAY-NOW MECHANISM
+    │
+    ├─ User taps "Pay now" on recurring/installment fixed expense
+    │  │
+    │  └─→ POST /api/v1/fixed-expenses/{id}/pay-now
+    │      ├─ Reject manual expenses
+    │      ├─ Reject completed installments
+    │      └─ Create-or-return current-month transaction via deterministic client_id
+    │
+    └─→ Repeat tap in same month returns the same transaction (no duplicate insert)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -473,7 +486,7 @@ User A adds transaction: 50 EGP coffee
 Frontend:
     // Get current user from auth state
     const user = getCurrentUser()
-    
+
     // Insert via API
     await api.post('/transactions', {
         amount: 50,
@@ -783,7 +796,7 @@ User
     ├─→ View Tracking → Fixed Expenses Query (+user_id) → Aggregate data
     │                   └─ Show progress bars, status
     │
-    ├─→ Change Theme → Local storage + style variables → Instant update
+    ├─→ Change Language / Preferences → Persist user choice → Instant localized update
     │
     └─→ Logout → Clear session → Redirect to login
 

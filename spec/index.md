@@ -67,5 +67,7 @@ The gap between these two numbers is Stashy's core insight — telling the user 
 To efficiently parse and manage constraints within this repository, LLM agents should utilize the following local architecture:
 
 - **`DESIGN.md`**: The singular source of truth for the mutual design system connecting this web playground sandbox to the actual mobile codebase. **Enforce all colors, typography, borders, and spacings referenced here to maintain 1:1 cross-platform symmetry.**
+- **`controlled-design-system.md`**: The governance layer for Stashy's single-identity visual system. Read this before changing tokens, semantic roles, or shared visual primitives.
+- **`brand-color-audit.md`**: The semantic accent map for product meaning. Use it to assign or audit colors for transaction types, states, warnings, charts, badges, and system feedback.
 - **`skills.md`**: The strict reference and routing guide for `.agents/skills/`. Use this to understand which Agentic behaviors (e.g. `shadcn`, `emil-design-eng`, `make-interfaces-feel-better`) to invoke when writing code.
 - **`sessions/`**: The chronological collection of daily session progress. When kicking off, review the latest daily `.md` file to inherit state. When wrapping up, log your progress according to the established Unified Session Template inside the active day's file.

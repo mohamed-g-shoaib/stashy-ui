@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl"
 
 import { LanguageToggle } from "@/components/language-toggle"
-import { ThemeToggle } from "@/components/theme-toggle"
 
 export function SandboxHome() {
   const t = useTranslations("SandboxHome")
@@ -24,7 +23,6 @@ export function SandboxHome() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <ThemeToggle />
           <LanguageToggle />
         </div>
       </div>

@@ -1,10 +1,40 @@
 {
   "version": 1,
   "skills": {
+    "brand-designer": {
+      "source": "daffy0208/ai-dev-standards",
+      "sourceType": "github",
+      "skillPath": "skills/brand-designer/SKILL.md",
+      "computedHash": "4848bb14290d7bc7b9264cab5fca3c42453a32f88a03bdb1cc4b5357117490e1"
+    },
+    "brand-storytelling": {
+      "source": "refoundai/lenny-skills",
+      "sourceType": "github",
+      "skillPath": "skills/brand-storytelling/SKILL.md",
+      "computedHash": "a7fdb8eee04388e74341421c5e7ed88758820b420a144a8a4f565e3c102c55c4"
+    },
+    "branding": {
+      "source": "kostja94/marketing-skills",
+      "sourceType": "github",
+      "skillPath": "skills/strategies/brand/branding/SKILL.md",
+      "computedHash": "7fadacd3c7bebbdeb579614bd607970a9866f78e5c8aedd6f34f026871aec7a3"
+    },
     "clean-code": {
       "source": "sickn33/antigravity-awesome-skills",
       "sourceType": "github",
       "computedHash": "551e1ac1c416d9df11fce8bc613c3595794f1f5e634d20c5b3e257afded11ed7"
+    },
+    "color-expert": {
+      "source": "meodai/skill.color-expert",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "dcd6c55fc5244d9008618ca6690be1e4bccb8a04765a65a4646649c5fdacd65a"
+    },
+    "color-palette": {
+      "source": "jezweb/claude-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/design-assets/skills/color-palette/SKILL.md",
+      "computedHash": "44d5b40b13ca787c1c63225d4af517e7096e8d7c3ede62d16bd5acdd25794ec3"
     },
     "emil-design-eng": {
       "source": "emilkowalski/skill",

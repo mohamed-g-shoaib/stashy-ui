@@ -1,632 +1,430 @@
 > **LLM Context & Usage Guide**
 > **File Purpose:** The authoritative source of truth for the visual identity and structural constraints of the Stashy interface.
-> **How to Use:** Before writing _any_ UI code (CSS, Tailwind, or React components), agents MUST cross-reference this document to ensure colors, paddings, shadows, and fonts strictly align with these specifications. No arbitrary pixel values or tailwind default colors are permitted. You must map these token values exactly as described into the Web Sandbox (Next.js/Tailwind).
-> **Constraint Reminder:** Stashy's web environment is a sandbox mimicking a mobile app. Stick strictly to mobile bounding boxes (`max-w-sm`).
+> **How to Use:** Before writing _any_ UI code (CSS, Tailwind, or React components), agents MUST cross-reference this document to ensure colors, paddings, shadows, and typography strictly align with these specifications. No arbitrary palette drift, alternate theme branches, or generic Tailwind defaults are permitted.
+> **Constraint Reminder:** Stashy remains a mobile sandbox. Even when inspired by desktop references, the implementation must preserve mobile spacing, touch targets, hero hierarchy, and RTL behavior.
 
 # Stashy Mobile Design System
 
 ## 1. Visual Theme & Atmosphere
 
-Stashy is a parchment-toned pocket ledger — warm, immediate, and unapologetically focused on one number. The canvas is a cream so warm it almost has a grain to it (`#f5f4ed`), the kind of surface that makes a financial figure feel less clinical and more personal. Every screen is organized around a single dominant hierarchy: the hero number sits at the top like a headline, the supporting data falls below it like a subheading, and nothing competes. Where most fintech apps reach for cold precision, Stashy reaches for warmth — the difference between a bank statement and a note from someone who actually wants you to be okay.
+Stashy should feel like a **warm ledger desk**: calm, grounded, and competent. The interface sits somewhere between Slite’s eye-comfort parchment, Cursor’s precise software-studio discipline, and Convex’s product seriousness, but it should not read like any of them directly. This is a budgeting product, so the system must feel trustworthy and soothing without becoming lifeless, and branded without becoming loud.
 
-Depth is achieved without drama. Cards float on the parchment via ring shadows rather than drop shadows — a 1px warm halo rather than a lifted blur. Color is used sparingly: everything neutral is warm-toned, and the single chromatic accent (Terracotta `#c96442`) appears at most once per screen, always as the primary action. Financial distress states (Emergency Mode, overspend, budget pressure) break this calm deliberately — danger red and amber amber exist to interrupt, not to decorate.
+The whole app should live inside a single identity. No dark mode. No alternate mood. No bright-white SaaS emptiness. No harsh charcoal IDE. The background is warm and soft enough to live on for long sessions, the cards are slightly lighter and cleaner so the product can breathe, and the accent palette is muted and deliberate.
 
-**Core tone:** Warm authority. Like a financially savvy friend who gives you a straight answer.
+**Core tone:** Warm precision.
 
-**The two non-negotiables:**
+**The non-negotiables:**
 
-1. The hero number (Remaining Today) must dominate every screen it appears on.
-2. Emergency and warning states must never be subtle — financial distress demands visual urgency.
+1. The hero number still dominates every screen it appears on.
+2. The system must remain comfortable for sustained use because there is no dark mode escape hatch.
+3. Financial states must be instantly legible even inside a restrained palette.
 
 ---
 
 ## 2. Color System
 
-### 2.1 Light Theme — Parchment Canvas
+### 2.1 Core Identity Palette
 
-- **Parchment** (`#f5f4ed`): The page background — warm cream, the emotional foundation of the entire app
-- **Ivory** (`#faf9f5`): Card and container surface — barely lighter than Parchment, creates subtle elevation
-- **Pure White** (`#ffffff`): Highest elevation only — modals, floating sheets
-- **Warm Sand** (`#ede9e0`): Input fills, inactive tabs, offset surfaces
-- **Border Warm** (`#e8e6dc`): Visible dividers and prominent containment
-- **Border Cream** (`#f0eee6`): Ghost borders, subtle separation
-- **Scrim** (`rgba(20, 20, 19, 0.48)`): Modal overlay
+This is a Stashy-owned palette, curated from the references but tailored for a budgeting product and governed by `spec/controlled-design-system.md` plus `spec/brand-color-audit.md`.
 
-- **Near Black** (`#141413`): Primary text — warm, barely olive-tinted dark; never pure black
-- **Olive Gray** (`#5e5d59`): Secondary text — distinctly warm medium dark
-- **Stone Gray** (`#87867f`): Captions, metadata, de-emphasized content
-- **Ivory** (`#faf9f5`): Text on dark surfaces and on brand (Terracotta) backgrounds
+- **Oat** (`#f4eee6`): primary app background
+- **Cream** (`#fcf8f2`): main card and sheet surface
+- **Biscuit** (`#f0e6d8`): offset surface, inactive controls, soft grouped blocks
+- **Clay Wash** (`#e3d7c6`): visible warm border
+- **Walnut** (`#2f2a24`): primary text and strongest structural anchors
+- **Mocha** (`#686055`): secondary text and explanatory copy
+- **Fog** (`#968c7d`): tertiary text, metadata, placeholders
+- **Clay** (`#9b654b`): primary brand color and single highest-signal action
+- **Sage** (`#5e7962`): fixed / paid / healthy financial state
+- **Amber** (`#b3883b`): major purchase and pressure state
+- **Harbor** (`#637f8a`): received income / injection / informational state
+- **Berry** (`#8a657b`): tertiary data accent, sparing use only
 
-```
---color-bg:               #f5f4ed
---color-surface:          #faf9f5
---color-surface-2:        #ffffff
---color-surface-offset:   #ede9e0
---color-border:           #e8e6dc
---color-border-subtle:    #f0eee6
---color-overlay:          rgba(20, 20, 19, 0.48)
---color-text:             #141413
---color-text-secondary:   #5e5d59
---color-text-tertiary:    #87867f
---color-text-on-dark:     #faf9f5
---color-text-on-brand:    #faf9f5
-```
+### 2.2 Runtime Token Mapping
 
-### 2.2 Dark Theme — Deep Ink
+These are the implementation tokens used in CSS and Tailwind:
 
-- **Deep Ink** (`#141413`): Page background — warm near-black with an olive undertone
-- **Warm Charcoal** (`#1e1e1c`): Card surface on dark
-- **Elevated Dark** (`#252523`): Higher-elevation surfaces on dark
-- **Dark Surface** (`#30302e`): Input fills, inactive tabs on dark
-- **Dark Border** (`#3a3a38`): Visible borders on dark
-- **Warm White** (`#f0ede6`): Primary text on dark
-- **Warm Silver** (`#b0aea5`): Secondary text on dark — parchment-tinted light gray
-
-```
---color-bg:               #141413
---color-surface:          #1e1e1c
---color-surface-2:        #252523
---color-surface-offset:   #30302e
---color-border:           #3a3a38
---color-border-subtle:    #30302e
---color-overlay:          rgba(0, 0, 0, 0.64)
---color-text:             #f0ede6
---color-text-secondary:   #b0aea5
---color-text-tertiary:    #6e6d68
---color-text-on-dark:     #f0ede6
---color-text-on-brand:    #faf9f5
+```css
+--color-bg: #f4eee6;
+--color-surface: #fcf8f2;
+--color-surface-2: #f8f1e7;
+--color-surface-offset: #f0e6d8;
+--color-border: #e3d7c6;
+--color-border-subtle: #ece2d4;
+--color-overlay: rgba(47, 42, 36, 0.42);
+--color-text: #2f2a24;
+--color-text-secondary: #686055;
+--color-text-tertiary: #968c7d;
+--color-text-on-brand: #fcf8f2;
+--color-brand: #9b654b;
+--color-brand-hover: #875740;
+--color-brand-subtle: #ead9cc;
 ```
 
-### 2.3 Brand Accent — Terracotta
+### 2.3 Financial Semantics
 
-The single chromatic identity of Stashy. Earthy, warm, deliberately un-tech. Used only for the primary CTA and the single highest-signal brand moment per screen. Never diluted. Never doubled.
+The key product colors are not decorative categories. They communicate budgeting meaning, and their full semantic governance now lives in `spec/brand-color-audit.md`.
 
-- **Terracotta Brand** (`#c96442`): Primary CTA button, key actions
-- **Terracotta Pressed** (`#b05538`): Active / pressed state
-- **Brand Subtle Light** (`#f2e0d8`): Tinted surface for brand context (light theme)
-- **Brand Subtle Dark** (`#3d2218`): Tinted surface (dark theme)
-- **Coral** (`#d97757`): Secondary emphasis, text accent on dark surfaces
+#### Variable Spending
 
-```
---color-brand:            #c96442
---color-brand-hover:      #b05538
---color-brand-subtle:     #f2e0d8
---color-brand-subtle-dark:#3d2218
---color-coral:            #d97757
-```
+Variable is intentionally the calmest category. It should feel neutral and operational rather than celebratory or alarming.
 
-### 2.4 Semantic Colors — Financial States
+- Background: **Biscuit**
+- Text: **Mocha**
 
-These are the only non-neutral, non-terracotta colors permitted. They exist to communicate financial health — not for decoration.
+#### Fixed Expenses
 
-#### Danger — Emergency Mode & Critical Errors
+Fixed needs to feel stable and reliable.
 
-- **Error Crimson** (`#b53333`): Emergency mode, overspend, destructive confirms, form errors
-- **Error Crimson Pressed** (`#8f2424`): Pressed state
-- **Danger Subtle Light** (`#f5dcdc`): Danger tint surface (light)
-- **Danger Subtle Dark** (`#3d1c1c`): Danger tint surface (dark)
-- **Danger on Dark** (`#e06060`): Danger text/icon on dark backgrounds
+- Base color: **Sage** `#5e7962`
+- Subtle surface: `#dde8de`
 
-```
---color-danger:           #b53333
---color-danger-hover:     #8f2424
---color-danger-subtle:    #f5dcdc
---color-danger-subtle-dark: #3d1c1c
---color-danger-dark:      #e06060
+```css
+--color-success: #5e7962;
+--color-success-hover: #4f6752;
+--color-success-subtle: #dde8de;
 ```
 
-**Usage:** Emergency Mode banner; overspend values; destructive confirm dialogs; form validation errors.
+#### Major Purchases / Budget Pressure
 
-#### Warning — Budget Pressure
+Major needs visible caution without reading as an error.
 
-- **Warm Amber** (`#c97d1a`): Major expense warnings, budget pressure signal
-- **Amber Pressed** (`#a86415`): Pressed state
-- **Warning Subtle Light** (`#f7ead4`): Amber tint surface (light)
-- **Warning Subtle Dark** (`#3a2c10`): Amber tint (dark)
-- **Warning on Dark** (`#e8a030`): Warning text/icon on dark backgrounds
+- Base color: **Amber** `#b3883b`
+- Subtle surface: `#f2e5c8`
 
-```
---color-warning:          #c97d1a
---color-warning-hover:    #a86415
---color-warning-subtle:   #f7ead4
---color-warning-subtle-dark: #3a2c10
---color-warning-dark:     #e8a030
+```css
+--color-warning: #b3883b;
+--color-warning-hover: #9c7632;
+--color-warning-subtle: #f2e5c8;
 ```
 
-**Usage:** Major Expenses card progress bar; `major_warning: true` inline message; Tomorrow's Rate Impact card.
+#### Emergency / Overspend / Destructive
 
-#### Success — On-Track Fixed Expenses
+Emergency needs warmth and seriousness, not neon red panic.
 
-- **Forest Green** (`#4a7c3f`): Fixed expense on-track / paid status
-- **Forest Green Pressed** (`#3a612f`): Pressed state
-- **Success Subtle Light** (`#d8edcc`): Success tint surface (light)
-- **Success Subtle Dark** (`#1e3316`): Success tint (dark)
-- **Success on Dark** (`#6daa45`): Success text/icon on dark backgrounds
+- Base color: **Burnt Clay** `#b85c3f`
+- Subtle surface: `#f3ddd4`
 
-```
---color-success:          #4a7c3f
---color-success-hover:    #3a612f
---color-success-subtle:   #d8edcc
---color-success-subtle-dark: #1e3316
---color-success-dark:     #6daa45
+```css
+--color-danger: #b85c3f;
+--color-danger-hover: #9f4f37;
+--color-danger-subtle: #f3ddd4;
 ```
 
-**Usage:** Fixed Tracker item status (on-track / paid); progress bar fill at `progress_pct >= 95`; catch-up success confirmation.
+#### Received Income / Budget Injection / Informational Recovery
 
-#### Neutral Info
+These are positive but not identical to “fixed paid.” They should feel fresh, clean, and restorative.
 
-For non-critical contextual information: auto-pay labels, sync indicators.
+- Base color: **Harbor** `#637f8a`
+- Subtle surface: `#dfe8ec`
 
-- **Muted Teal-Blue** (`#3d7fa8`): Info state
-- **Info Subtle Light** (`#daeef7`): Info tint (light)
-- **Info Subtle Dark** (`#1a2e38`): Info tint (dark)
-- **Info on Dark** (`#5ea8d4`): Info text/icon on dark backgrounds
-
-```
---color-info:             #3d7fa8
---color-info-subtle:      #daeef7
---color-info-subtle-dark: #1a2e38
---color-info-dark:        #5ea8d4
+```css
+--color-info: #637f8a;
+--color-info-subtle: #dfe8ec;
 ```
 
-### 2.5 Elevation & Shadow
+### 2.4 Surfaces
 
-Ring-shadow system. Depth through warm-toned halos, not drop shadows.
-
-- **Shadow Ring** (`0 0 0 1px rgba(20, 20, 19, 0.10)`): Subtle ring — card borders
-- **Shadow Ring Brand** (`0 0 0 1px rgba(201, 100, 66, 0.40)`): Active brand state
-- **Shadow Ring Danger** (`0 0 0 1px rgba(181, 51, 51, 0.40)`): Danger input / card state
-- **Shadow Soft** (`0 2px 8px rgba(20, 20, 19, 0.08), 0 0 0 1px rgba(20, 20, 19, 0.06)`): Elevated cards
-- **Shadow Card** (`0 4px 16px rgba(20, 20, 19, 0.10), 0 1px 4px rgba(20, 20, 19, 0.06)`): Featured cards
-- **Shadow Modal** (`0 16px 48px rgba(20, 20, 19, 0.20), 0 4px 16px rgba(20, 20, 19, 0.10)`): Modals, bottom sheets
-
-Dark mode: replace `rgba(20, 20, 19, ...)` with `rgba(0, 0, 0, ...)` at ×1.5 opacity.
-
-```
---shadow-ring:        0 0 0 1px rgba(20, 20, 19, 0.10)
---shadow-ring-brand:  0 0 0 1px rgba(201, 100, 66, 0.40)
---shadow-ring-danger: 0 0 0 1px rgba(181, 51, 51, 0.40)
---shadow-soft:        0 2px 8px rgba(20, 20, 19, 0.08), 0 0 0 1px rgba(20, 20, 19, 0.06)
---shadow-card:        0 4px 16px rgba(20, 20, 19, 0.10), 0 1px 4px rgba(20, 20, 19, 0.06)
---shadow-modal:       0 16px 48px rgba(20, 20, 19, 0.20), 0 4px 16px rgba(20, 20, 19, 0.10)
-```
-
-**React Native Implementation Note:**
-Ring shadows map to `borderWidth` + `borderColor` on the container `View`. Soft/card/modal shadows use iOS `shadow*` props + Android `elevation` (2 / 4 / 12 respectively). `boxShadow` has no effect in React Native — never use it in StyleSheet.
+| Level | Name              | Value                    | Purpose                               |
+| ----- | ----------------- | ------------------------ | ------------------------------------- |
+| 0     | Page Ground       | `#f4eee6`                | Full-screen background                |
+| 1     | Main Surface      | `#fcf8f2`                | Cards, drawers, sheets                |
+| 2     | Secondary Surface | `#f8f1e7`                | Nested groups, tabs, quiet sections   |
+| 3     | Offset Surface    | `#f0e6d8`                | Inputs, inactive pills, preview areas |
+| 4     | Overlay           | `rgba(47, 42, 36, 0.42)` | Drawer and modal scrim                |
 
 ---
 
-## 3. Typography
+## 3. Elevation & Shadow
 
-### 3.1 Font Family: Google Sans Flex
+The system should feel layered like papers and trays on a desk, not like floating glass.
 
-A variable font with generous x-height, open apertures, and compressed numerals that read at speed — ideal for financial UIs. Used as a variable font in Stitch; for React Native, see the static font mapping in §3.2.
+- **Shadow Ring**: subtle structural outline
+- **Shadow Soft**: standard card elevation
+- **Shadow Card**: stronger hero or nav elevation
+- **Shadow Modal**: drawer/sheet elevation
 
+```css
+--shadow-ring: 0 0 0 1px rgba(47, 42, 36, 0.08);
+--shadow-ring-brand: 0 0 0 1px rgba(155, 101, 75, 0.28);
+--shadow-ring-danger: 0 0 0 1px rgba(184, 92, 63, 0.28);
+--shadow-soft:
+  rgba(60, 42, 20, 0.04) 0 10px 24px -14px, rgba(47, 42, 36, 0.06) 0 4px 10px -8px,
+  rgba(47, 42, 36, 0.08) 0 0 0 1px;
+--shadow-card:
+  rgba(60, 42, 20, 0.08) 0 18px 38px -18px, rgba(47, 42, 36, 0.08) 0 8px 16px -10px,
+  rgba(47, 42, 36, 0.08) 0 0 0 1px;
+--shadow-modal:
+  rgba(47, 42, 36, 0.14) 0 24px 56px -22px, rgba(47, 42, 36, 0.1) 0 12px 24px -14px,
+  rgba(47, 42, 36, 0.08) 0 0 0 1px;
 ```
-font-family: 'Google Sans Flex', system-ui, -apple-system, sans-serif;
-```
 
-### 3.2 React Native Static Font Strategy
-
-Google Sans Flex ships as static `.ttf` instances per optical size and weight. Variable axes (`GRAD`, `ROND`, `opsz`, `wdth`, `slnt`) cannot be controlled at runtime in React Native. Apply this mapping when loading fonts via `expo-font`:
-
-| Role                               | File                                                                                                    | Alias                                                                     |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Hero Number (48–56pt)              | `GoogleSansFlex_72pt-Bold.ttf`                                                                          | `GoogleSansFlex-HeroNumber`                                               |
-| Display / Title 1 (24–32pt)        | `GoogleSansFlex_24pt-SemiBold.ttf`                                                                      | `GoogleSansFlex-Display`                                                  |
-| Title 2 / Title 3 / Body (15–20pt) | `GoogleSansFlex_24pt-Regular.ttf`, `GoogleSansFlex_24pt-Medium.ttf`, `GoogleSansFlex_24pt-SemiBold.ttf` | `GoogleSansFlex-Body`, `GoogleSansFlex-Medium`, `GoogleSansFlex-SemiBold` |
-| Caption / Footnote (11–13pt)       | `GoogleSansFlex_9pt-Regular.ttf`, `GoogleSansFlex_9pt-Medium.ttf`                                       | `GoogleSansFlex-Caption`, `GoogleSansFlex-CaptionMedium`                  |
-
-Axis rules that are Stitch/Figma design-tool-only — not enforceable in React Native:
-
-- `GRAD -25` dark mode
-- `ROND` values
-- `opsz` matching
-
-What IS enforceable in React Native:
-
-- Font weight via separate family aliases (each weight = separate `fontFamily`)
-- `fontVariantNumeric: 'tabular-nums'` on `Text` for tabular figures (iOS; Android depends on font compilation)
-- `lineHeight`, `letterSpacing`, `writingDirection: 'rtl'`
-
-### 3.3 Type Scale
-
-All sizes in platform-agnostic pt/sp. Stitch design tool: apply `opsz` and `ROND` as specified. React Native: use the alias mapping above.
-
-| Role                 | Size | wght | Line Height | Letter Spacing | Usage                                 |
-| -------------------- | ---- | ---- | ----------- | -------------- | ------------------------------------- |
-| **Hero Number**      | 56pt | 700  | 1.00        | -0.5pt         | Remaining Today — the dominant number |
-| **Hero Number (lg)** | 48pt | 700  | 1.00        | -0.5pt         | Large dashboard values                |
-| **Display**          | 32pt | 600  | 1.10        | -0.25pt        | Section hero headings                 |
-| **Title 1**          | 24pt | 600  | 1.20        | -0.15pt        | Screen titles, card headers           |
-| **Title 2**          | 20pt | 600  | 1.25        | -0.10pt        | Major section headings                |
-| **Title 3**          | 17pt | 600  | 1.30        | 0              | Card subheadings                      |
-| **Body**             | 17pt | 400  | 1.50        | 0              | Standard body text                    |
-| **Callout**          | 16pt | 400  | 1.50        | 0              | Secondary body, descriptions          |
-| **Subhead**          | 15pt | 500  | 1.40        | 0              | Navigation links, emphasized UI       |
-| **Footnote**         | 13pt | 400  | 1.40        | 0.1pt          | Fine print, hints                     |
-| **Caption 1**        | 12pt | 400  | 1.30        | 0.2pt          | Labels, metadata                      |
-| **Caption 2**        | 11pt | 500  | 1.25        | 0.3pt          | **Absolute floor. Never smaller.**    |
-
-**Minimum text size:** 11pt/sp — Apple HIG and Material Design 3 minimum.
-
-### 3.4 Number Display Rules
-
-Financial numbers have their own rendering rules.
-
-- Use tabular figures (`fontVariantNumeric: 'tabular-nums'` in React Native; `font-feature-settings: "tnum" 1` in Stitch) on any number that changes dynamically — prevents layout shift as digits update
-- EGP amounts: `"482 EGP"` — amount first, currency suffix in Caption 1 weight 500 color secondary
-- Negative / overspent values: use `--color-danger` (light) or `--color-danger-dark` (dark theme)
-- Rate numbers (Today's Rate, Base Rate): Title 2 size — not Hero size; hierarchy must be clear
-- Progress percentages: Caption 1 size, weight 600
-
-### 3.5 RTL / Arabic Rules
-
-Google Sans Flex supports Arabic script natively. When rendered in Arabic (`dir="rtl"`):
-
-- Body line-height increases to 1.70 (Arabic descenders and ascenders need more clearance)
-- Label/Caption line-height increases to 1.50
-- Letter-spacing: 0 for all Arabic text (tracking disrupts Arabic joining)
-- Numbers (EGP amounts) remain in LTR direction within RTL layouts — use `writingDirection: 'ltr'` on number Text components
-- `wght 400` for Arabic body (Arabic strokes appear heavier than Latin at the same weight)
-- Stitch design note: `ROND 40` is recommended for Arabic display text — rounder terminals complement Arabic letterforms
-
-**Shadcn/UI Native RTL Architecture:**
-
-- The project's shadcn/ui installation has native RTL enabled.
-- **Always use logical classes:** Never use physical classes (`left-*`, `right-*`, `pl-*`, `mr-*`, etc.). Always use their logical equivalents (`start-*`, `end-*`, `ps-*`, `me-*`, etc.). The framework automatically interprets these correctly based on `dir`.
-- **Icons:** Directional icons must use the `rtl:rotate-180` tailwind class to flip properly in Arabic mode.
-- **Portals & Animations:** Due to a known `tw-animate-css` bug, you MUST explicitly pass the `dir="rtl"` prop to portaled elements (like `<PopoverContent dir="rtl">` or `<TooltipContent dir="rtl">`). If you do not, logical slide animations (e.g., `slide-in-from-end`) will compute off physical boundaries and break.
+**Design rule:** prefer soft stacked elevation over hard drop shadows or cold glows.
 
 ---
 
-## 4. Spacing System
+## 4. Typography
 
-### 4.1 Base Unit
+### 4.1 Font Family
 
-**8pt/dp base unit.** All spacing is a multiple of 4pt for micro-adjustments. The effective floor for all interactive elements is **48pt/dp**.
+The reference sources use several brand fonts, but the actual Stashy sandbox keeps **Google Sans Flex** for implementation continuity, Arabic support, and product readability.
 
-```
---space-1:    4pt
---space-2:    8pt
---space-3:   12pt
---space-4:   16pt
---space-5:   20pt
---space-6:   24pt
---space-8:   32pt
---space-10:  40pt
---space-12:  48pt
---space-16:  64pt
+```css
+font-family:
+  "Google Sans Flex",
+  system-ui,
+  -apple-system,
+  sans-serif;
 ```
 
-### 4.2 Touch Target Rules
+### 4.2 Type Scale
 
-- **Minimum interactive size:** 48×48pt
-- **Minimum spacing between targets:** 8pt — never closer
-- **Recommended CTA height:** 52pt
-- **Bottom navigation tab items:** min 48pt height
-- **Icon-only buttons:** always 48×48pt hit area, even if icon is 24pt
-- **List row height (transaction items):** min 56pt
-- **Form input height:** 52pt
-- **Destructive actions (delete):** min 44pt height, require confirmation dialog
+Stashy keeps its mobile hierarchy because it is already correct for the product:
 
-### 4.3 Safe Area Insets
+| Role                 | Size | Weight | Line Height | Letter Spacing | Usage                  |
+| -------------------- | ---- | ------ | ----------- | -------------- | ---------------------- |
+| **Hero Number**      | 56pt | 700    | 1.00        | -0.5pt         | Remaining Today        |
+| **Hero Number (lg)** | 48pt | 700    | 1.00        | -0.5pt         | Large totals           |
+| **Display**          | 32pt | 600    | 1.10        | -0.25pt        | Top-level section hero |
+| **Title 1**          | 24pt | 600    | 1.20        | -0.15pt        | Screen titles          |
+| **Title 2**          | 20pt | 600    | 1.25        | -0.10pt        | Section titles         |
+| **Title 3**          | 17pt | 600    | 1.30        | 0              | Card subheadings       |
+| **Body**             | 17pt | 400    | 1.50        | 0              | Main body copy         |
+| **Callout**          | 16pt | 400    | 1.50        | 0              | Secondary copy         |
+| **Subhead**          | 15pt | 500    | 1.40        | 0              | Emphasized UI text     |
+| **Footnote**         | 13pt | 400    | 1.40        | 0.1pt          | Hints                  |
+| **Caption 1**        | 12pt | 400    | 1.30        | 0.2pt          | Labels                 |
+| **Caption 2**        | 11pt | 500    | 1.25        | 0.3pt          | Minimum UI text        |
 
-Never hardcode safe area values. Always use `safeAreaInsets` from the platform.
+### 4.3 Number Rules
 
-| Device zone             | Rule                               |
-| ----------------------- | ---------------------------------- |
-| Status bar / top inset  | Defer to `safeAreaInsets.top`      |
-| Home indicator / bottom | Defer to `safeAreaInsets.bottom`   |
-| Bottom tab bar total    | 49pt bar + `safeAreaInsets.bottom` |
-| Keyboard avoidance      | Use `KeyboardAvoidingView`         |
+- Use tabular figures on dynamic numbers
+- Amount first, currency suffix second: `482 EGP`
+- Negative or overspent values use danger
+- Today’s Rate and Base Rate stay below hero scale
+- Category badges and progress labels live in caption territory
 
-### 4.4 Screen Layout Tokens
+### 4.4 RTL / Arabic Rules
 
+These remain mandatory:
+
+- Arabic body line-height: `1.70`
+- Arabic label/caption line-height: `1.50`
+- Arabic letter spacing: `0`
+- Numeric values remain visually LTR in RTL context
+- Use logical classes only
+- Directional icons still require `rtl:rotate-180`
+- Portaled shadcn content still requires explicit `dir`
+
+---
+
+## 5. Spacing System
+
+This system stays mobile-safe. We do not import desktop density from references just because it looks tidy.
+
+### 5.1 Base Unit
+
+```css
+--space-1: 4pt;
+--space-2: 8pt;
+--space-3: 12pt;
+--space-4: 16pt;
+--space-5: 20pt;
+--space-6: 24pt;
+--space-8: 32pt;
+--space-10: 40pt;
+--space-12: 48pt;
+--space-16: 64pt;
 ```
---screen-horizontal-margin:  16pt
---card-padding:              16pt
---card-gap:                  12pt
---section-gap:               24pt
---list-item-padding-v:       14pt
---list-item-padding-h:       16pt
---bottom-nav-height:         49pt
+
+### 5.2 Touch Target Rules
+
+- Minimum interactive size: `48×48pt`
+- Minimum spacing between targets: `8pt`
+- Recommended CTA height: `52pt`
+- Bottom nav items: `48pt` minimum
+- Inputs: `52pt`
+- List rows: `56pt` minimum
+
+### 5.3 Screen Layout Tokens
+
+```css
+--screen-horizontal-margin: 16pt;
+--card-padding: 16pt;
+--card-gap: 12pt;
+--section-gap: 24pt;
+--list-item-padding-v: 14pt;
+--list-item-padding-h: 16pt;
+--bottom-nav-height: 49pt;
 ```
 
 ---
 
-## 5. Border Radius
+## 6. Border Radius
 
-```
---radius-xs:     4pt    /* Badges, chips, small pills */
---radius-sm:     8pt    /* Buttons, input fields, small cards */
---radius-md:    12pt    /* Standard cards, list containers */
---radius-lg:    16pt    /* Featured cards, modal sheets */
---radius-xl:    20pt    /* Hero containers, bottom sheets */
---radius-full:  9999pt  /* Status pills, toggle tracks */
+The system should feel softer than Cursor, tighter than the earlier fully-rounded Stashy look.
+
+```css
+--radius-xs: 6pt;
+--radius-sm: 12pt;
+--radius-md: 16pt;
+--radius-lg: 20pt;
+--radius-xl: 24pt;
+--radius-full: 9999pt;
 ```
 
-**Nested radius rule:** Inner element radius = outer radius − gap. If outer card is `--radius-md` (12pt) and inner content has 12pt padding, inner element radius = 0.
+**Interpretation rule:** cards are softly rounded, interactive chips can be full-pill, but the app should never feel bubbly or toy-like.
 
 ---
 
-## 6. Component Tokens
+## 7. Component Tokens
 
-### 6.1 Buttons
+### 7.1 Primary Button
 
-**Primary (Terracotta)**
+- Background: **Clay** `#9b654b`
+- Text: **Cream** `#fcf8f2`
+- Height: `52pt`
+- Radius: `12pt`
+- Padding: horizontal `16pt`
+- Font: `17pt`, weight `600`
+- Shadow: `--shadow-ring-brand`
 
-- Background: Terracotta Brand (`#c96442`)
-- Text: Ivory (`#faf9f5`), wght 600, 17pt
-- Height: 52pt · Radius: 8pt · Shadow: `--shadow-ring-brand`
-- Press state: background `#b05538`
-- Used for: primary submit, add transaction, confirm actions
+### 7.2 Secondary Button
 
-**Secondary (Warm Sand)**
+- Background: **Biscuit**
+- Text: **Walnut**
+- Border: `1px solid Clay Wash`
+- Height: `52pt`
+- Radius: `12pt`
 
-- Background: Warm Sand (`#ede9e0`)
-- Text: Near Black (`#141413`), wght 500, 17pt
-- Height: 52pt · Radius: 8pt · Shadow: `--shadow-ring`
-- Used for: secondary actions, filters, cancel (non-destructive)
+### 7.3 Outline / Tertiary Button
 
-**Ghost**
+- Background: transparent
+- Text: **Clay**
+- Border: `1px solid rgba(155, 101, 75, 0.25)`
+- Height: `52pt`
+- Radius: `12pt`
 
-- Background: transparent · Text: Terracotta (`#c96442`), wght 500, 15pt
-- Height: 44pt · No border, no shadow
-- Used for: tertiary actions, inline links
+### 7.4 Cards
 
-**Destructive**
-
-- Background: Error Crimson (`#b53333`) · Text: #ffffff, wght 600, 17pt
-- Height: 52pt · Radius: 8pt
-- Used for: hard delete, dangerous confirms only
-
-**Dark theme:** Terracotta primary unchanged. Sand secondary becomes Dark Surface (`#30302e`). Text adjusts to Warm White (`#f0ede6`).
-
-### 6.2 Cards
-
-```
-Background:  --color-surface (#faf9f5 / #1e1e1c)
-Border:      1px solid --color-border-subtle
-Radius:      --radius-md (12pt)
-Padding:     --card-padding (16pt)
-Shadow:      --shadow-soft
+```css
+Background:  --color-surface
+Border:      1px solid --color-border
+Radius:      20pt
+Padding:     16pt
+Shadow:      --shadow-card
 ```
 
-**Interactive card:** Add `--shadow-ring` on press; scale 0.98 on press.
+### 7.5 Inputs
 
-**Danger card (Emergency Mode):**
-
-```
-Background:  --color-danger-subtle (#f5dcdc / #3d1c1c)
-Border:      1.5px solid --color-danger
-```
-
-**Warning card (Major Expenses):**
-
-```
-Background:  --color-warning-subtle (#f7ead4 / #3a2c10)
-Border:      1px solid --color-warning
-```
-
-### 6.3 Progress Bars
-
-- Track: `--color-surface-offset` · Height: 6pt (standard) / 4pt (compact) · Radius: `--radius-full`
-- Fill — Variable budget: Terracotta (`#c96442`)
-- Fill — Fixed on-track: Forest Green (`#4a7c3f`)
-- Fill — Fixed over budget: Error Crimson (`#b53333`)
-- Fill — Major expenses: Warm Amber (`#c97d1a`)
-- Animate fill on mount: 400ms ease-out from 0% to final value
-
-### 6.4 Input Fields
-
-```
+```css
 Background:  --color-surface-offset
 Border:      1px solid --color-border
-Radius:      --radius-sm (8pt)
+Radius:      12pt
 Height:      52pt
 Padding:     0 16pt
-Font:        Body (17pt, wght 400)
+Font:        Body (17pt, 400)
 Placeholder: --color-text-tertiary
 ```
 
-Focus: `1.5px solid --color-brand`, ring `--shadow-ring-brand`.
-Error: `1.5px solid --color-danger`, ring `--shadow-ring-danger`.
+### 7.6 Transaction Type Semantics
 
-### 6.5 List Rows (Transaction Items)
+| Type                  | Background | Text      |
+| --------------------- | ---------- | --------- |
+| Variable              | `#f0e6d8`  | `#686055` |
+| Fixed                 | `#dde8de`  | `#5e7962` |
+| Major                 | `#f2e5c8`  | `#b3883b` |
+| Received              | `#dfe8ec`  | `#637f8a` |
+| Budget Injection      | `#dfe8ec`  | `#637f8a` |
+| Emergency / Overspend | `#f3ddd4`  | `#b85c3f` |
 
-```
-Height:      min 56pt
-Padding:     14pt vertical / 16pt horizontal
-Separator:   1px --color-border-subtle (leading inset 16pt)
-Background:  --color-surface
-Press state: --color-surface-offset, 100ms
-```
+### 7.7 Bottom Navigation
 
-No colored left-side border on list rows. Status is communicated via text color and type badges only.
+- Height: `49pt + safe-area bottom`
+- Background: **Cream**
+- Border-top: `1px solid --color-border-subtle`
+- Active color: **Clay**
+- Inactive color: **Fog**
+- Shadow: `--shadow-card`
 
-### 6.6 Type Badges
+### 7.8 Bottom Sheets / Drawers
 
-```
-Radius:   --radius-full
-Padding:  2pt 8pt
-Font:     Caption 2 (11pt, wght 500)
-```
-
-| Badge            | Light bg                 | Light text        | Dark bg                       | Dark text              |
-| ---------------- | ------------------------ | ----------------- | ----------------------------- | ---------------------- |
-| Variable         | `#ede9e0`                | `#5e5d59`         | `#30302e`                     | `#b0aea5`              |
-| Fixed            | `--color-info-subtle`    | `--color-info`    | `--color-info-subtle-dark`    | `--color-info-dark`    |
-| Major            | `--color-warning-subtle` | `--color-warning` | `--color-warning-subtle-dark` | `--color-warning-dark` |
-| Budget Injection | `--color-success-subtle` | `--color-success` | `--color-success-subtle-dark` | `--color-success-dark` |
-| Transfer         | `--color-brand-subtle`   | `--color-brand`   | `--color-brand-subtle-dark`   | `--color-coral`        |
-| Received         | `--color-success-subtle` | `--color-success` | `--color-success-subtle-dark` | `--color-success-dark` |
-
-### 6.7 Bottom Navigation Bar
-
-```
-Height:           49pt + safeAreaInsets.bottom
-Background:       --color-surface (with blur/vibrancy on iOS)
-Border-top:       1px --color-border-subtle
-Tab icon size:    24pt
-Tab label:        Caption 2 (11pt, wght 500)
-Active color:     --color-brand
-Inactive color:   --color-text-tertiary
-Active indicator: small pill in --color-brand-subtle
-```
-
-### 6.8 Bottom Sheet / Modal
-
-```
-Background:  --color-surface
-Radius top:  --radius-xl (20pt)
-Handle:      4pt × 36pt, --color-border, centered, 8pt from top
-Overlay:     --color-overlay
-Safe area:   content clears safeAreaInsets.bottom
-```
+- Background: **Cream**
+- Top radius: `24pt`
+- Overlay: `rgba(47, 42, 36, 0.42)`
+- Footer actions stay visible while the body scrolls
 
 ---
 
-## 7. Motion Principles
+## 8. Motion Principles
 
-- **Transitions:** 200–280ms, ease-out (`cubic-bezier(0.16, 1, 0.3, 1)`)
-- **Sheet presentation:** 320ms spring (damping 0.85)
-- **Number changes:** Count-up or flip animation when dashboard values update
-- **Progress bar fill:** 400ms ease-out on mount
-- **Emergency banner:** Slide-in from top, 320ms spring — never fade-in (urgency requires motion)
-- **Skeleton shimmer:** 1.4s ease-in-out infinite, horizontal sweep
-- **Accessibility:** Respect `UIAccessibility.isReduceMotionEnabled` — disable all animations, use instant transitions
+- Micro transitions: `200–280ms`, ease-out
+- Sheet presentation: `320ms`
+- Progress fill: `400ms`
+- Emergency feedback should appear decisively
+- Reduced motion must always be respected
 
----
-
-## 8. Iconography
-
-- Library: **Hugeicons** (`@hugeicons/react-native` + `@hugeicons/core-free-icons`) — sole icon library
-- Preferred variant: **Stroke Rounded** — consistent with Google Sans Flex's warm aesthetic
-- Icon size: 24pt (standard) / 20pt (compact, inside badges) / 28pt (tab bar)
-- `strokeWidth`: 1.5 (standard UI) / 2.0 (emphasis, active states)
-- Color: match surrounding text role — primary, secondary, or tertiary
-- No colored backgrounds, circles, or containers around icons
-- Icon-only buttons: always provide `accessibilityLabel`
-- Do not use emoji as interface icons
+The system should feel composed and tactile, not playful.
 
 ---
 
-## 9. Do's ✓
+## 9. Iconography
 
-- Use Parchment `#f5f4ed` as the default light background — it IS the Stashy personality
-- Use Terracotta `#c96442` only for the single most important action on each screen
-- Use tabular figures on all numeric values that change dynamically
-- Use `--shadow-ring` (0 0 0 1px) for interactive card/button depth — never drop shadows
-- Always account for `safeAreaInsets` — hardcode nothing
-- Alternate light and dark screens across the app for visual variety
-- Keep all neutral grays warm-toned — every gray has a yellow-brown undertone
-- Use 8pt minimum spacing between all interactive elements
+- Library remains **Hugeicons**
+- Use rounded stroke icons
+- Standard size: `24pt`
+- Compact size: `20pt`
+- Tab bar size: `28pt`
+- Icons inherit surrounding semantic text color
 
 ---
 
-## 10. Don'ts ✗
+## 10. Do's ✓
 
-- **Never** use a colored left-side border on cards or list rows
-- **Never** use Terracotta for more than one element per screen
-- **Never** introduce cool-tone grays — every neutral must have a yellow-brown undertone
-- **Never** use pure black (`#000000`) or pure white (`#ffffff`) as page backgrounds
-- **Never** design text smaller than 11pt/sp
-- **Never** hardcode safe area values — use platform APIs
-- **Never** place interactive elements with less than 8pt of separation
-- **Never** use italic text in financial data displays
-- **Never** use gradient buttons — solid Terracotta only for primary CTA
-- **Never** use the danger color for anything other than genuinely dangerous states
-- **Never** add icons or emoji to transaction type names or category labels
+- Use **Oat** as the page background everywhere
+- Keep **Clay** as the brand accent and single strongest action color
+- Let cards feel clean and slightly lifted against the warmer page ground
+- Use muted semantic colors, not bright dashboard colors
+- Preserve touch safety and RTL correctness
+- Favor soft business warmth over cold fintech sharpness
 
 ---
 
-## 11. Agent Prompt Guide
+## 11. Don'ts ✗
 
-Copy-paste-ready references for Stitch and AI generation tools.
+- **Never** reintroduce parallel theme variants for this identity
+- **Never** use pure white or cool gray as the default app background
+- **Never** let accent colors become neon or dominant
+- **Never** use physical directional classes
+- **Never** use arbitrary hardcoded shadows when token shadows exist
+- **Never** shrink the system below mobile touch-safe interaction sizes
 
-### Core Palette (Light)
+---
 
-- Page background: `Parchment #f5f4ed`
-- Card surface: `Ivory #faf9f5`
-- Primary text: `Near Black #141413`
-- Secondary text: `Olive Gray #5e5d59`
-- Caption text: `Stone Gray #87867f`
-- Border: `Border Warm #e8e6dc`
-- Primary CTA: `Terracotta #c96442`
-- CTA text: `Ivory #faf9f5`
+## 12. Agent Prompt Guide
 
-### Core Palette (Dark)
+### Quick Color Reference
 
-- Page background: `Deep Ink #141413`
-- Card surface: `Warm Charcoal #1e1e1c`
-- Primary text: `Warm White #f0ede6`
-- Secondary text: `Warm Silver #b0aea5`
-- Border: `Dark Border #3a3a38`
-- Primary CTA: `Terracotta #c96442` (unchanged in dark)
+- Background: `Oat #f4eee6`
+- Main surface: `Cream #fcf8f2`
+- Offset surface: `Biscuit #f0e6d8`
+- Border: `Clay Wash #e3d7c6`
+- Primary text: `Walnut #2f2a24`
+- Secondary text: `Mocha #686055`
+- Tertiary text: `Fog #968c7d`
+- Primary action: `Clay #9b654b`
+- Fixed / healthy: `Sage #5e7962`
+- Major / pressure: `Amber #b3883b`
+- Income / injection: `Harbor #637f8a`
+- Emergency / overspend: `Burnt Clay #b85c3f`
 
-### Semantic Colors
+### Governance Reminder
 
-- Emergency / Error: `Error Crimson #b53333` (light) / `#e06060` (dark)
-- Warning / Pressure: `Warm Amber #c97d1a` (light) / `#e8a030` (dark)
-- On-track / Success: `Forest Green #4a7c3f` (light) / `#6daa45` (dark)
-- Info: `Muted Teal #3d7fa8` (light) / `#5ea8d4` (dark)
+- For semantic accents and state meaning, consult `spec/brand-color-audit.md`
+- For token/governance rules and anti-drift constraints, consult `spec/controlled-design-system.md`
 
-### Typography Reference
+### Example Mobile Prompt
 
-- Font: `Google Sans Flex`
-- Hero number: `56pt, wght 700, tabular figures`
-- Title 1: `24pt, wght 600`
-- Body: `17pt, wght 400`
-- Caption: `12pt, wght 400`
-- Stitch design note: Hero uses `opsz 56, ROND 0`; Title uses `opsz 24, ROND 10`; dark mode add `GRAD -25` to all text; Arabic body: `ROND 40, line-height 1.70, letter-spacing 0`
-
-### Example Stitch Screen Prompts
-
-**Dashboard — Hero Number (light theme):**
-
-```
-Mobile portrait. Font: Google Sans Flex.
-Background: Parchment (#f5f4ed). Card surface: Ivory (#faf9f5).
-Hero number: 56pt Google Sans Flex wght 700 opsz 56 ROND 0, Near Black (#141413), tabular figures, letter-spacing -0.5pt.
-Section title: 24pt wght 600 opsz 24 ROND 10, Olive Gray (#5e5d59).
-Primary button: Terracotta (#c96442) background, Ivory (#faf9f5) text, 52pt height, 8pt radius, ring shadow (0 0 0 1px rgba(201,100,66,0.40)).
-Cards: Ivory surface, 1px solid Border Cream (#f0eee6), 12pt radius, shadow-soft (0 2px 8px rgba(20,20,19,0.08)).
-Touch targets minimum 48pt. No gradient fills. No colored left-side card borders. No cool-tone grays.
-```
-
-**Emergency Mode banner:**
-
-```
-Full-width banner on Danger Subtle (#f5dcdc) with 1.5px solid Error Crimson (#b53333) border.
-Text: Error Crimson (#b53333), 17pt wght 600, urgent message copy.
-Slide-in from top, 320ms spring animation — never fade.
-```
-
-**Fixed Expense Tracker card:**
-
-```
-Card on Ivory (#faf9f5), 1px Border Cream (#f0eee6), 12pt radius.
-Title: 17pt wght 600 Near Black. Status badge pill: on-track uses Success Subtle (#d8edcc) background, Forest Green (#4a7c3f) text.
-Progress bar: 6pt height, radius-full track in Warm Sand (#ede9e0), fill Forest Green (#4a7c3f), animate 400ms ease-out.
-```
-
-**Transaction list row:**
-
-```
-Row height 56pt, horizontal padding 16pt, vertical padding 14pt.
-Background Ivory (#faf9f5). Separator: 1px Border Cream (#f0eee6), leading inset 16pt.
-Amount: 17pt wght 600 Near Black tabular figures. Category: 15pt wght 400 Olive Gray.
-Type badge: 11pt wght 500, radius-full pill, Variable badge background #ede9e0 text #5e5d59.
-No left-side colored border.
-```
-
-**Bottom navigation bar:**
-
-```
-Height 49pt plus safe area bottom. Background Ivory (#faf9f5) with iOS blur vibrancy.
-Top border 1px Border Cream (#f0eee6).
-Active tab: icon and label Terracotta (#c96442), active indicator pill in Brand Subtle (#f2e0d8).
-Inactive: icon and label Stone Gray (#87867f).
-Icon size 28pt, label Caption 2 11pt wght 500.
+```text
+Mobile portrait budgeting app with a warm ledger-desk identity. Background Oat (#f4eee6). Cards in Cream (#fcf8f2) with warm borders (#e3d7c6) and soft paper-stack shadows. Typography uses Google Sans Flex with a dominant 56pt hero number in Walnut (#2f2a24). Primary CTA uses Clay (#9b654b) with cream text. Variable states stay neutral and soft, fixed states use Sage, major states use Amber, received or budget injection states use Harbor, and emergency states use Burnt Clay. The page should feel calm, branded, and easy on the eyes, not bright white and not dark. Mobile spacing remains 16pt horizontal with strong touch targets and strict RTL-safe logical layout behavior.
 ```

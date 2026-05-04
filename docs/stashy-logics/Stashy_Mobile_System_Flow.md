@@ -72,6 +72,7 @@ Response `409` (email already belongs to another Firebase UID):
 ```
 
 Contract notes:
+
 - This endpoint is unauthenticated.
 - Rate limit: `20/minute` per IP.
 - Mobile calls it after sign-in or sign-up so the backend can verify the token and upsert the user row.
@@ -81,19 +82,23 @@ Contract notes:
 ### Email/Password auth email verification contract
 
 **Sign-up flow (mobile):**
+
 1. Call `createUserWithEmailAndPassword(email, password)`.
 2. Immediately call `sendEmailVerification()` on the returned user object.
 3. Do not call `getIdToken()` and hit the backend yet; send the user to a check-your-inbox screen instead.
 4. Only attempt backend login after the user verifies their email, or after app reopen once verification is complete.
 
 **Login flow:**
+
 - After `signInWithEmailAndPassword()`, call `getIdToken(true)` to force-refresh the token so the latest `email_verified` claim is present.
 - If `POST /api/v1/auth/login` returns `403` with `detail = "Please verify your email before signing in."`, show a check-your-inbox state and offer resend via `sendEmailVerification()`.
 
 **Password reset:**
+
 - `sendPasswordResetEmail(email)` is handled entirely by Firebase; no backend call is required.
 
 **Backend behavior:**
+
 - `POST /api/v1/auth/login` returns `403` when `sign_in_provider == "password"` and `email_verified == false`.
 - Google Sign-In and all other non-password providers are unaffected by this gate.
 
@@ -122,40 +127,42 @@ All endpoints except `POST /auth/login`, `GET /health`, and `GET /system/status`
 
 ### Mobile endpoint map
 
-| Method | Path | Auth | Purpose |
-|--------|------|------|---------|
-| `POST` | `/auth/login` | No | Verify Firebase token and upsert user |
-| `GET` | `/system/status` | No | App version and maintenance status |
-| `POST` | `/devices/register` | Yes | Register or replace the caller's active push device |
-| `POST` | `/notifications/send` | Yes | Send notification to caller via stored device |
-| `GET` | `/users/me` | Yes | Read current user profile |
-| `PUT` | `/users/me` | Yes | Update profile |
-| `GET` | `/user-settings` | Yes | Read settings |
-| `PUT` | `/user-settings` | Yes | Update settings |
-| `GET` | `/payment-methods` | Yes | List active payment methods |
-| `POST` | `/payment-methods` | Yes | Create payment method |
-| `PUT` | `/payment-methods/{id}` | Yes | Update payment method |
-| `DELETE` | `/payment-methods/{id}` | Yes | Delete payment method |
-| `GET` | `/fixed-expenses` | Yes | List active fixed expenses |
-| `POST` | `/fixed-expenses` | Yes | Create fixed expense |
-| `PUT` | `/fixed-expenses/{id}` | Yes | Update fixed expense |
-| `DELETE` | `/fixed-expenses/{id}` | Yes | Delete fixed expense with cascade flow |
-| `POST` | `/fixed-expenses/catch-up` | Yes | Run recurring auto-pay catch-up |
-| `GET` | `/fixed-tracker?today=YYYY-MM-DD` | Yes | Fixed expense tracking for requested day/month |
-| `POST` | `/transactions` | Yes | Create single transaction |
-| `POST` | `/transactions/sync` | Yes | Batch sync offline transactions |
-| `POST` | `/transactions/transfer` | Yes | Create transfer pair |
-| `DELETE` | `/transactions/transfer/{transfer_group_id}` | Yes | Delete transfer pair |
-| `GET` | `/transactions` | Yes | Cursor-paginated history |
-| `PUT` | `/transactions/{id}` | Yes | Partial update for editable current-month transaction |
-| `DELETE` | `/transactions/{id}` | Yes | Delete single non-transfer transaction |
-| `GET` | `/dashboard?today=YYYY-MM-DD` | Yes | Dashboard snapshot |
-| `GET` | `/analysis/current?today=YYYY-MM-DD` | Yes | Current month analysis |
-| `POST` | `/snapshots/close` | Yes | Close one past month into snapshot |
-| `GET` | `/snapshots?limit=N` | Yes | List snapshot history |
-| `GET` | `/health` | No | Health check |
+| Method   | Path                                         | Auth | Purpose                                               |
+| -------- | -------------------------------------------- | ---- | ----------------------------------------------------- |
+| `POST`   | `/auth/login`                                | No   | Verify Firebase token and upsert user                 |
+| `GET`    | `/system/status`                             | No   | App version and maintenance status                    |
+| `POST`   | `/devices/register`                          | Yes  | Register or replace the caller's active push device   |
+| `POST`   | `/notifications/send`                        | Yes  | Send notification to caller via stored device         |
+| `GET`    | `/users/me`                                  | Yes  | Read current user profile                             |
+| `PUT`    | `/users/me`                                  | Yes  | Update profile                                        |
+| `GET`    | `/user-settings`                             | Yes  | Read settings                                         |
+| `PUT`    | `/user-settings`                             | Yes  | Update settings                                       |
+| `GET`    | `/payment-methods`                           | Yes  | List active payment methods                           |
+| `POST`   | `/payment-methods`                           | Yes  | Create payment method                                 |
+| `PUT`    | `/payment-methods/{id}`                      | Yes  | Update payment method                                 |
+| `DELETE` | `/payment-methods/{id}`                      | Yes  | Delete payment method                                 |
+| `GET`    | `/fixed-expenses`                            | Yes  | List active fixed expenses                            |
+| `POST`   | `/fixed-expenses`                            | Yes  | Create fixed expense                                  |
+| `PUT`    | `/fixed-expenses/{id}`                       | Yes  | Update fixed expense                                  |
+| `DELETE` | `/fixed-expenses/{id}`                       | Yes  | Delete fixed expense with cascade flow                |
+| `POST`   | `/fixed-expenses/catch-up`                   | Yes  | Run recurring auto-pay catch-up                       |
+| `POST`   | `/fixed-expenses/{id}/pay-now`               | Yes  | Create or return current-month fixed payment          |
+| `GET`    | `/fixed-tracker?today=YYYY-MM-DD`            | Yes  | Fixed expense tracking for requested day/month        |
+| `POST`   | `/transactions`                              | Yes  | Create single transaction                             |
+| `POST`   | `/transactions/sync`                         | Yes  | Batch sync offline transactions                       |
+| `POST`   | `/transactions/transfer`                     | Yes  | Create transfer pair                                  |
+| `DELETE` | `/transactions/transfer/{transfer_group_id}` | Yes  | Delete transfer pair                                  |
+| `GET`    | `/transactions`                              | Yes  | Cursor-paginated history                              |
+| `PUT`    | `/transactions/{id}`                         | Yes  | Partial update for editable current-month transaction |
+| `DELETE` | `/transactions/{id}`                         | Yes  | Delete single non-transfer transaction                |
+| `GET`    | `/dashboard?today=YYYY-MM-DD`                | Yes  | Dashboard snapshot                                    |
+| `GET`    | `/analysis/current?today=YYYY-MM-DD`         | Yes  | Current month analysis                                |
+| `POST`   | `/snapshots/close`                           | Yes  | Close one past month into snapshot                    |
+| `GET`    | `/snapshots?limit=N`                         | Yes  | List snapshot history                                 |
+| `GET`    | `/health`                                    | No   | Health check                                          |
 
 Public endpoint rate-limit notes:
+
 - `POST /auth/login` is limited to `20/minute` per IP.
 - `GET /health` is explicitly exempt from SlowAPI rate limiting.
 - `GET /system/status` is explicitly exempt from SlowAPI rate limiting.
@@ -176,6 +183,7 @@ Public endpoint rate-limit notes:
 This file is **not** the full business-logic spec.
 
 Use these shared docs for full budgeting formulas, narrative examples, and visual flows:
+
 - `docs/Stashy_logics/Stashy_Documentation.md`
 - `docs/Stashy_logics/Stashy_Flows.md`
 - `docs/Stashy_logics/Mermaid_Diagrams.md`
@@ -204,11 +212,13 @@ GET /api/v1/dashboard?today=YYYY-MM-DD
 ```
 
 Contract notes:
+
 - `today` is required.
 - The backend rejects future `today` values with `422`, using the user's configured timezone as the date boundary.
 - If the user has no configured monthly budget, this endpoint returns `409`.
 
 Response fields mobile commonly depends on:
+
 - `monthly_budget`
 - `fixed_total`
 - `base_variable_budget`
@@ -232,11 +242,13 @@ Response fields mobile commonly depends on:
 - `today`
 
 Important behavior:
+
 - `tomorrows_rate` can be `null`.
 - `payment_method_totals[]` may include soft-deleted payment methods via `is_deleted`.
 - `major_warning` becomes `true` when major expenses are at least `25%` of `monthly_budget`.
 
 When mobile should refresh dashboard data:
+
 - after creating or deleting a transaction
 - after updating a transaction
 - after creating, updating, or deleting a fixed expense
@@ -250,12 +262,12 @@ When mobile should refresh dashboard data:
 
 ### Type and direction rules
 
-| `expense_type` | Allowed directions | Notes |
-|----------------|--------------------|-------|
-| `variable` | `expense`, `received` | Variable received increases adjusted variable budget |
-| `fixed` | `expense`, `received` | Requires `fixed_expense_id` |
-| `major` | `expense` only | Requires `description` |
-| `budget_injection` | `received` only | Emergency top-up |
+| `expense_type`     | Allowed directions    | Notes                                                                                            |
+| ------------------ | --------------------- | ------------------------------------------------------------------------------------------------ |
+| `variable`         | `expense`, `received` | Variable received increases adjusted variable budget                                             |
+| `fixed`            | `expense`, `received` | Requires `fixed_expense_id`; only `manual` fixed expenses accept user-created fixed transactions |
+| `major`            | `expense` only        | Requires `description`                                                                           |
+| `budget_injection` | `received` only       | Emergency top-up                                                                                 |
 
 ### Create transaction
 
@@ -264,14 +276,17 @@ POST /api/v1/transactions
 ```
 
 Required behavior:
+
 - `client_id` is required and generated by mobile.
 - `payment_method_id` is required.
 - `fixed_expense_id` is required only for `fixed` transactions.
+- If `fixed_expense_id` points to a `recurring` or `installment` fixed expense, backend rejects the request with `422`; those monthly payments are system-generated through catch-up or pay-now only.
 - `description` is required for `major` transactions and optional otherwise.
 - `amount` must be `> 0`.
 - The backend rejects future dates with `422`, evaluated against the user's business-local current date.
 
 Response behavior:
+
 - `201` when a new row is created.
 - `200` when the same `client_id` already exists for the same user.
 
@@ -284,6 +299,7 @@ There is **no backend preview endpoint**.
 When the user creates a current-month `major` expense for `date === today`, mobile should compute the preview client-side from cached dashboard data.
 
 Preview rules:
+
 - If `date` is today in the current month, show the rate-impact confirmation.
 - If `date` is a past day in the current month, show a simple confirm.
 - If `date` is in a past month, skip the preview dialog.
@@ -295,6 +311,7 @@ POST /api/v1/transactions/transfer
 ```
 
 Contract notes:
+
 - Creates two legs atomically.
 - `client_id` is required and used to derive deterministic IDs for both legs.
 - `source_fixed_expense_id` must be a **manual** fixed expense.
@@ -308,6 +325,7 @@ DELETE /api/v1/transactions/transfer/{transfer_group_id}
 ```
 
 Contract notes:
+
 - Returns `204` on success.
 - Deletes both legs atomically.
 - Past-month transfers are sealed and cannot be deleted.
@@ -319,6 +337,7 @@ DELETE /api/v1/transactions/{transaction_id}
 ```
 
 Contract notes:
+
 - Returns `204` on success.
 - Transfer legs cannot be deleted through this endpoint.
 - Only user-current-month, non-transfer transactions can be deleted.
@@ -331,6 +350,7 @@ PUT /api/v1/transactions/{transaction_id}
 ```
 
 Contract notes:
+
 - Partial update.
 - At least one field must be provided.
 - Editable fields are only: `amount`, `description`, `payment_method_id`, `date`.
@@ -345,6 +365,7 @@ Contract notes:
 - Auto-pay transactions cannot be edited through this endpoint.
 
 Locked/non-editable fields:
+
 - `expense_type`
 - `direction`
 - `fixed_expense_id`
@@ -354,6 +375,7 @@ Locked/non-editable fields:
 - `client_id`
 
 Response behavior:
+
 - `200` on success with updated `TransactionResponse`.
 - `404` if transaction is not found for the authenticated user.
 - `422` for validation and business-rule failures.
@@ -366,6 +388,7 @@ GET /api/v1/transactions?page_size=20&month=2026-04&expense_type=variable&direct
 ```
 
 Query parameters:
+
 - `cursor: string | null`
 - `page_size: 1..50`, default `20`
 - `month: YYYY-MM | null`
@@ -383,6 +406,7 @@ Response shape:
 ```
 
 Contract notes:
+
 - `next_cursor === null` means no more pages.
 - When showing merged transfers in mobile UI, pair legs by `transfer_group_id`.
 
@@ -406,16 +430,21 @@ POST /api/v1/fixed-expenses
 
 Validation rules:
 
-| Field | Auto-pay `true` | Manual `false` |
-|-------|------------------|----------------|
-| `payment_method_id` | Required | Must be omitted or `null` |
-| `day_of_month` | Required `1..31` | Must be omitted or `null` |
+| Field               | `manual`  | `recurring` | `installment`              |
+| ------------------- | --------- | ----------- | -------------------------- |
+| `type`              | Required  | Required    | Required                   |
+| `payment_method_id` | Forbidden | Required    | Required                   |
+| `start_date`        | Forbidden | Required    | Required                   |
+| `end_date`          | Forbidden | Forbidden   | Required (`>= start_date`) |
 
 Decision reference: `DL-008 Part 2`
 
 Contract meaning:
-- Auto-pay fixed expenses are tied to one payment method.
+
+- Recurring/installment fixed expenses are tied to one payment method.
 - Manual fixed expenses are budget buckets that may have many manual transactions.
+- Future-start recurring/installment expenses stay visible in fixed-expense lists, but they do not count in month-scoped fixed totals or tracker totals until their start month arrives.
+- Legacy fields `is_auto_payment` and `day_of_month` are rejected with `422`.
 - Free users with 3 or more active fixed expenses are denied with `403` and `code = PLAN_UPGRADE_REQUIRED`.
 - The fixed-expense upgrade detail is: "Free plan is limited to 3 fixed expenses. Upgrade to Pro for unlimited."
 
@@ -426,9 +455,12 @@ PUT /api/v1/fixed-expenses/{expense_id}
 ```
 
 Contract notes:
+
 - Partial update.
-- `is_auto_payment` cannot be changed after creation.
-- `payment_method_id` can only be set or changed for auto-pay expenses.
+- `type` cannot be changed after creation.
+- `start_date` change is rejected after linked transactions exist.
+- `end_date` can be extended; shortening is rejected if it would move before latest linked transaction month.
+- `is_auto_payment` and `day_of_month` are rejected legacy fields.
 
 ### Delete cascade flow
 
@@ -447,11 +479,18 @@ Request body:
 ```
 
 `action` may be:
+
 - omitted or `null` for step 1
 - `move_to_variable`
 - `hard_delete`
 
+Step 2 precondition:
+
+- `action` is valid only after step 1 has already soft-deleted the fixed expense and returned pending current-month manual transactions.
+- Sending `action` on the first delete request is rejected with `422`.
+
 Flow contract:
+
 1. Backend soft-deletes the fixed expense.
 2. Backend hard-deletes current-month auto-pay transactions for that expense.
 3. Backend checks for current-month manual transactions.
@@ -475,6 +514,7 @@ Pending response example:
 ```
 
 Second-step actions:
+
 - `move_to_variable`: reclassify those manual fixed transactions as variable spending
 - `hard_delete`: remove those manual transactions entirely
 
@@ -487,11 +527,13 @@ POST /api/v1/fixed-expenses/catch-up
 ```
 
 Contract notes:
+
 - Safe to call repeatedly.
-- Works on active auto-pay fixed expenses for the user's current month (user-local timezone).
-- Inserts missing recurring rows.
-- Updates the date if billing day changed.
-- Deletes the row if the billing day moved into the future.
+- Works on active `recurring` and active `installment` fixed expenses for the user's current month (user-local timezone).
+- Skips completed installments.
+- Due date is derived from `start_date` day and month-clamped (e.g. day 31 in February).
+- Inserts a missing current-month row only when the derived due date is on or before the user's current business-local date.
+- If a current-month catch-up or pay-now row already exists for the deterministic monthly `client_id`, catch-up treats the month as already satisfied and does not delete or re-date that row.
 
 Response shape:
 
@@ -505,11 +547,29 @@ Response shape:
 ```
 
 Additional field:
+
 - `inserted_names` is always present and lists only the fixed-expense names inserted in the current catch-up run.
 - When `inserted_count = 0`, `inserted_names` is an empty list.
 
 Mobile flow note:
+
 - If any count is non-zero, refresh dashboard and fixed-tracker data.
+
+### Pay now
+
+```http
+POST /api/v1/fixed-expenses/{expense_id}/pay-now
+```
+
+Contract notes:
+
+- No request body.
+- Eligible only for `recurring` and non-completed `installment` expenses.
+- Rejected with `422` if the current month is before the expense start month.
+- Rejected for `manual` expenses with `422`.
+- Rejected for completed installments with `422`.
+- Idempotent for the same expense and month: first call creates, repeats return the same current-month transaction.
+- The created transaction uses the user's current business-local date as the payment date so current-month paid totals reflect the early payment immediately.
 
 ---
 
@@ -520,11 +580,13 @@ GET /api/v1/fixed-tracker?today=YYYY-MM-DD
 ```
 
 Contract notes:
+
 - `today` is required.
 - The backend rejects future `today` values with `422`, using the user's configured timezone as the date boundary.
 - Returns fixed-expense tracking for the requested month context.
 
 Key response fields:
+
 - `items[]`
 - `items[].id`
 - `items[].name`
@@ -533,16 +595,25 @@ Key response fields:
 - `items[].remaining`
 - `items[].progress_pct`
 - `items[].status`
-- `items[].is_auto_pay`
-- `items[].day_of_month`
+- `items[].type`
+- `items[].start_date`
+- `items[].end_date`
+- `items[].is_completed`
+- `items[].installments_total`
+- `items[].installments_paid`
+- `items[].installments_remaining`
+- `items[].next_payment_date`
 - `items[].transactions[]`
 - `total_budgeted`
 - `total_paid`
 - `total_remaining`
+- Expenses whose `start_date` month has not arrived yet are excluded from these totals, even though they may still appear in `items[]`.
 
 Contract notes:
+
 - `transactions[]` contains month transactions for that fixed expense.
 - `payment_method_id` inside tracker transactions can be `null`.
+- Completed installments remain visible in `items[]` but are excluded from active total budgeting surfaces.
 
 ---
 
@@ -563,6 +634,7 @@ POST /api/v1/payment-methods
 ```
 
 Contract notes:
+
 - `name` must be non-blank after trimming.
 - Active names must be unique per user.
 - A deleted name can be reused.
@@ -576,6 +648,7 @@ PUT /api/v1/payment-methods/{payment_method_id}
 ```
 
 Contract notes:
+
 - `name` can be changed.
 - Setting `is_default: true` automatically unsets the previous default.
 - `PaymentMethodResponse` includes nullable `updated_at` for last-modified metadata.
@@ -598,12 +671,14 @@ Response shape:
 ```
 
 Contract rules:
+
 - Default payment methods cannot be deleted.
 - If a method has transactions, backend soft-deletes it.
 - If it has no transactions, backend hard-deletes it.
 - Exactly one of `deleted` or `soft_deleted` is `true`.
 
 Mobile handling for soft-deleted methods:
+
 - hide them from selectors
 - still show them in history if returned there
 - if dashboard totals include them, use `is_deleted` to render the deleted state
@@ -619,6 +694,7 @@ GET /api/v1/user-settings
 ```
 
 Fields mobile commonly depends on:
+
 - `monthly_budget`
 - `onboarding_completed`
 - `currency`
@@ -632,6 +708,7 @@ PUT /api/v1/user-settings
 ```
 
 Contract notes:
+
 - Partial update.
 - Only send fields to change.
 - Explicit `null` values are rejected.
@@ -644,6 +721,7 @@ Contract notes:
 ### Onboarding gate
 
 Current backend behavior:
+
 - If `monthly_budget <= 0`, dashboard and analysis return `409`.
 - Mobile should route the user to onboarding in that state.
 - `onboarding_completed` is still useful for frontend state, but it is not the backend gate for those endpoints.
@@ -665,6 +743,7 @@ PUT /api/v1/users/me
 ```
 
 Contract notes:
+
 - Partial update.
 - `username` must not be blank.
 - `username` max length is `20`.
@@ -680,6 +759,7 @@ GET /api/v1/analysis/current?today=YYYY-MM-DD
 Decision reference: `DL-011`
 
 Contract notes:
+
 - Mobile should treat this as a Pro-gated endpoint.
 - `today` is required.
 - Free-plan users always receive `403` with `code = PLAN_UPGRADE_REQUIRED` and detail: "Analysis is a Pro feature. Upgrade to access current-month analysis."
@@ -688,6 +768,7 @@ Contract notes:
 - If `today` is later than the user's business-local current date, backend returns `422` with `detail = "today cannot be in the future"`.
 
 Response areas mobile commonly uses:
+
 - `month`
 - `days_elapsed`
 - `month_progress_pct`
@@ -707,6 +788,7 @@ Response areas mobile commonly uses:
 - `mom_comparison.major_expense_burden_delta`
 
 Interpretation notes:
+
 - positive `pacing_delta_pct` means overpaced spending
 - negative `pacing_delta_pct` means underpaced spending
 - `mom_comparison.available === false` means no snapshot exists for comparison
@@ -731,6 +813,7 @@ Request:
 ```
 
 Contract notes:
+
 - `month` must be a past month in `YYYY-MM` format, relative to the user's business-local current month.
 - `closed_by` is `user` or `skipped`.
 - If the month is already closed, backend returns the existing snapshot with `200`.
@@ -743,6 +826,7 @@ GET /api/v1/snapshots?limit=6
 ```
 
 Contract notes:
+
 - default limit is `6`
 - larger values are capped to `12` server-side
 - newest first
@@ -756,11 +840,13 @@ Contract notes:
 Every create flow from mobile must generate a UUID `client_id`.
 
 Used by:
+
 - `POST /transactions`
 - `POST /transactions/transfer`
 - `POST /transactions/sync`
 
 Contract meaning:
+
 - duplicate retries for the same user should return the existing row instead of creating duplicates
 
 ### Batch sync
@@ -791,14 +877,19 @@ Response example:
 ```
 
 Status values:
+
 - `created`
 - `duplicate`
 - `error`
 
 Contract notes:
-- max `100` items per batch
+
+- max `30` items per batch
 - per-item errors are returned in `error_detail`
 - transfer items are not allowed in sync; transfers must use `POST /transactions/transfer`
+- Mobile must enforce a local queue cap of 30 unsynced items and block recording a new transaction when the cap is reached (offline state). This is a product integrity boundary — a queue of 30+ means the daily rate is stale by 3+ days.
+- Mobile must surface sync status visibly: in-progress indicator, success confirmation, and failure state with a manual retry trigger. Silent sync failure leaves the user with a stale daily rate and no indication why.
+- When online, new transactions always go through POST /transactions directly — the sync queue is offline-only and never involved during online usage.
 
 ### Cursor pagination
 
@@ -822,14 +913,14 @@ This section represents the intended mobile contract and product behavior. Mobil
 
 ### Gate summary
 
-| Feature | Free | Pro |
-|---------|------|-----|
-| Transactions | Unlimited | Unlimited |
-| Fixed expenses | 3 max | Unlimited |
-| Payment methods | 2 max | Unlimited |
-| Analysis | Locked | Enabled |
+| Feature          | Free       | Pro        |
+| ---------------- | ---------- | ---------- |
+| Transactions     | Unlimited  | Unlimited  |
+| Fixed expenses   | 3 max      | Unlimited  |
+| Payment methods  | 2 max      | Unlimited  |
+| Analysis         | Locked     | Enabled    |
 | Snapshot history | All stored | All stored |
-| Dashboard | Enabled | Enabled |
+| Dashboard        | Enabled    | Enabled    |
 
 ### Mobile behavior
 
@@ -848,11 +939,11 @@ This section represents the intended mobile contract and product behavior. Mobil
 
 If mobile still calls a gated endpoint while user plan is `free`, backend responds with RFC 7807 shape plus `code = PLAN_UPGRADE_REQUIRED`.
 
-| Endpoint | Status | Detail |
-|----------|--------|--------|
-| `POST /fixed-expenses` | `403` | `Free plan is limited to 3 fixed expenses. Upgrade to Pro for unlimited.` |
-| `POST /payment-methods` | `403` | `Free plan is limited to 2 payment methods. Upgrade to Pro for unlimited.` |
-| `GET /analysis/current` | `403` | `Analysis is a Pro feature. Upgrade to access current-month analysis.` |
+| Endpoint                | Status | Detail                                                                     |
+| ----------------------- | ------ | -------------------------------------------------------------------------- |
+| `POST /fixed-expenses`  | `403`  | `Free plan is limited to 3 fixed expenses. Upgrade to Pro for unlimited.`  |
+| `POST /payment-methods` | `403`  | `Free plan is limited to 2 payment methods. Upgrade to Pro for unlimited.` |
+| `GET /analysis/current` | `403`  | `Analysis is a Pro feature. Upgrade to access current-month analysis.`     |
 
 ---
 
@@ -860,18 +951,18 @@ If mobile still calls a gated endpoint while user plan is `free`, backend respon
 
 ### Common HTTP statuses
 
-| Code | Meaning | Mobile action |
-|------|---------|---------------|
-| `200` | Success | Process payload |
-| `201` | Created | Process payload |
-| `204` | Success without body | Treat as success |
-| `401` | Missing or invalid token | Refresh token and retry once |
-| `403` | Forbidden | Show upgrade or access-blocked state |
-| `404` | Not found | Treat entity as missing |
-| `409` | Conflict / blocked state | Usually route or show contextual message |
-| `422` | Validation or business-rule rejection | Show field or action error |
-| `429` | Rate limited | Back off and retry |
-| `500` | Unexpected server error | Show generic retryable error |
+| Code  | Meaning                               | Mobile action                            |
+| ----- | ------------------------------------- | ---------------------------------------- |
+| `200` | Success                               | Process payload                          |
+| `201` | Created                               | Process payload                          |
+| `204` | Success without body                  | Treat as success                         |
+| `401` | Missing or invalid token              | Refresh token and retry once             |
+| `403` | Forbidden                             | Show upgrade or access-blocked state     |
+| `404` | Not found                             | Treat entity as missing                  |
+| `409` | Conflict / blocked state              | Usually route or show contextual message |
+| `422` | Validation or business-rule rejection | Show field or action error               |
+| `429` | Rate limited                          | Back off and retry                       |
+| `500` | Unexpected server error               | Show generic retryable error             |
 
 ### `401` retry flow
 
@@ -902,6 +993,7 @@ Request-validation `422` example:
 ```
 
 Contract notes:
+
 - Do not assume FastAPI's default `detail[{loc,msg,type}]` format.
 - Some business-rule `422` responses may return a direct `detail` string instead of an `errors[]` array.
 - Known conflict detail for auth login: `POST /auth/login` may return `409` with `detail = "email_conflict"`.
@@ -919,6 +1011,7 @@ npm run generate-types
 ```
 
 Contract notes:
+
 - reads from `{API_HOST}/openapi.json`
 - `/openapi.json` is available in local or non-production environments
 - `/openapi.json` is disabled in production
@@ -948,6 +1041,7 @@ Response example:
 ```
 
 Mobile flow note:
+
 - check this on startup
 - if app version is below `min_supported_version`, block entry and require update
 - if `maintenance_mode === true`, show maintenance state
@@ -1001,6 +1095,7 @@ RevenueCat plan lifecycle changes are now server-managed through a backend webho
 Mobile must never write `plan` directly.
 
 Required mobile flow:
+
 1. After Firebase authentication, call `Purchases.logIn(firebaseUID)` so RevenueCat events carry the same user identifier expected by backend plan matching.
 2. Complete purchase/restore actions through RevenueCat SDK flows as usual.
 3. After purchase success, immediately refresh `GET /api/v1/user-settings` and use the returned `plan` value as source of truth for entitlement UI.

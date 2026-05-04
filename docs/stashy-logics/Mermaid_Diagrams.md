@@ -57,21 +57,21 @@ graph TD
     D --> E["Adjusted Variable Budget<br/>7,600 + 800 = 8,400 EGP<br/>(ACTUAL budget for month)"]
     E --> E1["Collect Major Expenses<br/>Large purchases this month<br/>Laptop: 3,000 EGP, etc."]
     E1 --> E2["Effective Variable Budget<br/>Adjusted Budget - Fixed Overspend - Major Expenses"]
-    
+
     E2 --> F["Base Rate<br/>Base Variable Budget ÷ 31 days = 245 EGP/day<br/>(CONSTANT monthly baseline)"]
-    
+
     F --> G{" Is variable spending ≤<br/>Effective Budget?"}
-    
+
     G -->|YES - On Budget| H["Current Rate = <br/>Effective Budget - Yesterday's Spending<br/>÷ Days Remaining<br/><br/>Reality-based dynamic target<br/>Recalculates with budget-state changes"]
-    
+
     G -->|NO - Over Budget| I["Current Rate = <br/>Effective Budget - Yesterday's Spending<br/>÷ Days Remaining<br/><br/>Reality-based dynamic target<br/>Remaining Today can go negative"]
-    
+
     H --> J["🟢 Status: On Track<br/>Display stable rate"]
     I --> K["🔴 Status: Over Budget<br/>Emergency Mode active"]
-    
+
     J --> L["Dashboard Updates:<br/>Remaining Today<br/>Current Daily Rate<br/>Status Indicator"]
     K --> L
-    
+
     L --> M["Variable Received<br/>increases rate<br/>permanently"]
 
     style A fill:#fff9c4
@@ -95,28 +95,28 @@ graph TD
 %%{init: {'theme': 'neutral'} }%%
 graph TD
     A["Add Transaction"] --> B{Select Type}
-    
+
     B -->|VARIABLE| C["Amount, Payment Method,<br/>Direction: Expense/Received"]
     B -->|FIXED| D["Category, Amount,<br/>Direction: Expense/Received"]
     B -->|MAJOR| MA["Amount, Payment Method<br/>Direction: ALWAYS Expense<br/>Confirmation Dialog (Current Month Only)"]
-    
+
     C -->|Expense| E["Add to Total<br/>Variable Spent"]
     C -->|Received| F["Add to Total<br/>Variable Received"]
-    
+
     D -->|Expense| G["Updates Tracking<br/>Page Progress Bar"]
     D -->|Received| H["Decreases Category<br/>Progress"]
-    
+
     E --> I["Dashboard Changes:<br/>✓ Total Spent ↑<br/>✓ Current Rate ↓<br/>✓ Remaining Today ↓"]
-    
+
     F --> J["Dashboard Changes:<br/>✓ Adjusted Budget ↑<br/>✓ Current Rate ↑<br/>✓ Remaining Today ↑<br/>✓ Permanent: affects rest of month"]
-    
+
     G --> K["Tracking Changes:<br/>✓ Progress Bar % ↑<br/>✓ Category Status"]
-    
+
     H --> L["Tracking Changes:<br/>✓ Progress Bar % ↓<br/>✓ Remaining ↑"]
-    
+
     MA -->|Submit - confirm if current month| MAI["Reduce Effective<br/>Variable Budget"]
     MAI --> MAJ["Dashboard Changes:<br/>✓ Effective Budget ↓<br/>✓ Daily Rate ↓ - permanent<br/>✓ Remaining Today ↓<br/>✓ Major Expenses Card appears<br/>✓ Payment Totals ↑<br/>✗ Spent Today unchanged"]
-    
+
     I --> M["Real-time Impact<br/>User sees consequences<br/>Spending reduces rate today"]
     J --> M2["Increases Budget Pool<br/>Spreads across remaining days<br/>Not just today"]
     K --> N["Separate Tracking<br/>Does not affect daily rate"]
@@ -148,26 +148,26 @@ graph TD
 %%{init: {'theme': 'neutral'} }%%
 graph TD
     A["Fixed Expenses Setup"] --> B{Expense Type}
-    
+
     B -->|Auto-Pay<br/>Subscriptions| C["Spotify: 100 EGP<br/>Day: 5th of month<br/>Toggle: Auto ✓"]
     B -->|Manual Budgets| D["Coffee: 500 EGP<br/>Toggle: Manual"]
-    
+
     C --> E["Auto-Pay Mechanism<br/>POST /api/v1/fixed-expenses/catch-up"]
     E --> F{Transaction<br/>exists?}
     F -->|NO| G["Auto-insert<br/>Spotify 100 EGP<br/>Expense on Day 5"]
     F -->|YES| H["Skip<br/>Idempotent"]
-    
+
     D --> I["Manual Tracking<br/>Multiple transactions<br/>per month"]
     I --> J["Transaction 1: 50 EGP<br/>Transaction 2: 50 EGP<br/>Transaction 3: 60 EGP<br/>..."]
-    
+
     G --> K["Tracking Page"]
     H --> K
     J --> K
-    
+
     K --> L["Fixed Expense Cards"]
     L --> M["Coffee Card:<br/>Budget: 500 EGP<br/>Paid: 480 EGP<br/>Progress: 96%<br/>Status: ⚡ Low Remaining"]
     L --> N["Spotify Card:<br/>Budget: 100 EGP<br/>Paid: 100 EGP<br/>Progress: 100%<br/>Status: ✓ Paid"]
-    
+
     M --> O["Color Coding:<br/>🟢 Green < 90%<br/>🟡 Yellow 90-100%<br/>🔴 Red > 100%"]
     N --> O
 
@@ -189,26 +189,26 @@ graph TD
 graph TD
     A["User Opens App"] --> B["Client Auth Check"]
     B --> C{Authenticated?}
-    
+
     C -->|NO| D["Redirect to Login"]
     C -->|YES| E["Render Dashboard"]
-    
+
     D --> F["Login/Signup Page"]
     F -->|Submit| G["Auth Provider"]
     G -->|Verify| H["Issue ID Token"]
     H -->|Token to Client| E
-    
+
     E --> J["Dashboard Loads"]
     J --> K["Get user_id from<br/>verified token"]
-    
+
     K --> L["Query API<br/>WHERE user_id = verified_user_id"]
-    
+
     L --> M["Data Scoping Applied"]
     M --> N{Valid<br/>user_id?}
-    
+
     N -->|YES| O["Return User's Data<br/>✓ User A sees A's data<br/>✓ User B sees B's data"]
     N -->|NO| P["Access DENIED ❌<br/>Security Block"]
-    
+
     O --> Q["Display Dashboard<br/>with User's Data"]
     P --> R["Error Message"]
 
@@ -230,19 +230,19 @@ graph TD
 graph TD
     A["Dashboard Component Mount"] --> B["Auth Check"]
     B --> C["Get user_id"]
-    
+
     C --> D["Parallel Queries<br/>all filtered by user_id"]
-    
+
     D --> E["Query 1:<br/>settings table<br/>monthly_budget"]
     D --> F["Query 2:<br/>fixed_expenses table"]
     D --> G["Query 3:<br/>payment_methods table"]
     D --> H["Query 4:<br/>transactions table<br/>current month"]
-    
+
     E --> I["Calculate Values"]
     F --> I
     G --> I
     H --> I
-    
+
     I --> J["Fixed Total<br/>= SUM fixed_expenses"]
     I --> K["Adjusted Variable Budget<br/>= (monthly - fixed) + variable_received + total_budget_injections"]
     I --> MA["Major Expenses Total<br/>= SUM major expenses"]
@@ -254,7 +254,7 @@ graph TD
     I --> MAC["Major Expenses Count<br/>Major Percentage"]
     I --> P["Payment Totals<br/>per method (includes major)"]
     I --> Q["Tomorrow's Rate<br/>= remaining ÷ (days - 1)"]
-    
+
     J --> R["Render Dashboard"]
     K --> R
     MA --> R
@@ -266,7 +266,7 @@ graph TD
     MAC --> R
     P --> R
     Q --> R
-    
+
     R --> S["Budget Overview Card:<br/>Monthly, Fixed, Variable, Days Left"]
     R --> T["Daily Spending Card:<br/>Remaining Today (hero)<br/>Base | Today's Rate | Spent"]
     R --> U["Tomorrow's Rate Impact Card:<br/>(conditional - only if overspending and not in emergency mode)"]
@@ -274,7 +274,7 @@ graph TD
     R --> V["Fixed Budget Card:<br/>Progress Bar"]
     R --> MAD["Major Expenses Card:<br/>Total, %, Count, Warning"]
     R --> W["Payment Methods Card:<br/>Breakdown by Method"]
-    
+
     S --> X["Complete Dashboard View"]
     T --> X
     U --> X
@@ -316,7 +316,7 @@ journey
       Review spending patterns: 4: Tracking
       Adjust budgets: 4: Fixed Expenses
     section Maintenance
-      Toggle dark mode: 5: Settings
+      Adjust language/preferences: 5: Settings
       Logout: 5: Settings
 
     section Daily Rate Impact
@@ -342,19 +342,19 @@ graph TB
         UB["User B<br/>xxxx-yyyy"]
         UC["User C<br/>zzzz-wwww"]
     end
-    
+
     subgraph Auth["Auth Provider"]
         Sessions["Session Management<br/>Email/Password + OAuth"]
         Tokens["ID Tokens<br/>Issued to Client"]
     end
-    
+
     subgraph Scoping["Data Scoping Layer"]
         P1["Scope: transactions<br/>WHERE user_id = verified_user_id"]
         P2["Scope: payment_methods<br/>WHERE user_id = verified_user_id"]
         P3["Scope: fixed_expenses<br/>WHERE user_id = verified_user_id"]
         P4["Scope: settings<br/>WHERE user_id = verified_user_id"]
     end
-    
+
     subgraph Data["PostgreSQL Data"]
         T1["User A's Transactions<br/>user_id = A"]
         T2["User B's Transactions<br/>user_id = B"]
@@ -362,31 +362,31 @@ graph TB
         PM1["User A's Methods"]
         PM2["User B's Methods"]
     end
-    
+
     UA -->|Login| Sessions
     UB -->|Login| Sessions
     UC -->|Login| Sessions
-    
+
     Sessions -->|Issue| Tokens
-    
+
     Tokens -->|Query via API| P1
     Tokens -->|Query via API| P2
     Tokens -->|Query via API| P3
     Tokens -->|Query via API| P4
-    
+
     P1 --> T1
     P1 --> T2
     P1 --> T3
     P2 --> PM1
     P2 --> PM2
-    
+
     T1 -.->|Accessible| UA
     T2 -.->|Blocked| UA
     T3 -.->|Blocked| UA
-    
+
     T2 -.->|Accessible| UB
     T1 -.->|Blocked| UB
-    
+
     style UA fill:#e3f2fd
     style UB fill:#f3e5f5
     style UC fill:#fff9c4
@@ -408,24 +408,24 @@ sequenceDiagram
     participant Client as Client App
     participant API as API Layer
     participant DB as Database
-    
+
     User->>Client: Click "Add Transaction"
     Client->>Client: Verify Auth (Client-side check)
     Client->>Client: Collect form data (amount, desc, etc)
-    
+
     Client->>API: POST /transactions {amount, ..., token}
     API->>API: Validate token, extract user_id = "A"
     API->>DB: INSERT transaction {amount, ..., user_id: "A"}
     DB->>DB: Save transaction
     DB-->>API: ✓ Success
     API-->>Client: ✓ Success
-    
+
     Client->>API: GET /transactions (current month)
     API->>API: Extract user_id from token
     API->>DB: SELECT WHERE user_id = "A"
     DB-->>API: Return A's transactions
     API-->>Client: Return only A's transactions
-    
+
     Client->>Client: Recalculate rates
     Client->>User: Update dashboard
 
@@ -449,6 +449,7 @@ sequenceDiagram
    - Embedded in markdown
 
 **Recommended diagram order for presentation:**
+
 1. System Architecture (Diagram 1) - "Here's how the system works"
 2. Daily Rate Logic (Diagram 2) - "Core calculation engine"
 3. Transaction Flow (Diagram 3) - "What happens when users spend"

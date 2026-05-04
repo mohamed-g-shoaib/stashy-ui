@@ -1,26 +1,19 @@
-import { useTranslations } from "next-intl";
-import { Cell, Pie, PieChart } from "recharts";
+import { useTranslations } from "next-intl"
+import { Cell, Pie, PieChart } from "recharts"
 
-import { budgetChartData } from "@/components/home/home-data";
-import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { ChartContainer } from "@/components/ui/chart";
+import { budgetChartData } from "@/components/home/home-data"
+import { Card, CardContent } from "@/components/ui/card"
+import { ChartContainer } from "@/components/ui/chart"
+import { cn } from "@/lib/utils"
 
-export function BudgetOverviewCard({
-  majorScenario,
-}: {
-  majorScenario?: "active" | "none";
-}) {
-  const t = useTranslations("Home");
-  const majorAmount = 3000;
-  const variableBudget = 7960;
-  const percentage = Math.round((majorAmount / variableBudget) * 100);
+export function BudgetOverviewCard({ majorScenario }: { majorScenario?: "active" | "none" }) {
+  const t = useTranslations("Home")
+  const majorAmount = 3000
+  const variableBudget = 7960
+  const percentage = Math.round((majorAmount / variableBudget) * 100)
 
   return (
-    <Card
-      size="sm"
-      className="rounded-md border border-border bg-card py-4 shadow-soft"
-    >
+    <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
         <div className="flex items-center justify-between gap-4">
           <BudgetPieChart />
@@ -38,15 +31,15 @@ export function BudgetOverviewCard({
             label={t("budget.fixed")}
             value="1,240 EGP"
             caption={t("budget.fixedCaption")}
-            markerClassName="bg-info"
-            valueClassName="text-info dark:text-info-dark"
+            markerClassName="bg-success"
+            valueClassName="text-success"
           />
         </div>
 
         {majorScenario === "active" && (
-          <div className="flex items-center justify-between rounded-sm bg-warning-subtle px-3 py-2.5 shadow-ring dark:bg-warning-subtle-dark">
+          <div className="flex items-center justify-between rounded-[var(--radius-sm)] bg-warning-subtle px-3 py-2.5 shadow-ring">
             <div className="flex items-center gap-2">
-              <span className="size-2 shrink-0 rounded-full bg-warning dark:bg-warning-dark" />
+              <span className="size-2 shrink-0 rounded-full bg-warning" />
               <p className="text-xs font-semibold text-foreground">
                 {majorAmount.toLocaleString()} EGP {t("major.title")}
               </p>
@@ -56,7 +49,7 @@ export function BudgetOverviewCard({
         )}
       </CardContent>
     </Card>
-  );
+  )
 }
 
 function BudgetPieChart() {
@@ -82,7 +75,7 @@ function BudgetPieChart() {
         </Pie>
       </PieChart>
     </ChartContainer>
-  );
+  )
 }
 
 function BudgetTotal({ label, value }: { label: string; value: string }) {
@@ -96,7 +89,7 @@ function BudgetTotal({ label, value }: { label: string; value: string }) {
         {value}
       </p>
     </div>
-  );
+  )
 }
 
 function BudgetMetric({
@@ -106,14 +99,14 @@ function BudgetMetric({
   markerClassName,
   valueClassName,
 }: {
-  label: string;
-  value: string;
-  caption: string;
-  markerClassName: string;
-  valueClassName: string;
+  label: string
+  value: string
+  caption: string
+  markerClassName: string
+  valueClassName: string
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-1 rounded-sm bg-surface-offset p-3 text-start shadow-ring">
+    <div className="flex min-w-0 flex-col gap-1 rounded-[var(--radius-sm)] bg-surface-offset p-3 text-start shadow-ring">
       <div className="flex items-center gap-1.5">
         <span className={cn("size-2 shrink-0 rounded-full", markerClassName)} />
         <p className="text-xs font-semibold text-text-secondary">{label}</p>
@@ -127,9 +120,7 @@ function BudgetMetric({
       >
         {value}
       </p>
-      <p className="text-[0.6875rem] leading-[1.3] text-text-secondary">
-        {caption}
-      </p>
+      <p className="text-[0.6875rem] leading-[1.3] text-text-secondary">{caption}</p>
     </div>
-  );
+  )
 }

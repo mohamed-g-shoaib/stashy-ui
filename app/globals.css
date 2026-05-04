@@ -10,6 +10,18 @@
   --font-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
     monospace;
+  --color-oat: var(--color-oat);
+  --color-cream: var(--color-cream);
+  --color-biscuit: var(--color-biscuit);
+  --color-clay-wash: var(--color-clay-wash);
+  --color-walnut: var(--color-walnut);
+  --color-mocha: var(--color-mocha);
+  --color-fog: var(--color-fog);
+  --color-clay: var(--color-clay);
+  --color-sage: var(--color-sage);
+  --color-amber: var(--color-amber);
+  --color-harbor: var(--color-harbor);
+  --color-berry: var(--color-berry);
   --color-bg: var(--color-bg);
   --color-surface: var(--color-surface);
   --color-surface-2: var(--color-surface-2);
@@ -19,32 +31,22 @@
   --color-text: var(--color-text);
   --color-text-secondary: var(--color-text-secondary);
   --color-text-tertiary: var(--color-text-tertiary);
-  --color-text-on-dark: var(--color-text-on-dark);
   --color-text-on-brand: var(--color-text-on-brand);
   --color-brand: var(--color-brand);
   --color-brand-hover: var(--color-brand-hover);
   --color-brand-subtle: var(--color-brand-subtle);
-  --color-brand-subtle-dark: var(--color-brand-subtle-dark);
   --color-coral: var(--color-coral);
   --color-danger: var(--color-danger);
   --color-danger-hover: var(--color-danger-hover);
   --color-danger-subtle: var(--color-danger-subtle);
-  --color-danger-subtle-dark: var(--color-danger-subtle-dark);
-  --color-danger-dark: var(--color-danger-dark);
   --color-warning: var(--color-warning);
   --color-warning-hover: var(--color-warning-hover);
   --color-warning-subtle: var(--color-warning-subtle);
-  --color-warning-subtle-dark: var(--color-warning-subtle-dark);
-  --color-warning-dark: var(--color-warning-dark);
   --color-success: var(--color-success);
   --color-success-hover: var(--color-success-hover);
   --color-success-subtle: var(--color-success-subtle);
-  --color-success-subtle-dark: var(--color-success-subtle-dark);
-  --color-success-dark: var(--color-success-dark);
   --color-info: var(--color-info);
   --color-info-subtle: var(--color-info-subtle);
-  --color-info-subtle-dark: var(--color-info-subtle-dark);
-  --color-info-dark: var(--color-info-dark);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -82,14 +84,14 @@
   --shadow-soft: var(--shadow-soft);
   --shadow-card: var(--shadow-card);
   --shadow-modal: var(--shadow-modal);
-  --radius-xs: 0.25rem;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.25rem;
-  --radius-2xl: 1.25rem;
-  --radius-3xl: 1.25rem;
-  --radius-4xl: 1.25rem;
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 1.5rem;
   --spacing-screen: 1rem;
   --spacing-card: 1rem;
   --spacing-card-gap: 0.75rem;
@@ -99,59 +101,76 @@
 }
 
 :root {
-  --color-bg: #f5f4ed;
-  --color-surface: #faf9f5;
-  --color-surface-2: #ffffff;
-  --color-surface-offset: #ede9e0;
-  --color-border: #e8e6dc;
-  --color-border-subtle: #f0eee6;
-  --color-overlay: rgba(20, 20, 19, 0.48);
-  --color-text: #141413;
-  --color-text-secondary: #5e5d59;
-  --color-text-tertiary: #87867f;
-  --color-text-on-dark: #faf9f5;
-  --color-text-on-brand: #faf9f5;
-  --color-brand: #c96442;
-  --color-brand-hover: #b05538;
-  --color-brand-subtle: #f2e0d8;
-  --color-brand-subtle-dark: #3d2218;
-  --color-coral: #d97757;
-  --color-danger: #b53333;
-  --color-danger-hover: #8f2424;
-  --color-danger-subtle: #f5dcdc;
-  --color-danger-subtle-dark: #3d1c1c;
-  --color-danger-dark: #e06060;
-  --color-warning: #c97d1a;
-  --color-warning-hover: #a86415;
-  --color-warning-subtle: #f7ead4;
-  --color-warning-subtle-dark: #3a2c10;
-  --color-warning-dark: #e8a030;
-  --color-success: #4a7c3f;
-  --color-success-hover: #3a612f;
-  --color-success-subtle: #d8edcc;
-  --color-success-subtle-dark: #1e3316;
-  --color-success-dark: #6daa45;
-  --color-info: #3d7fa8;
-  --color-info-subtle: #daeef7;
-  --color-info-subtle-dark: #1a2e38;
-  --color-info-dark: #5ea8d4;
-  --shadow-ring: 0 0 0 1px rgba(20, 20, 19, 0.1);
-  --shadow-ring-brand: 0 0 0 1px rgba(201, 100, 66, 0.4);
-  --shadow-ring-danger: 0 0 0 1px rgba(181, 51, 51, 0.4);
-  --shadow-soft: 0 2px 8px rgba(20, 20, 19, 0.08), 0 0 0 1px rgba(20, 20, 19, 0.06);
-  --shadow-card: 0 4px 16px rgba(20, 20, 19, 0.1), 0 1px 4px rgba(20, 20, 19, 0.06);
-  --shadow-modal: 0 16px 48px rgba(20, 20, 19, 0.2), 0 4px 16px rgba(20, 20, 19, 0.1);
+  color-scheme: light;
+
+  --color-oat: #f4eee6;
+  --color-cream: #fcf8f2;
+  --color-biscuit: #f0e6d8;
+  --color-clay-wash: #e3d7c6;
+  --color-walnut: #2f2a24;
+  --color-mocha: #686055;
+  --color-fog: #968c7d;
+  --color-clay: #9b654b;
+  --color-sage: #5e7962;
+  --color-amber: #b3883b;
+  --color-harbor: #637f8a;
+  --color-berry: #8a657b;
+
+  --color-bg: var(--color-oat);
+  --color-surface: var(--color-cream);
+  --color-surface-2: #f8f1e7;
+  --color-surface-offset: var(--color-biscuit);
+  --color-border: var(--color-clay-wash);
+  --color-border-subtle: #ece2d4;
+  --color-overlay: rgba(47, 42, 36, 0.42);
+  --color-text: var(--color-walnut);
+  --color-text-secondary: var(--color-mocha);
+  --color-text-tertiary: var(--color-fog);
+  --color-text-on-brand: var(--color-cream);
+  --color-brand: var(--color-clay);
+  --color-brand-hover: #875740;
+  --color-brand-subtle: #ead9cc;
+  --color-coral: var(--color-clay);
+
+  --color-danger: #b85c3f;
+  --color-danger-hover: #9f4f37;
+  --color-danger-subtle: #f3ddd4;
+
+  --color-warning: var(--color-amber);
+  --color-warning-hover: #9c7632;
+  --color-warning-subtle: #f2e5c8;
+
+  --color-success: var(--color-sage);
+  --color-success-hover: #4f6752;
+  --color-success-subtle: #dde8de;
+
+  --color-info: var(--color-harbor);
+  --color-info-subtle: #dfe8ec;
+
+  --shadow-ring: 0 0 0 1px rgba(47, 42, 36, 0.08);
+  --shadow-ring-brand: 0 0 0 1px rgba(155, 101, 75, 0.28);
+  --shadow-ring-danger: 0 0 0 1px rgba(184, 92, 63, 0.28);
+  --shadow-soft:
+    rgba(60, 42, 20, 0.04) 0 10px 24px -14px, rgba(47, 42, 36, 0.06) 0 4px 10px -8px,
+    rgba(47, 42, 36, 0.08) 0 0 0 1px;
+  --shadow-card:
+    rgba(60, 42, 20, 0.08) 0 18px 38px -18px, rgba(47, 42, 36, 0.08) 0 8px 16px -10px,
+    rgba(47, 42, 36, 0.08) 0 0 0 1px;
+  --shadow-modal:
+    rgba(47, 42, 36, 0.14) 0 24px 56px -22px, rgba(47, 42, 36, 0.1) 0 12px 24px -14px,
+    rgba(47, 42, 36, 0.08) 0 0 0 1px;
+
   --background: var(--color-bg);
   --foreground: var(--color-text);
   --card: var(--color-surface);
   --card-foreground: var(--color-text);
-  --popover: var(--color-surface-2);
+  --popover: var(--color-surface);
   --popover-foreground: var(--color-text);
   --primary: var(--color-brand);
   --primary-foreground: var(--color-text-on-brand);
   --secondary: var(--color-surface-offset);
   --secondary-foreground: var(--color-text);
-  --muted: var(--color-surface-offset);
+  --muted: var(--color-surface-2);
   --muted-foreground: var(--color-text-secondary);
   --accent: var(--color-brand-subtle);
   --accent-foreground: var(--color-brand);
@@ -160,69 +179,17 @@
   --input: var(--color-surface-offset);
   --ring: var(--color-brand);
   --chart-1: var(--color-brand);
-  --chart-2: var(--color-warning);
-  --chart-3: var(--color-success);
+  --chart-2: var(--color-success);
+  --chart-3: var(--color-warning);
   --chart-4: var(--color-info);
-  --chart-5: var(--color-danger);
+  --chart-5: var(--color-berry);
   --radius: 0.75rem;
   --sidebar: var(--color-surface);
   --sidebar-foreground: var(--color-text);
   --sidebar-primary: var(--color-brand);
   --sidebar-primary-foreground: var(--color-text-on-brand);
-  --sidebar-accent: var(--color-brand-subtle);
-  --sidebar-accent-foreground: var(--color-brand);
-  --sidebar-border: var(--color-border-subtle);
-  --sidebar-ring: var(--color-brand);
-}
-
-.dark {
-  --color-bg: #141413;
-  --color-surface: #1e1e1c;
-  --color-surface-2: #252523;
-  --color-surface-offset: #30302e;
-  --color-border: #3a3a38;
-  --color-border-subtle: #30302e;
-  --color-overlay: rgba(0, 0, 0, 0.64);
-  --color-text: #f0ede6;
-  --color-text-secondary: #b0aea5;
-  --color-text-tertiary: #6e6d68;
-  --color-text-on-dark: #f0ede6;
-  --color-text-on-brand: #faf9f5;
-  --shadow-ring: 0 0 0 1px rgba(0, 0, 0, 0.15);
-  --shadow-ring-brand: 0 0 0 1px rgba(201, 100, 66, 0.4);
-  --shadow-ring-danger: 0 0 0 1px rgba(181, 51, 51, 0.4);
-  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.09);
-  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.15), 0 1px 4px rgba(0, 0, 0, 0.09);
-  --shadow-modal: 0 16px 48px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.15);
-  --background: var(--color-bg);
-  --foreground: var(--color-text);
-  --card: var(--color-surface);
-  --card-foreground: var(--color-text);
-  --popover: var(--color-surface-2);
-  --popover-foreground: var(--color-text);
-  --primary: var(--color-brand);
-  --primary-foreground: var(--color-text-on-brand);
-  --secondary: var(--color-surface-offset);
-  --secondary-foreground: var(--color-text);
-  --muted: var(--color-surface-offset);
-  --muted-foreground: var(--color-text-secondary);
-  --accent: var(--color-brand-subtle-dark);
-  --accent-foreground: var(--color-coral);
-  --destructive: var(--color-danger-dark);
-  --border: var(--color-border);
-  --input: var(--color-surface-offset);
-  --ring: var(--color-brand);
-  --chart-1: var(--color-brand);
-  --chart-2: var(--color-warning-dark);
-  --chart-3: var(--color-success-dark);
-  --chart-4: var(--color-info-dark);
-  --chart-5: var(--color-danger-dark);
-  --sidebar: var(--color-surface);
-  --sidebar-foreground: var(--color-text);
-  --sidebar-primary: var(--color-brand);
-  --sidebar-primary-foreground: var(--color-text-on-brand);
-  --sidebar-accent: var(--color-brand-subtle-dark);
-  --sidebar-accent-foreground: var(--color-coral);
+  --sidebar-accent: var(--color-surface-offset);
+  --sidebar-accent-foreground: var(--color-text);
   --sidebar-border: var(--color-border-subtle);
   --sidebar-ring: var(--color-brand);
 }
@@ -231,21 +198,18 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
+
   html {
     @apply font-sans;
-    font-feature-settings: "kern" 1;
-  }
-}
-
-@layer base {
-  html {
     scrollbar-gutter: stable;
+    font-feature-settings:
+      "kern" 1,
+      "tnum" 1;
+    background: var(--background);
   }
 
   body {
+    @apply bg-background text-foreground;
     text-rendering: optimizeLegibility;
   }
 
@@ -266,7 +230,7 @@
   }
 
   ::selection {
-    background: color-mix(in oklch, var(--foreground) 18%, transparent);
+    background: color-mix(in oklch, var(--color-brand) 20%, transparent);
     color: var(--foreground);
   }
 

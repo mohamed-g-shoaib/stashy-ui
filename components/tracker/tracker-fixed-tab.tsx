@@ -133,8 +133,8 @@ function SectionHeader({
       type="button"
       className={cn(
         "flex min-h-12 items-center gap-2 text-start text-[1.0625rem] font-semibold",
-        tone === "danger" && "text-danger dark:text-danger-dark",
-        tone === "warning" && "text-warning dark:text-warning-dark",
+        tone === "danger" && "text-danger",
+        tone === "warning" && "text-warning",
       )}
       onClick={onToggle}
       aria-expanded={expanded}
@@ -159,7 +159,7 @@ function MonthlyRow({ item }: { item: MonthlyPayment }) {
   const t = useTranslations("Tracker")
 
   return (
-    <Card size="sm" className="rounded-md border border-border bg-card py-3 shadow-ring">
+    <Card size="sm" className="py-3 shadow-ring">
       <CardContent className="flex items-center justify-between gap-4 px-4">
         <div className="min-w-0 text-start">
           <p className="truncate text-[1.0625rem] font-semibold text-foreground">
@@ -188,9 +188,6 @@ function StatusBadge({ status }: { status: PaymentStatus }) {
         status === "paid" && "bg-success-subtle text-success",
         status === "pending" && "bg-warning-subtle text-warning",
         status === "overdue" && "bg-danger-subtle text-danger",
-        status === "paid" && "dark:bg-success-subtle-dark dark:text-success-dark",
-        status === "pending" && "dark:bg-warning-subtle-dark dark:text-warning-dark",
-        status === "overdue" && "dark:bg-danger-subtle-dark dark:text-danger-dark",
       )}
       variant="secondary"
     >
@@ -205,7 +202,7 @@ function BudgetCard({ bucket }: { bucket: BudgetBucket }) {
   const tone = bucket.percent >= 100 ? "danger" : bucket.percent >= 90 ? "warning" : "brand"
 
   return (
-    <Card size="sm" className="rounded-md border border-border bg-card py-4 shadow-soft">
+    <Card size="sm" className="py-4">
       <CardContent className="px-4">
         <div className="mb-3 flex items-start gap-3">
           <div className="min-w-0 flex-1 text-start">
@@ -220,7 +217,7 @@ function BudgetCard({ bucket }: { bucket: BudgetBucket }) {
             dir="ltr"
             className={cn(
               "text-sm font-semibold tabular-nums",
-              bucket.percent >= 90 ? "text-warning dark:text-warning-dark" : "text-text-secondary",
+              bucket.percent >= 90 ? "text-warning" : "text-text-secondary",
             )}
           >
             {bucket.percent}%
@@ -243,7 +240,7 @@ function BudgetCard({ bucket }: { bucket: BudgetBucket }) {
           {t("budgets.transactionCount", { count: bucket.transactionCount })}
         </Button>
         {transactionsOpen ? (
-          <div className="mt-2 rounded-sm bg-surface-offset p-3 text-xs text-text-secondary shadow-ring">
+          <div className="mt-2 rounded-[var(--radius-sm)] bg-surface-offset p-3 text-xs text-text-secondary shadow-ring">
             {t("budgets.transactionPreview")}
           </div>
         ) : null}
@@ -262,12 +259,9 @@ function EmptySection({
   action: string
 }) {
   return (
-    <Card
-      size="sm"
-      className="rounded-md border border-border bg-card py-4 text-center shadow-soft"
-    >
+    <Card size="sm" className="py-4 text-center">
       <CardContent className="px-4">
-        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-md border border-dashed border-border text-text-tertiary">
+        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-[var(--radius-sm)] border border-dashed border-border text-text-tertiary">
           <HugeiconsIcon icon={PackageIcon} aria-hidden="true" size={28} />
         </div>
         <h3 className="text-[1.0625rem] font-semibold text-foreground">{title}</h3>

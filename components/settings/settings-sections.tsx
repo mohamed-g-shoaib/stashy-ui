@@ -18,28 +18,20 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useLocale, useTranslations } from "next-intl"
 
-import { APP_NAME, APP_VERSION, CURRENCY, PLAN, THEME_OPTIONS } from "@/components/settings/data"
+import { APP_NAME, APP_VERSION, CURRENCY, PLAN } from "@/components/settings/data"
 import type {
   BudgetBoost,
   LanguageValue,
   PaymentMethod,
   ProfileState,
-  ThemeValue,
 } from "@/components/settings/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { SegmentedChoice } from "@/components/ui/segmented-choice"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
-export function ProfileCard({
-  profile,
-  onEdit,
-}: {
-  profile: ProfileState
-  onEdit: () => void
-}) {
+export function ProfileCard({ profile, onEdit }: { profile: ProfileState; onEdit: () => void }) {
   const t = useTranslations("Settings")
   return (
     <SettingsCard
@@ -61,7 +53,7 @@ export function ProfileCard({
               className={cn(
                 "rounded-full px-2.5 py-1 text-[0.6875rem] font-medium shadow-ring",
                 profile.status === "Active"
-                  ? "bg-success-subtle text-success dark:bg-success-subtle-dark dark:text-success-dark"
+                  ? "bg-success-subtle text-success"
                   : "bg-surface-offset text-text-secondary",
               )}
             >
@@ -82,13 +74,7 @@ export function ProfileCard({
   )
 }
 
-export function MonthlyBudgetCard({
-  amount,
-  onChange,
-}: {
-  amount: number
-  onChange: () => void
-}) {
+export function MonthlyBudgetCard({ amount, onChange }: { amount: number; onChange: () => void }) {
   const locale = useLocale()
   const t = useTranslations("Settings")
 
@@ -124,13 +110,16 @@ export function BudgetManagementCard({
       onAction={onAdd}
     >
       {boosts.length === 0 ? (
-        <p className="rounded-sm bg-surface-offset px-4 py-5 text-center text-sm leading-[1.6] text-text-secondary shadow-ring">
+        <p className="rounded-[var(--radius-sm)] bg-surface-offset px-4 py-5 text-center text-sm leading-[1.6] text-text-secondary shadow-ring">
           {t("boosts.empty")}
         </p>
       ) : (
         <div className="space-y-3">
           {boosts.map((boost) => (
-            <div key={boost.id} className="rounded-sm bg-surface-offset p-3 shadow-ring">
+            <div
+              key={boost.id}
+              className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring"
+            >
               <div className="flex items-start justify-between gap-3">
                 <p className="text-sm font-semibold text-foreground">{boost.label}</p>
                 <p dir="ltr" className="text-sm font-semibold text-foreground tabular-nums">
@@ -169,20 +158,16 @@ export function PaymentMethodsCard({
 }) {
   const t = useTranslations("Settings")
   return (
-    <SettingsCard
-      icon={CreditCardIcon}
-      subtitle={t("methods.subtitle")}
-      title={t("methods.title")}
-    >
+    <SettingsCard icon={CreditCardIcon} subtitle={t("methods.subtitle")} title={t("methods.title")}>
       <div className="space-y-3">
         {methods.map((method) =>
           deleteCandidateId === method.id ? (
             <div
               key={method.id}
-              className="rounded-sm bg-danger-subtle p-3 shadow-ring dark:bg-danger-subtle-dark"
+              className="rounded-[var(--radius-sm)] bg-danger-subtle p-3 shadow-ring"
             >
               <div className="flex flex-col gap-3">
-                <p className="text-sm font-semibold text-danger dark:text-danger-dark">
+                <p className="text-sm font-semibold text-danger">
                   {t("methods.confirmDelete", { name: method.name })}
                 </p>
                 <div className="flex gap-2">
@@ -201,7 +186,10 @@ export function PaymentMethodsCard({
               </div>
             </div>
           ) : (
-            <div key={method.id} className="rounded-sm bg-surface-offset p-3 shadow-ring">
+            <div
+              key={method.id}
+              className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring"
+            >
               <div className="flex items-center gap-3">
                 <MethodIcon icon={method.icon} />
                 <div className="min-w-0 flex-1">
@@ -210,7 +198,7 @@ export function PaymentMethodsCard({
                     {method.isDefault ? (
                       <Badge
                         variant="secondary"
-                        className="rounded-full bg-brand-subtle px-2.5 py-1 text-[0.6875rem] font-medium text-brand shadow-ring dark:bg-brand-subtle-dark dark:text-coral"
+                        className="rounded-full bg-brand-subtle px-2.5 py-1 text-[0.6875rem] font-medium text-brand shadow-ring"
                       >
                         {t("methods.default")}
                       </Badge>
@@ -245,7 +233,7 @@ export function PaymentMethodsCard({
                   </button>
                   <button
                     type="button"
-                    className="min-h-10 rounded-full px-2 text-sm font-medium text-danger transition-colors hover:text-danger-hover dark:text-danger-dark"
+                    className="min-h-10 rounded-full px-2 text-sm font-medium text-danger transition-colors hover:text-danger-hover"
                     onClick={() => onDeleteTap(method.id)}
                   >
                     {t("methods.delete")}
@@ -276,21 +264,13 @@ export function GuideCard() {
 }
 
 export function AppearanceCard({
-  theme,
   language,
-  onThemeChange,
   onToggleLanguage,
 }: {
-  theme: ThemeValue
   language: LanguageValue
-  onThemeChange: (theme: ThemeValue) => void
   onToggleLanguage: () => void
 }) {
   const t = useTranslations("Settings")
-  const themeOptions = THEME_OPTIONS.map((option) => ({
-    label: t(`appearance.${option}`),
-    value: option,
-  }))
 
   return (
     <SettingsCard
@@ -299,20 +279,7 @@ export function AppearanceCard({
       title={t("appearance.title")}
     >
       <div className="space-y-3">
-        <div className="rounded-sm bg-surface-offset p-3 shadow-ring">
-          <div className="space-y-2">
-            <p className="text-sm font-semibold text-foreground">{t("appearance.theme")}</p>
-            <SegmentedChoice
-              value={theme}
-              onValueChange={(value) => onThemeChange(value as ThemeValue)}
-              options={themeOptions}
-              className="grid-cols-3"
-              optionClassName="min-h-10 rounded-full"
-            />
-          </div>
-        </div>
-
-        <div className="rounded-sm bg-surface-offset p-3 shadow-ring">
+        <div className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <HugeiconsIcon
@@ -339,7 +306,7 @@ export function AppearanceCard({
           </div>
         </div>
 
-        <div className="rounded-sm bg-surface-offset p-3 shadow-ring">
+        <div className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <HugeiconsIcon
@@ -349,7 +316,9 @@ export function AppearanceCard({
                 className="text-text-secondary"
               />
               <div>
-                <p className="text-sm font-semibold text-foreground">{t("appearance.monthlyReports")}</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {t("appearance.monthlyReports")}
+                </p>
                 <p className="mt-1 text-sm leading-[1.5] text-text-secondary">
                   {t("appearance.monthlyReportsValue")}
                 </p>
@@ -409,7 +378,7 @@ function SettingsCard({
   children: React.ReactNode
 }) {
   return (
-    <Card size="sm" className="rounded-md border border-border bg-card py-4 shadow-soft">
+    <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -470,7 +439,7 @@ function InfoRow({
   label: string
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-sm bg-surface-offset p-3 shadow-ring">
+    <div className="flex items-center gap-3 rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
       <span className="flex size-10 items-center justify-center rounded-full bg-card text-text-secondary shadow-ring">
         <HugeiconsIcon icon={icon} aria-hidden="true" size={18} />
       </span>

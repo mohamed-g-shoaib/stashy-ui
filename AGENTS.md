@@ -9,8 +9,32 @@ Whenever you begin a new chat or a new task in this repository, you MUST follow 
 
 1. **READ `spec/index.md`**: This is the mission entry point. It explains what Stashy is and explains the directory map.
 2. **READ `spec/DESIGN.md`**: Do not arbitrarily generate CSS or Tailwind variables. All colors, spacings, and typography must be pulled directly from this file.
-3. **READ `spec/skills.md`**: Use this guide to understand which coding strategies and design-engineering philosophies to heavily lean into.
-4. **READ THE LATEST SESSION**: Look into `spec/sessions/` and read the most recently dated session file to understand the active blockers and current goals.
+3. **READ `spec/controlled-design-system.md`**: This is the governance layer for how the design system is allowed to evolve. It defines the controlled single-identity policy, semantic color rules, and anti-drift constraints.
+4. **READ `spec/brand-color-audit.md`**: This is the semantic color reference for product meaning. Use it before assigning or changing any accent, status, chart, badge, alert, or transaction color.
+5. **READ `spec/skills.md`**: Use this guide to understand which coding strategies and design-engineering philosophies to heavily lean into.
+6. **READ THE LATEST SESSION**: Look into `spec/sessions/` and read the most recently dated session file to understand the active blockers and current goals.
+
+## ⚠️ CONTROLLED DESIGN SYSTEM ENFORCEMENT
+
+Stashy now uses a **single controlled visual identity**. Do not think in terms of Light/Dark/System modes when designing product UI. Think in terms of one governed brand system with semantic accents that map product meaning to human-readable cues.
+
+1. **ONE IDENTITY ONLY**: Do not reintroduce alternate themes, parallel palettes, or component-level visual personas unless the user explicitly requests a new system transition.
+2. **TOKENS FIRST**: All product colors must flow from `spec/DESIGN.md` and the controlled semantic rules documented in `spec/brand-color-audit.md`.
+3. **NO LOCAL COLOR LOGIC**: Do not hardcode ad hoc hex values, improvised Tailwind color classes, or one-off badge/chart colors when a semantic token or approved family exists.
+4. **MEANING OVER DECORATION**: Accent colors are not decorative. Status, transaction direction, warnings, income, injections, fixed/variable distinctions, and destructive actions must align with the semantic system.
+5. **GOVERNANCE BEFORE STYLING**: If a requested change affects palette, semantic colors, brand direction, or design-system specs, consult both `spec/controlled-design-system.md` and `spec/brand-color-audit.md` before editing implementation files.
+
+## ⚠️ SKILL ROUTING FOR BRAND / COLOR WORK
+
+When the task touches palette design, semantic color decisions, branding, brand story, or design-system specification work, you MUST load and use the relevant skills from `.agents/skills/` before making changes:
+
+1. **`color-expert`**: Use for color theory, semantic color mapping, perceptual harmony, contrast thinking, and palette critique.
+2. **`color-palette`**: Use for token planning, semantic palette structure, and contrast-aware palette system generation, adapting its advice to Stashy's one-identity model.
+3. **`branding`**: Use for brand strategy, positioning, identity coherence, and documentation of the overall brand system.
+4. **`brand-designer`**: Use for visual identity structure, brand-guideline thinking, and system-level presentation of visual rules.
+5. **`brand-storytelling`**: Use when the design-system or spec work should connect back to a clear Stashy narrative, movement, or emotional framing.
+
+These skills are **mandatory for palette / branding / semantic color / design-system spec work**, but they are **not mandatory for ordinary UI implementation** that stays inside the already-approved system.
 
 ## ⚠️ RTL & BILINGUAL ENFORCEMENT
 

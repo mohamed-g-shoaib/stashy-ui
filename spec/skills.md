@@ -24,6 +24,11 @@
 - [13- clean-code](#13--clean-code): Refactoring discipline for small functions, readable names, and single-responsibility modules.
 - [14- wcag-audit-patterns](#14--wcag-audit-patterns): WCAG 2.2 accessibility audits, contrast checks, keyboard access, and remediation patterns.
 - [15- frontend-design](#15--frontend-design): Distinctive, production-grade frontend design direction for screens, pages, and polished UI builds.
+- [16- color-expert](#16--color-expert): Color theory, perceptual harmony, semantic mapping, naming, and accessibility-aware palette critique.
+- [17- color-palette](#17--color-palette): Builds structured token palettes and semantic color systems from a core brand direction.
+- [18- branding](#18--branding): Brand strategy, positioning, voice, identity coherence, and brand-system documentation.
+- [19- brand-designer](#19--brand-designer): Visual brand systems, palette presentation, logo/identity thinking, and brand-guideline structure.
+- [20- brand-storytelling](#20--brand-storytelling): Brand narrative, movement framing, and memorable identity storytelling.
 
 ---
 
@@ -382,3 +387,108 @@ Creative frontend design skill for building distinctive, production-grade interf
 3. Use typography, color, motion, and background treatments as part of one cohesive visual system.
 4. Make the interface memorable through context-specific creative choices rather than reusable-looking template patterns.
 5. Match the implementation complexity to the design vision so maximalist concepts feel rich and minimalist concepts feel precise.
+
+### 16- color-expert
+
+**Structure**: Only `SKILL.md`
+**Triggers**: color theory, palette critique, semantic color, contrast, hue, OKLCH, color naming, color system
+**Pairs With**: color-palette, tailwind-design-system, wcag-audit-patterns
+**Summary**:
+Deep color knowledge for making palette and semantic-color decisions that feel perceptually balanced, meaningful, and accessible instead of arbitrary.
+
+- Covers perceptual color spaces, hue naming, harmony strategy, contrast thinking, and semantic token layering
+- Helps map product meaning onto stable color roles instead of reaching for one-off hex values
+- Encourages character-first palette thinking so calm, vivid, muted, and high-pressure states stay coherent across hues
+- Useful for auditing existing systems, choosing accents, checking misuse, and explaining why a palette does or does not work
+
+**Top 5 Rules (By Priority)**:
+
+1. Use a semantic layer between raw colors and UI roles so product meaning does not depend on hardcoded literals.
+2. Prefer perceptual reasoning such as OKLCH or OKLAB thinking when evaluating harmony, ramps, and contrast tradeoffs.
+3. Judge harmony by chroma and lightness character first, not by simplistic hue-wheel formulas alone.
+4. Verify readable color pairs explicitly; do not assume a palette is accessible because it looks balanced.
+5. Keep color decisions explainable in product terms such as risk, recovery, stability, and emphasis.
+
+### 17- color-palette
+
+**Structure**: Only `SKILL.md`
+**Triggers**: palette generation, design tokens, brand colors, semantic tokens, Tailwind colors, contrast checks
+**Pairs With**: color-expert, tailwind-design-system, wcag-audit-patterns
+**Summary**:
+Structured palette-building workflow for turning a brand direction into reusable token systems, semantic roles, and implementation-ready color outputs.
+
+- Covers palette generation, token layering, foreground/background pairing, and contrast-aware system thinking
+- Helps convert a small set of brand colors into scalable semantic roles for surfaces, actions, borders, and alerts
+- Useful when documenting a governed color system or preparing a palette for Tailwind and shared component primitives
+- Its dark-mode defaults should be adapted when a product intentionally uses a single controlled identity
+
+**Top 5 Rules (By Priority)**:
+
+1. Build a reference palette first, then map semantic roles, then map component usage.
+2. Pair every meaningful background role with an intentional readable foreground decision.
+3. Reuse a small set of semantic families instead of expanding into uncontrolled one-off colors.
+4. Check contrast on key text, button, status, and border pairs before freezing tokens.
+5. Adapt the workflow to the product's identity rules instead of blindly following a generic light/dark template.
+
+### 18- branding
+
+**Structure**: Only `SKILL.md`
+**Triggers**: brand strategy, brand identity, brand voice, brand narrative, brand guidelines, positioning, identity system
+**Pairs With**: brand-designer, brand-storytelling, frontend-design
+**Summary**:
+Strategic branding skill for aligning product presentation, messaging, and identity around a coherent purpose instead of isolated visual choices.
+
+- Covers purpose, values, positioning, differentiation, voice, and narrative structure
+- Helps connect visual decisions back to what the product wants users to feel and trust
+- Useful for design-system specs, brand-guideline writing, and identity transition work
+- Keeps implementation-facing docs anchored in brand meaning rather than borrowed aesthetic references alone
+
+**Top 5 Rules (By Priority)**:
+
+1. Define what the brand should signal before deciding how the interface should look.
+2. Keep positioning, values, and tone coherent across product specs, UI, and written guidance.
+3. Make brand documentation practical enough to guide real design and implementation decisions.
+4. Treat visual identity as part of the product promise, not as decoration layered on top.
+5. Audit consistency across touchpoints whenever the brand system changes.
+
+### 19- brand-designer
+
+**Structure**: Only `SKILL.md`
+**Triggers**: visual identity, brand guidelines, logo thinking, palette presentation, typography system, brand assets
+**Pairs With**: branding, color-expert, frontend-design
+**Summary**:
+Visual brand-system skill for shaping how a brand's colors, typography, and identity rules get expressed clearly and consistently.
+
+- Covers brand guideline structure, visual identity presentation, palette organization, and identity-system thinking
+- Useful for turning abstract brand direction into clean documentation and reusable visual rules
+- Helps package brand decisions in a format future designers and agents can follow
+- Supports broader identity coherence even when the immediate output is a design-system or color-spec document
+
+**Top 5 Rules (By Priority)**:
+
+1. Present brand decisions as a reusable system, not as isolated examples.
+2. Keep palette, typography, and visual hierarchy tied to the brand's intended feeling.
+3. Make guidelines concrete enough that later implementation work can follow them without guessing.
+4. Prefer consistency and recognizability over trend-driven novelty.
+5. Document how and where visual accents should be used, not only what they are.
+
+### 20- brand-storytelling
+
+**Structure**: Only `SKILL.md`
+**Triggers**: brand story, narrative, movement, positioning story, messaging framework, emotional framing
+**Pairs With**: branding, brand-designer, humanizer
+**Summary**:
+Brand narrative skill for turning product identity into a memorable story that guides tone, emphasis, and the emotional logic behind design choices.
+
+- Helps frame the brand as a movement or transformation rather than a pile of features
+- Useful when documentation should explain what Stashy stands for and why the identity feels the way it does
+- Encourages memorable, repeatable language that can unify specs, product copy, and brand guidance
+- Particularly useful when visual choices should support trust, calm, accountability, or behavioral change
+
+**Top 5 Rules (By Priority)**:
+
+1. Start with the user transformation or shift the brand wants to lead.
+2. Position the product as a guide and tool, not the hero of the story.
+3. Make the core narrative memorable enough that it can be repeated consistently across touchpoints.
+4. Use concrete tension and stakes instead of vague mission language.
+5. Let the narrative clarify why certain visual and tonal choices belong to the brand.

@@ -44,11 +44,13 @@ export function TrackerHistoryTab({
           onClick={onOpenFilter}
         >
           <HugeiconsIcon icon={FilterIcon} data-icon="inline-start" aria-hidden="true" />
-          {filterCount > 0 ? t("history.filterActive", { count: filterCount }) : t("history.filter")}
+          {filterCount > 0
+            ? t("history.filterActive", { count: filterCount })
+            : t("history.filter")}
         </Button>
       </div>
       {filterCount > 0 ? (
-        <Card size="sm" className="rounded-md border border-border bg-card py-3 shadow-ring">
+        <Card size="sm" className="py-3 shadow-ring">
           <CardContent className="flex flex-col gap-3 px-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold text-foreground">
@@ -84,7 +86,7 @@ export function TrackerHistoryTab({
             />
           ))
         ) : (
-          <Card size="sm" className="rounded-md border border-border bg-card py-6 shadow-ring">
+          <Card size="sm" className="py-6 shadow-ring">
             <CardContent className="flex flex-col items-center gap-2 px-4 text-center">
               <p className="text-base font-semibold text-foreground">{t("history.emptyTitle")}</p>
               <p className="max-w-[26ch] text-sm leading-[1.6] text-text-secondary text-pretty">
@@ -107,16 +109,14 @@ function HistoryRow({ transaction }: { transaction: TrackerTransaction }) {
   const t = useTranslations("Tracker")
 
   return (
-    <Card size="sm" className="rounded-md border border-border bg-card py-3 shadow-ring">
+    <Card size="sm" className="py-3 shadow-ring">
       <CardContent className="flex items-center gap-3 px-4">
         <span
           className={cn(
             "flex size-11 shrink-0 items-center justify-center rounded-full shadow-ring",
             transaction.methodTone === "cash" && "bg-surface-offset text-text-secondary",
-            transaction.methodTone === "card" &&
-              "bg-info-subtle text-info dark:bg-info-subtle-dark dark:text-info-dark",
-            transaction.methodTone === "bank" &&
-              "bg-success-subtle text-success dark:bg-success-subtle-dark dark:text-success-dark",
+            transaction.methodTone === "card" && "bg-info-subtle text-info",
+            transaction.methodTone === "bank" && "bg-success-subtle text-success",
           )}
         >
           <HugeiconsIcon icon={transaction.methodIcon} aria-hidden="true" size={22} />
@@ -127,9 +127,7 @@ function HistoryRow({ transaction }: { transaction: TrackerTransaction }) {
               dir="ltr"
               className={cn(
                 "min-w-0 flex-1 break-words text-[1.0625rem] font-semibold leading-[1.25] tabular-nums",
-                transaction.direction === "received"
-                  ? "text-success dark:text-success-dark"
-                  : "text-brand dark:text-coral",
+                transaction.direction === "received" ? "text-info" : "text-brand",
               )}
             >
               {transaction.amount}
@@ -139,8 +137,10 @@ function HistoryRow({ transaction }: { transaction: TrackerTransaction }) {
             </time>
           </div>
           <p className="mt-0.5 truncate text-sm text-text-secondary">
-            {transaction.descriptionKey ? t(transaction.descriptionKey) : transaction.descriptionLabel} /{" "}
-            {transaction.typeLabelKey ? t(transaction.typeLabelKey) : transaction.typeLabel}
+            {transaction.descriptionKey
+              ? t(transaction.descriptionKey)
+              : transaction.descriptionLabel}{" "}
+            / {transaction.typeLabelKey ? t(transaction.typeLabelKey) : transaction.typeLabel}
           </p>
         </div>
       </CardContent>

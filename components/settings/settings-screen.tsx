@@ -14,7 +14,6 @@ import {
   PROFILE_MEMBER_SINCE,
   PROFILE_STATUS,
   PROFILE_USERNAME,
-  THEME,
 } from "@/components/settings/data"
 import { SettingsDrawer } from "@/components/settings/settings-drawer"
 import {
@@ -26,7 +25,7 @@ import {
   PaymentMethodsCard,
   ProfileCard,
 } from "@/components/settings/settings-sections"
-import type { DrawerKind, LanguageValue, PaymentMethod, ThemeValue } from "@/components/settings/types"
+import type { DrawerKind, LanguageValue, PaymentMethod } from "@/components/settings/types"
 import { type Locale } from "@/i18n/routing"
 import { getDirectionForLocale } from "@/lib/i18n"
 
@@ -35,7 +34,6 @@ export function SettingsScreen() {
   const t = useTranslations("Settings")
   const direction = getDirectionForLocale(locale)
   const [drawer, setDrawer] = React.useState<DrawerKind>(null)
-  const [theme, setTheme] = React.useState<ThemeValue>(THEME)
   const [language, setLanguage] = React.useState<LanguageValue>(LANGUAGE)
   const [profile, setProfile] = React.useState({
     username: PROFILE_USERNAME,
@@ -152,11 +150,9 @@ export function SettingsScreen() {
           <GuideCard />
           <AppearanceCard
             language={language}
-            theme={theme}
             onToggleLanguage={() =>
               setLanguage((current) => (current === "English" ? "Arabic" : "English"))
             }
-            onThemeChange={setTheme}
           />
           <AboutBlock />
         </div>

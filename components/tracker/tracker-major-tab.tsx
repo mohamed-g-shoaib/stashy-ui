@@ -21,12 +21,9 @@ export function TrackerMajorTab({ items = initialMajorExpenses }: TrackerMajorTa
 
   if (items.length === 0) {
     return (
-      <Card
-        size="sm"
-        className="rounded-md border border-border bg-card py-4 text-center shadow-soft"
-      >
+      <Card size="sm" className="py-4 text-center">
         <CardContent className="px-4">
-          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-md border border-dashed border-border text-text-tertiary">
+          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-[var(--radius-sm)] border border-dashed border-border text-text-tertiary">
             <HugeiconsIcon icon={PackageIcon} aria-hidden="true" size={28} />
           </div>
           <h2 className="text-[1.0625rem] font-semibold text-foreground">
@@ -45,14 +42,11 @@ export function TrackerMajorTab({ items = initialMajorExpenses }: TrackerMajorTa
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-12 items-center gap-2 rounded-md border border-warning bg-warning-subtle px-card py-3 text-warning dark:border-warning-dark dark:bg-warning-subtle-dark dark:text-warning-dark">
+      <div className="flex min-h-12 items-center gap-2 rounded-[var(--radius-sm)] border border-warning bg-warning-subtle px-card py-3 text-warning">
         <HugeiconsIcon icon={Alert02Icon} aria-hidden="true" size={20} />
         <p className="text-sm font-semibold">{t("major.warning")}</p>
       </div>
-      <Card
-        size="sm"
-        className="rounded-md border border-warning/35 bg-card py-4 shadow-soft dark:border-warning-dark/40"
-      >
+      <Card size="sm" className="border-warning/35 py-4">
         <CardContent className="flex flex-col gap-4 px-4">
           <div className="space-y-1">
             <p className="text-[1.0625rem] font-semibold text-foreground">
@@ -71,18 +65,17 @@ export function TrackerMajorTab({ items = initialMajorExpenses }: TrackerMajorTa
               value={`${new Intl.NumberFormat("en").format(totalAmount)} EGP`}
               numeric
             />
-            <SummaryTile label={t("major.largeLabel")} value={t("major.largeValue", { count: largeCount })} />
+            <SummaryTile
+              label={t("major.largeLabel")}
+              value={t("major.largeValue", { count: largeCount })}
+            />
           </div>
         </CardContent>
       </Card>
       {items.map((expense) => (
-        <Card
-          key={expense.nameKey ?? expense.nameLabel}
-          size="sm"
-          className="rounded-md border border-border bg-card py-3 shadow-ring"
-        >
+        <Card key={expense.nameKey ?? expense.nameLabel} size="sm" className="py-3 shadow-ring">
           <CardContent className="flex items-center gap-3 px-4">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-warning-subtle text-warning shadow-ring dark:bg-warning-subtle-dark dark:text-warning-dark">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-warning-subtle text-warning shadow-ring">
               <span
                 className="size-2.5 rounded-full bg-warning data-[large=false]:bg-border"
                 data-large={expense.isLarge}
@@ -126,7 +119,7 @@ function SummaryTile({
   numeric?: boolean
 }) {
   return (
-    <div className="rounded-sm bg-surface-offset p-3 shadow-ring">
+    <div className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
       <p className="text-xs font-medium text-text-secondary">{label}</p>
       <p
         dir={numeric ? "ltr" : undefined}

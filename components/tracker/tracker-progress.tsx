@@ -16,7 +16,7 @@ export function TrackerProgress({ valueClass, tone = "brand", className }: Track
 
 const progressToneClass = {
   brand: "bg-brand",
-  warning: "bg-warning dark:bg-warning-dark",
-  danger: "bg-danger dark:bg-danger-dark",
-  success: "bg-success dark:bg-success-dark",
+  warning: "bg-warning",
+  danger: "bg-danger",
+  success: "bg-success",
 }

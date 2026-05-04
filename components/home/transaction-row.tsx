@@ -1,25 +1,16 @@
-import { HugeiconsIcon } from "@hugeicons/react";
+import { HugeiconsIcon } from "@hugeicons/react"
 
-import type { Transaction, TransactionTone } from "@/components/home/types";
-import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import type { Transaction, TransactionTone } from "@/components/home/types"
+import { Card, CardContent } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 type TransactionRowProps = Transaction & {
-  title: string;
-};
+  title: string
+}
 
-export function TransactionRow({
-  title,
-  amount,
-  date,
-  tone,
-  methodIcon,
-}: TransactionRowProps) {
+export function TransactionRow({ title, amount, date, tone, methodIcon }: TransactionRowProps) {
   return (
-    <Card
-      size="sm"
-      className="rounded-md border border-border bg-card py-3 shadow-ring"
-    >
+    <Card size="sm" className="py-3 shadow-ring">
       <CardContent className="flex items-center gap-3 px-4">
         <span
           className={cn(
@@ -40,36 +31,34 @@ export function TransactionRow({
             >
               {amount}
             </p>
-            <p className="shrink-0 text-end text-sm text-text-secondary">
-              {date}
-            </p>
+            <p className="shrink-0 text-end text-sm text-text-secondary">{date}</p>
           </div>
           <p className="mt-0.5 truncate text-sm text-text-secondary">{title}</p>
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
 
 function getIconToneClassName(tone: TransactionTone) {
   if (tone === "fixed") {
-    return "bg-info-subtle text-info dark:bg-info-subtle-dark dark:text-info-dark";
+    return "bg-success-subtle text-success"
   }
 
   if (tone === "received") {
-    return "bg-success-subtle text-success dark:bg-success-subtle-dark dark:text-success-dark";
+    return "bg-info-subtle text-info"
   }
 
-  return "bg-surface-offset text-text-secondary";
+  return "bg-surface-offset text-text-secondary"
 }
 
 function getAmountClassName(tone: TransactionTone) {
   if (tone === "received") {
-    return "text-success dark:text-success-dark";
+    return "text-info"
   }
   if (tone === "fixed") {
-    return "text-info dark:text-info-dark";
+    return "text-success"
   }
 
-  return "text-brand dark:text-coral";
+  return "text-brand"
 }

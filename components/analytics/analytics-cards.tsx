@@ -36,13 +36,13 @@ export function PacingCard({ month }: { month: AnalyticsMonth }) {
         : t("pacing.onPace")
   const pacingToneClass =
     month.pacingDeltaPct < 0
-      ? "text-success dark:text-success-dark"
+      ? "text-success"
       : month.pacingDeltaPct > 0
-        ? "text-danger dark:text-danger-dark"
+        ? "text-danger"
         : "text-foreground"
 
   return (
-    <Card size="sm" className="rounded-md border border-border bg-card py-4 shadow-soft">
+    <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-5 px-4">
         <div className="space-y-3">
           <p className="text-[0.9375rem] font-medium leading-[1.6] text-foreground text-pretty">
@@ -103,13 +103,13 @@ export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
   const t = useTranslations("Analytics")
   const projectedSavingsTone =
     month.projectedSavings > 0
-      ? "text-success dark:text-success-dark"
+      ? "text-success"
       : month.projectedSavings < 0
-        ? "text-danger dark:text-danger-dark"
+        ? "text-danger"
         : "text-foreground"
 
   return (
-    <Card size="sm" className="rounded-md border border-border bg-card py-4 shadow-soft">
+    <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
         <SectionHeader
           icon={Invoice03Icon}
@@ -178,7 +178,7 @@ export function ShapingCard({ month }: { month: AnalyticsMonth }) {
   const netAfterReceived = grandTotalSpent - month.incomeReceived
 
   return (
-    <Card size="sm" className="rounded-md border border-border bg-card py-4 shadow-soft">
+    <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
         <SectionHeader
           icon={MoneyBag02Icon}
@@ -253,7 +253,7 @@ export function MonthComparisonCard({
 
   if (!previousMonth) {
     return (
-      <Card size="sm" className="rounded-md border border-border bg-card py-4 shadow-soft">
+      <Card size="sm" className="py-4">
         <CardContent className="flex flex-col gap-4 px-4">
           <SectionHeader
             icon={CreditCardIcon}
@@ -275,7 +275,7 @@ export function MonthComparisonCard({
   const largePurchasesDelta = currentMonth.largePurchasesPct - previousMonth.largePurchasesPct
 
   return (
-    <Card size="sm" className="rounded-md border border-border bg-card py-4 shadow-soft">
+    <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
         <SectionHeader
           icon={CreditCardIcon}
@@ -381,9 +381,8 @@ function ComparisonRow({
           className={cn(
             "h-auto rounded-full px-2.5 py-1 text-[0.6875rem] font-medium shadow-ring",
             tone === "positive" &&
-              "bg-success-subtle text-success dark:bg-success-subtle-dark dark:text-success-dark",
-            tone === "negative" &&
-              "bg-danger-subtle text-danger dark:bg-danger-subtle-dark dark:text-danger-dark",
+              "bg-success-subtle text-success",
+            tone === "negative" && "bg-danger-subtle text-danger",
             tone === "neutral" && "bg-surface-offset text-text-secondary",
           )}
         >
@@ -426,7 +425,7 @@ function SectionHeader({
 
 function HeroStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col gap-1 rounded-sm bg-surface-offset p-3 shadow-ring">
+    <div className="flex flex-col gap-1 rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
       <p className="text-xs font-medium text-text-secondary">{label}</p>
       <p
         dir="ltr"
@@ -448,7 +447,7 @@ function CompactStat({
   valueClassName?: string
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-1 rounded-sm bg-surface-offset p-3 shadow-ring">
+    <div className="flex min-w-0 flex-col gap-1 rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
       <p className="text-[0.6875rem] font-medium text-text-secondary">{label}</p>
       <p
         dir="ltr"
@@ -477,16 +476,14 @@ function InsightRow({
   description: string
 }) {
   return (
-    <div className="flex gap-3 rounded-sm bg-surface-offset p-3 shadow-ring">
+    <div className="flex gap-3 rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
       <span
         className={cn(
           "mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full shadow-ring",
           tone === "positive" &&
-            "bg-success-subtle text-success dark:bg-success-subtle-dark dark:text-success-dark",
-          tone === "negative" &&
-            "bg-danger-subtle text-danger dark:bg-danger-subtle-dark dark:text-danger-dark",
-          tone === "warning" &&
-            "bg-warning-subtle text-warning dark:bg-warning-subtle-dark dark:text-warning-dark",
+            "bg-success-subtle text-success",
+          tone === "negative" && "bg-danger-subtle text-danger",
+          tone === "warning" && "bg-warning-subtle text-warning",
           tone === "neutral" && "bg-card text-text-secondary",
         )}
       >
@@ -500,9 +497,9 @@ function InsightRow({
             dir="ltr"
             className={cn(
               "shrink-0 text-sm font-semibold tabular-nums",
-              tone === "positive" && "text-success dark:text-success-dark",
-              tone === "negative" && "text-danger dark:text-danger-dark",
-              tone === "warning" && "text-warning dark:text-warning-dark",
+              tone === "positive" && "text-success",
+              tone === "negative" && "text-danger",
+              tone === "warning" && "text-warning",
               tone === "neutral" && "text-foreground",
             )}
           >
@@ -517,7 +514,7 @@ function InsightRow({
 
 function SummaryItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-sm bg-surface-offset p-3 shadow-ring">
+    <div className="rounded-[var(--radius-sm)] bg-surface-offset p-3 shadow-ring">
       <p className="text-xs font-medium text-text-secondary">{label}</p>
       <p dir="ltr" className="mt-1 text-sm font-semibold text-foreground tabular-nums">
         {value}

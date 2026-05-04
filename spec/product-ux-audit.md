@@ -357,7 +357,7 @@ If those questions are not answered, then we are still designing a partial artif
 | Record or inspect a major expense and understand its consequence | Major expense lowers effective variable budget and should explain rate impact | Tracker major tab + add drawer | Partial |
 | Use history filters to answer a real question | History filters should help isolate type, direction, method, and date range | Tracker history filter drawer + filtered results card | Mostly clear |
 | Understand what Analytics is for and whether its numbers are actionable | Read-only monthly health report with meaningful comparisons | Analytics screen | Stronger, but still mostly observational |
-| Use Settings to change language/theme and manage payment methods | Manage appearance and defaults clearly | Settings screen | Mostly clear and now stateful |
+| Use Settings to change language/preferences and manage payment methods | Manage defaults clearly inside the controlled identity | Settings screen | Mostly clear and now stateful |
 
 ## Interactive Coverage Matrix
 
@@ -446,10 +446,10 @@ Every major page should be audited for both explanation and action design.
 - **Missing states or misleading mock behavior:** The month picker is visually present but intentionally non-functional, which can over-promise exploration.
 - **Redesign recommendation:** Add explicit action-oriented summaries and either reduce the selector’s perceived power or make it produce a meaningful state change. Do not rely on explanatory “preview” labeling as the main fix.
 
-### J-010 Use Settings to change language/theme and manage payment methods
+### J-010 Use Settings to change language/preferences and manage payment methods
 
-- **Intended backend-supported flow:** Settings should manage appearance, defaults, and payment methods clearly.
-- **Current sandbox path:** Use segmented theme control, language pill, payment method rows, and bottom sheets.
+- **Intended backend-supported flow:** Settings should manage language, defaults, and payment methods clearly inside the controlled product identity.
+- **Current sandbox path:** Use language controls, payment method rows, and bottom sheets. Theme switching should no longer be treated as a live product affordance.
 - **Friction points:** The interaction model is clear, but the language switch is only local visual state and the surrounding copy remains English.
 - **Missing states or misleading mock behavior:** The language control implies a product-level locale change that the screen itself does not honor.
 - **Redesign recommendation:** Treat language switching as a true locale test path or separate it clearly as a design-review control until it is wired. Do not let it masquerade as a complete product setting.
@@ -814,7 +814,7 @@ Each block below is judged against the same audit criteria:
 | Budget boosts card + drawer | Stronger than before | Empty state now transitions into a filled list after save | Low | Preserve |
 | Payment methods card | Strong functional block | Add, edit, delete, and default all change visible state and remain the best Settings reference pattern | Low | Preserve and use as reference |
 | Guide card | Purely informational CTA | Acceptable as guidance-only because it is explicitly guidance | Low | Preserve |
-| Appearance card | Useful settings grouping | Language/theme are still partly review-oriented and not fully honest as product settings | Medium | Distinguish real product controls from design-review controls |
+| Appearance card | Useful settings grouping | Language and preference controls should stay honest product settings, but theme-era framing must be removed completely | Medium | Keep only controlled-identity-safe settings and avoid fake appearance branching |
 | About block | Static informational footer | Fine | Low | Preserve |
 
 ## Re-Do Summary

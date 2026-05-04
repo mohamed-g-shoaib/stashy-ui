@@ -1,16 +1,15 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
+import type { Metadata } from "next"
+import localFont from "next/font/local"
 
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { cn } from "@/lib/utils";
+import "./globals.css"
+import { cn } from "@/lib/utils"
 
 const googleSansFlex = localFont({
   src: "../public/fonts/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf",
   variable: "--font-sans",
   display: "swap",
   weight: "400 700",
-});
+})
 
 export const metadata: Metadata = {
   title: "Stashy UI",
@@ -31,12 +30,12 @@ export const metadata: Metadata = {
     title: "Stashy UI",
     description: "Mobile UI sandbox for designing the Stashy app in code.",
   },
-};
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
@@ -44,8 +43,8 @@ export default async function RootLayout({
         className={cn("antialiased", "font-sans", googleSansFlex.variable)}
         suppressHydrationWarning
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        {children}
       </body>
     </html>
-  );
+  )
 }
