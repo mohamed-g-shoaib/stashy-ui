@@ -72,23 +72,56 @@ export function HistoryScreen() {
             received={overview.received}
             count={overview.count}
           />
-          <div className="mt-4 flex justify-end">
+          <div className="mt-4 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             <Button
               type="button"
               variant="outline"
               size="xs"
-              className="h-11 min-h-11 rounded-full px-3"
+              className={cn(
+                "h-10 min-h-10 shrink-0 rounded-full px-3",
+                filterCount > 0 && "border-brand text-brand"
+              )}
               onClick={() => setDrawerOpen(true)}
             >
               <HugeiconsIcon
                 icon={FilterIcon}
                 data-icon="inline-start"
                 aria-hidden="true"
+                className="size-4"
               />
               {filterCount > 0
                 ? t("filterActive", { count: filterCount })
                 : t("filter")}
             </Button>
+
+            <Separator orientation="vertical" className="h-6 bg-border-subtle shrink-0" />
+
+            <div className="flex items-center gap-2">
+              {[
+                { id: "variable", label: t("budgetTypes.variable") },
+                { id: "monthly", label: t("budgetTypes.fixed") },
+                { id: "major", label: t("budgetTypes.major") },
+              ].map((qf) => {
+                const isActive = filterState.type === qf.id;
+                return (
+                  <Button
+                    key={qf.id}
+                    type="button"
+                    variant={isActive ? "default" : "outline"}
+                    size="xs"
+                    className="h-10 min-h-10 shrink-0 rounded-full px-4 text-[0.8125rem] font-medium"
+                    onClick={() => {
+                      setFilterState((prev) => ({
+                        ...prev,
+                        type: isActive ? "all" : (qf.id as any),
+                      }));
+                    }}
+                  >
+                    {qf.label}
+                  </Button>
+                );
+              })}
+            </div>
           </div>
         </div>
 

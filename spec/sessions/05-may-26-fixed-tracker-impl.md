@@ -177,7 +177,17 @@ All 7 phases of the Fixed Tracker UX redesign were complete and clean. The page 
     - Collapsed by default; `useState` local to the card
   - i18n keys added: `overBudgetCallout.title`, `body`, `bodyMulti`, `dismiss` in EN + AR
 
-- All changes passed `pnpm typecheck` + `pnpm lint` clean
+- **History overview card redesigned to match tracker**
+  - Matches `FixedSummaryCard` structure: `heroSurfaceClass` root, large hero spent amount, 2-col stat tiles (Spent | Received).
+  - Count badge replaced with quiet text in the header to reduce visual clutter.
+  - Semantic colors applied: Spent in expense red, Received in income green.
+
+- **Quick filters added to history screen**
+  - Added horizontal scrollable row of quick filters (Variable, Fixed, Major) next to the main filter button.
+  - Active quick filter highlighted using the brand variant.
+  - Added `no-scrollbar` utility to `globals.css` for a cleaner mobile look.
+
+- All changes passed `pnpm typecheck` + `pnpm lint` clean.
 
 ---
 
@@ -188,6 +198,8 @@ All 7 phases of the Fixed Tracker UX redesign were complete and clean. The page 
 - **"Recurring" over "Subscriptions".** The recurring section covers any repeated monthly payment (rent, gym, phone bill, etc.), not just subscription services.
 - **Progress bars use inline `style` not Tailwind arbitrary classes.** Any dynamic percentage that isn't a compile-time constant must use `style={{ flexBasis: ... }}`. The `TrackerProgress` `value` prop enforces this pattern going forward.
 - **Collapsible callout uses amber (warning) not red (expense).** An over-budget envelope is a soft signal — the total budget is fine, just one envelope leaked. Red would mislead the user into thinking something is seriously wrong.
+- **History Overview matches Tracker Summary for visual rhythm.** The app now feels like a single cohesive system where "Overview" always means a hero surface with semantic stat tiles.
+- **Quick Filters provide high-frequency access.** Filtering by major categories (Variable/Fixed/Major) is the most common history action; exposing them as one-tap buttons improves mobile efficiency.
 
 ---
 
