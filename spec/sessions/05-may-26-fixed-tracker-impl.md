@@ -266,3 +266,20 @@ Starting fresh from `spec-home-restructure.md`, a comprehensive locked-decision 
 ## Open Blockers
 
 1. **History tab navigation from MajorExpensesRowCard** — `onView` currently fires a `console.log`. When history becomes a routable tab, wire to `setActiveNav("history")` with pre-applied major filter state. No DrawerKind needed — it's a tab change.
+
+---
+
+# Session 2
+
+## Work Accomplished
+- **Swipe-to-Delete functionality in `HistoryRow`**: Implemented a native React touch handler wrapper around the row, allowing the user to swipe to reveal a delete button behind the row.
+- **Directional Localization**: Wired `getDirectionForLocale()` to the swipe thresholds, ensuring swipe-left applies to LTR (English) and swipe-right applies to RTL (Arabic) interfaces naturally.
+- **Click Preservation**: Replaced the `div` wrapper with a `button` for valid accessibility parsing, wired `onClick` appropriately, and used an `isSwiping` ref lock so that swiping the row does not inadvertently trigger the click-to-edit drawer.
+- **Strict Adherence to Linting**: Updated row elements to `<button type="button">` to fix `oxlint` accessibility complaints regarding static element interactions.
+- `pnpm typecheck && pnpm lint` all pass clean.
+
+## Decisions Made
+- **Native Implementation vs External Library**: Built a custom translation utility on `touchMove`/`touchEnd` without introducing external gesture libraries (like `framer-motion`) to stay lean, using CSS `transition-transform` mapped directly to native touch delta metrics. 
+
+## Open Blockers
+- None related to this specific row functionality.

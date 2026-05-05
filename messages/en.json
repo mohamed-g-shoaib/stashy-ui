@@ -252,6 +252,9 @@
   },
   "History": {
     "title": "History",
+    "actions": {
+      "delete": "Delete"
+    },
     "dailyTotal": "Daily total",
     "overview": {
       "title": "Overview",

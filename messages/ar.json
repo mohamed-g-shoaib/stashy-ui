@@ -252,6 +252,9 @@
   },
   "History": {
     "title": "السجل",
+    "actions": {
+      "delete": "حذف"
+    },
     "dailyTotal": "إجمالي اليوم",
     "overview": {
       "title": "نظرة عامة",
