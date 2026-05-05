@@ -333,6 +333,55 @@
       "pending": "Pending",
       "overdue": "Overdue"
     },
+    "fixed": {
+      "sections": {
+        "subscriptions": "Recurring",
+        "installments": "Installments",
+        "budgets": "Budgets"
+      },
+      "status": {
+        "paid": "Paid",
+        "due": "Due {date}"
+      },
+      "installmentProgress": "{paid} of {total} months",
+      "endsDate": "Ends {date}",
+      "monthlyObligation": "{amount} / month",
+      "totalPaidAllTime": "{amount} paid",
+      "totalRemainingAllTime": "{amount} left",
+      "transactionCount": "{count} transactions",
+      "remaining": "{amount} left",
+      "over": "{amount} over",
+      "payNow": "Pay Now",
+      "edit": "Edit",
+      "types": {
+        "manual": "Budget",
+        "recurring": "Recurring",
+        "installment": "Installment"
+      },
+      "summary": {
+        "title": "Fixed Budget",
+        "budgeted": "Budgeted",
+        "paid": "Paid",
+        "remaining": "Remaining",
+        "statusLabel": {
+          "on_track": "On Track",
+          "warning": "Warning",
+          "over_budget": "Over Budget"
+        }
+      },
+      "installmentOverview": {
+        "obligation": "Monthly",
+        "paidAllTime": "Paid",
+        "remainingAllTime": "Remaining"
+      },
+      "autoPayBadge": "Auto-pay",
+      "overBudgetCallout": {
+        "title": "{count, plural, one {1 budget envelope is over} other {# budget envelopes are over}}",
+        "body": "{name} exceeded its envelope by {amount}. The overage settles from your variable budget — your total fixed commitment is still within budget.",
+        "bodyMulti": "These envelopes exceeded their limits this month. The overage settles from your variable budget — your total fixed commitment is still within budget.",
+        "dismiss": "Got it"
+      }
+    },
     "monthly": {
       "rent": "Rent",
       "spotify": "Spotify",

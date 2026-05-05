@@ -333,6 +333,55 @@
       "pending": "معلق",
       "overdue": "متأخر"
     },
+    "fixed": {
+      "sections": {
+        "subscriptions": "متكررة",
+        "installments": "الأقساط",
+        "budgets": "الميزانيات"
+      },
+      "status": {
+        "paid": "مدفوع",
+        "due": "استحقاق {date}"
+      },
+      "installmentProgress": "{paid} من {total} أشهر",
+      "endsDate": "ينتهي {date}",
+      "monthlyObligation": "{amount} / شهر",
+      "totalPaidAllTime": "{amount} مدفوع",
+      "totalRemainingAllTime": "{amount} متبقي",
+      "transactionCount": "{count} معاملات",
+      "remaining": "{amount} متبقي",
+      "over": "{amount} زيادة",
+      "payNow": "ادفع الآن",
+      "edit": "تعديل",
+      "types": {
+        "manual": "ميزانية",
+        "recurring": "متكررة",
+        "installment": "قسط"
+      },
+      "summary": {
+        "title": "الميزانية الثابتة",
+        "budgeted": "المخطط",
+        "paid": "المدفوع",
+        "remaining": "المتبقي",
+        "statusLabel": {
+          "on_track": "في المسار",
+          "warning": "تحذير",
+          "over_budget": "تجاوز الميزانية"
+        }
+      },
+      "installmentOverview": {
+        "obligation": "شهرياً",
+        "paidAllTime": "مدفوع",
+        "remainingAllTime": "متبقي"
+      },
+      "autoPayBadge": "دفع تلقائي",
+      "overBudgetCallout": {
+        "title": "{count, plural, one {ميزانية واحدة تجاوزت حدها} other {# ميزانيات تجاوزت حدودها}}",
+        "body": "تجاوزت {name} ميزانيتها بمقدار {amount}، وسيُخصم الفائض من ميزانيتك المتغيرة — ولا يزال مجموع مصاريفك الثابتة ضمن الميزانية.",
+        "bodyMulti": "تجاوزت هذه المظاريف حدودها هذا الشهر، وسيُخصم الفائض من ميزانيتك المتغيرة — ولا يزال مجموع مصاريفك الثابتة ضمن الميزانية.",
+        "dismiss": "فهمت"
+      }
+    },
     "monthly": {
       "rent": "الإيجار",
       "spotify": "سبوتيفاي",
