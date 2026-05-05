@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { heroSurfaceClass, statTileClass } from "@/lib/design-system-classes";
+import { semanticTextClass } from "@/lib/semantic-styles";
 import { cn } from "@/lib/utils";
 
 type HistoryOverviewCardProps = {
@@ -18,43 +18,65 @@ export function HistoryOverviewCard({
   const t = useTranslations("History");
 
   return (
-    <Card size="sm" className="py-4 shadow-soft">
-      <CardContent className="flex flex-col gap-4 px-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-[1.0625rem] font-semibold text-foreground">
-            {t("overview.title")}
-          </h2>
-          <span
-            className={cn(
-              "rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold tracking-[0.14em] text-brand uppercase shadow-ring",
-              "bg-brand-subtle",
-            )}
-          >
-            {t("overview.count", { count })}
-          </span>
-        </div>
-        <div className={cn("grid grid-cols-3 gap-2 p-3", heroSurfaceClass)}>
-          <OverviewStat label={t("overview.spent")} value={spent} />
-          <OverviewStat label={t("overview.received")} value={received} />
-          <OverviewStat
-            label={t("overview.transactions")}
-            value={t("overview.count", { count })}
-          />
-        </div>
-      </CardContent>
-    </Card>
+    <div className={cn(heroSurfaceClass, "p-4")}>
+      {/* Header row: title + subtle transaction count */}
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <p className={cn("text-sm font-semibold", semanticTextClass.brand)}>
+          {t("overview.title")}
+        </p>
+        <p className="text-[0.6875rem] tabular-nums text-text-tertiary">
+          {t("overview.count", { count })}
+        </p>
+      </div>
+
+      {/* Hero: total spent (primary figure) */}
+      <p
+        dir="ltr"
+        className={cn(
+          "mb-3 text-[1.375rem] font-semibold leading-none tabular-nums",
+          semanticTextClass.expense,
+        )}
+      >
+        {spent}
+      </p>
+
+      {/* Stat tiles: Spent | Received */}
+      <div className="grid grid-cols-2 gap-2">
+        <OverviewStat
+          label={t("overview.spent")}
+          value={spent}
+          valueClass={semanticTextClass.expense}
+        />
+        <OverviewStat
+          label={t("overview.received")}
+          value={received}
+          valueClass={semanticTextClass.income}
+        />
+      </div>
+    </div>
   );
 }
 
-function OverviewStat({ label, value }: { label: string; value: string }) {
+function OverviewStat({
+  label,
+  value,
+  valueClass,
+}: {
+  label: string;
+  value: string;
+  valueClass?: string;
+}) {
   return (
-    <div className={cn("flex min-w-0 flex-col gap-1", statTileClass)}>
-      <span className="truncate text-[0.6875rem] font-semibold tracking-[0.14em] text-text-tertiary uppercase">
+    <div className={cn("flex min-w-0 flex-col gap-1 text-start", statTileClass)}>
+      <span className="truncate text-[0.6875rem] font-medium uppercase tracking-[0.08em] text-text-tertiary">
         {label}
       </span>
       <span
         dir="ltr"
-        className="truncate text-[0.9375rem] font-semibold text-foreground tabular-nums"
+        className={cn(
+          "truncate text-sm font-semibold tabular-nums text-foreground",
+          valueClass,
+        )}
       >
         {value}
       </span>
