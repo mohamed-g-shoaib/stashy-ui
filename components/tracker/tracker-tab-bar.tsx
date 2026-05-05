@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 
-import type { TrackerTab } from "@/components/tracker/types";
+type TrackerTab = "fixed" | "major";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   segmentedWellClass,

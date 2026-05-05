@@ -10,7 +10,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 
-import type { TrackerTab } from "@/components/tracker/types";
+type TrackerTab = "fixed" | "major";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,

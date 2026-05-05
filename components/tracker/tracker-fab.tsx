@@ -2,7 +2,7 @@ import { Add01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useTranslations } from "next-intl";
 
-import type { TrackerTab } from "@/components/tracker/types";
+type TrackerTab = "fixed" | "major";
 import { Button } from "@/components/ui/button";
 import { floatingActionButtonClass } from "@/lib/design-system-classes";
 import { cn } from "@/lib/utils";
