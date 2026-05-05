@@ -207,3 +207,62 @@ All 7 phases of the Fixed Tracker UX redesign were complete and clean. The page 
 
 1. None.
 
+---
+
+# Session 3 — Home Page Restructure (spec-home-restructure.md)
+
+**Time:** 23:48–00:05
+
+---
+
+## Status at Session Start
+
+Starting fresh from `spec-home-restructure.md`, a comprehensive locked-decision restructure plan authored in the planning session. All 6 phases defined, project was clean at start of session.
+
+---
+
+## Completed This Session
+
+- **Phase 1 — Types and Data**
+  - Updated `components/home/types.ts`: added `"emergency"` to `DailyScenario`; added `BudgetStrip`, `MajorExpensesRow`, `PaymentUrgency` types; restructured `DailyRate` to use raw numeric fields (`remainingAmount`, `allowanceAmount`, `spentAmount`, `tomorrowAmount`, `overByAmount`), removed `fill`/`spentFill`; added `"history"` to `DrawerKind`
+  - Updated `components/home/home-data.ts`: replaced `fixedPayments` with `upcomingPayments` (3 items with urgency field + Spotify), added `mockBudgetStrip`, `mockMajorExpensesRow`, exported `UpcomingPayment` type
+  - Updated `messages/en.json` and `messages/ar.json`: added `Home.strip`, `Home.payments`, `Home.major.rowLabel/ofVariableRow/viewAction`, all new `Home.daily` keys (remainingLabel, overByLabel, overBySubtext, injectAction, allowanceLabel, spentLabel, tomorrowLabel, tomorrowDropLabel, statusEmergency), `Home.fixedPayments.spotify`, `emergencyPreview` in settings drawer; removed "12 Days Left" from both header.date strings
+
+- **Phase 2 — New Components**
+  - Created `components/home/budget-strip.tsx` (`BudgetStripCard`): teal/amber segmented bar with proportional `style` widths (JIT-safe), three-item row with fixed left / variable left / days remaining
+  - Created `components/home/major-expenses-row.tsx` (`MajorExpensesRowCard`): amber strip using `bg-warning-subtle border-warning`, null-guarded, RTL-safe with `ms-` spacing
+  - Rebuilt `components/home/daily-rate-card.tsx` (`DailyRateCard`): three state components (`OnTrackState`, `OverspentState`, `EmergencyState`), state derived from `overByAmount`/`tomorrowAmount`, progress bars use inline `style={{ width: N% }}`, inject button wired to `onInject` with `// TODO: wire to dedicated inject drawer` comment
+  - Created `components/home/upcoming-payments.tsx` (`UpcomingPayments`): compact card with header row, three payment rows with urgency colors (danger/warning-hover/muted), logical `text-end` alignment, all amounts `dir="ltr"`
+
+- **Phase 3 — home-screen.tsx**
+  - Added emergency case to `getDailyRate`, updated track/overspent to use new numeric fields
+  - Emergency forces `majorScenario` to `"active"` at render time
+  - Updated home-drawer.tsx settings tab: 2-column → 3-column grid, added Emergency tab wired to `setDailyScenario("emergency")`
+
+- **Phase 4 — home-content.tsx**
+  - Rebuilt: new render order — IntroCard → BudgetStrip → DailyRateCard → MajorExpensesRow (conditional) → UpcomingPayments
+  - Deleted: `BudgetOverviewSection`, `FixedPaymentsSection`, old imports (`BudgetOverviewCard`, `PaymentRow`, `fixedPayments`, `SectionHeader`)
+
+- **Phase 5 — home-header.tsx**
+  - Already handled in Phase 1 i18n update — both locale `header.date` values no longer include "12 Days Left"
+
+- **Phase 6 — Cleanup**
+  - Deleted `components/home/budget-overview-card.tsx` (grep confirmed zero external consumers)
+  - Deleted `components/home/payment-row.tsx` (grep confirmed zero external consumers)
+  - Final scan: no inline hex, no banned physical classes, all amounts have `dir="ltr"`
+  - `pnpm typecheck && pnpm lint && pnpm build` all pass clean (Exit code: 0)
+
+---
+
+## Decisions Made
+
+- **`DrawerKind` extended with `"history"`** — needed for `MajorExpensesRowCard.onView`. The major row navigating to history is a sensible wiring even for the mock; a console.log fallback used until the tab nav is directly callable.
+- **`bg-income` for on-track progress fill** — plan said "bg-brand or bg-success"; `bg-success` maps to `bg-fixed` (teal), which could confuse the fixed budget identity. `bg-income` (meadow green) reads as "healthy/positive" which is semantically correct for "still within allowance."
+- **Empty urgency row uses `&nbsp;`** — when `urgency === "soon"` the urgency label row shows a non-breaking space to preserve layout height and prevent row height jitter between payment items.
+- **Emergency injectAction uses `variant="destructive"`** — the Button primitive maps this to `--color-danger` (Brick red), matching the emergency visual register.
+
+---
+
+## Open Blockers
+
+1. **History tab navigation from MajorExpensesRowCard** — `onView` currently fires a `console.log`. When history becomes a routable tab, wire to `setActiveNav("history")` with pre-applied major filter state. No DrawerKind needed — it's a tab change.

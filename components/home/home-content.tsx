@@ -2,16 +2,21 @@
 
 import { useTranslations } from "next-intl";
 
-import { BudgetOverviewCard } from "@/components/home/budget-overview-card";
+import { BudgetStripCard } from "@/components/home/budget-strip";
 import { DailyRateCard } from "@/components/home/daily-rate-card";
-import { fixedPayments, navItems } from "@/components/home/home-data";
-import { PaymentRow } from "@/components/home/payment-row";
-import { PlaceholderPanel } from "@/components/home/placeholder-panel";
-import { SectionHeader } from "@/components/home/section-header";
+import {
+  mockBudgetStrip,
+  mockMajorExpensesRow,
+  navItems,
+  upcomingPayments,
+} from "@/components/home/home-data";
+import { MajorExpensesRowCard } from "@/components/home/major-expenses-row";
+import { UpcomingPayments } from "@/components/home/upcoming-payments";
 import type { DailyRate, DrawerKind } from "@/components/home/types";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { TabsContent } from "@/components/ui/tabs";
+import { PlaceholderPanel } from "@/components/home/placeholder-panel";
 
 type HomeContentProps = {
   dailyRate: DailyRate;
@@ -33,14 +38,37 @@ export function HomeContent({
   return (
     <main className="flex flex-col gap-section px-screen pb-28 pt-5">
       <h1 className="sr-only">{t("nav.home")}</h1>
-      <BudgetOverviewSection majorScenario={majorScenario} />
-      <DailyRateSection
-        introCardVisible={introCardVisible}
-        onDismissIntroCard={onDismissIntroCard}
+
+      {/* Intro card — unchanged, still conditionally rendered */}
+      {introCardVisible ? (
+        <IntroCard onDismiss={onDismissIntroCard} onOpenDrawer={onOpenDrawer} />
+      ) : null}
+
+      {/* Budget strip — always visible */}
+      <BudgetStripCard data={mockBudgetStrip} />
+
+      {/* Daily rate hero card */}
+      <DailyRateCard
         rate={dailyRate}
-        onOpenDrawer={onOpenDrawer}
+        onInject={() => onOpenDrawer("add")}
       />
-      <FixedPaymentsSection onViewAll={() => onOpenDrawer("fixed")} />
+
+      {/* Major expenses row — conditional */}
+      {majorScenario === "active" ? (
+        <MajorExpensesRowCard
+          data={mockMajorExpensesRow}
+          onView={() => {
+            // TODO: navigate to history with major filter pre-applied
+            console.log("View major expenses — history tab not yet wired");
+          }}
+        />
+      ) : null}
+
+      {/* Upcoming payments */}
+      <UpcomingPayments
+        payments={upcomingPayments}
+        onViewAll={() => onOpenDrawer("fixed")}
+      />
     </main>
   );
 }
@@ -64,70 +92,6 @@ export function SecondaryTabPanels() {
         </TabsContent>
       ))}
     </>
-  );
-}
-
-function DailyRateSection({
-  introCardVisible,
-  onDismissIntroCard,
-  rate,
-  onOpenDrawer,
-}: {
-  introCardVisible: boolean;
-  onDismissIntroCard: () => void;
-  rate: DailyRate;
-  onOpenDrawer: (kind: DrawerKind) => void;
-}) {
-  const t = useTranslations("Home");
-
-  return (
-    <section className="flex flex-col gap-card-gap">
-      {introCardVisible ? (
-        <IntroCard onDismiss={onDismissIntroCard} onOpenDrawer={onOpenDrawer} />
-      ) : null}
-      <SectionHeader title={t("daily.title")} />
-      <DailyRateCard rate={rate} />
-    </section>
-  );
-}
-
-function BudgetOverviewSection({
-  majorScenario,
-}: {
-  majorScenario: "active" | "none";
-}) {
-  const t = useTranslations("Home");
-
-  return (
-    <section className="flex flex-col gap-card-gap">
-      <SectionHeader title={t("budget.title")} />
-      <BudgetOverviewCard majorScenario={majorScenario} />
-    </section>
-  );
-}
-
-function FixedPaymentsSection({ onViewAll }: { onViewAll: () => void }) {
-  const t = useTranslations("Home");
-
-  return (
-    <section className="flex flex-col gap-card-gap">
-      <SectionHeader
-        title={t("fixed.title")}
-        action={t("actions.viewAll")}
-        onAction={onViewAll}
-      />
-      <div className="flex flex-col gap-3">
-        {fixedPayments.map((payment) => (
-          <PaymentRow
-            key={payment.nameKey}
-            name={t(payment.nameKey)}
-            due={t(payment.dueKey)}
-            amount={payment.amount}
-            date={payment.date}
-          />
-        ))}
-      </div>
-    </section>
   );
 }
 

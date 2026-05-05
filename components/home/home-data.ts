@@ -5,21 +5,57 @@ import {
   Invoice03Icon,
   Settings02Icon,
 } from "@hugeicons/core-free-icons";
-import type { NavItem } from "@/components/home/types";
-export const fixedPayments = [
+import type {
+  BudgetStrip,
+  MajorExpensesRow,
+  NavItem,
+  PaymentUrgency,
+} from "@/components/home/types";
+
+export type UpcomingPayment = {
+  id: string;
+  nameKey: string;
+  amount: string;
+  date: string;
+  urgency: PaymentUrgency;
+};
+
+export const upcomingPayments: UpcomingPayment[] = [
   {
+    id: "rent",
     nameKey: "fixedPayments.rent",
-    dueKey: "fixedPayments.oneDay",
-    amount: "3000 EGP",
-    date: "Mon, 20/Apr",
+    amount: "3,000 EGP",
+    date: "Sun, 19/Apr",
+    urgency: "tomorrow",
   },
   {
+    id: "internet",
     nameKey: "fixedPayments.internet",
-    dueKey: "fixedPayments.twoDays",
     amount: "260 EGP",
-    date: "Tue, 21/Apr",
+    date: "Mon, 20/Apr",
+    urgency: "soon",
+  },
+  {
+    id: "spotify",
+    nameKey: "fixedPayments.spotify",
+    amount: "120 EGP",
+    date: "Thu, 23/Apr",
+    urgency: "soon",
   },
 ];
+
+export const mockBudgetStrip: BudgetStrip = {
+  fixedLeft: 1240,
+  variableLeft: 7960,
+  daysRemaining: 12,
+  fixedTotal: 2400,
+  variableTotal: 7600,
+};
+
+export const mockMajorExpensesRow: MajorExpensesRow = {
+  totalAmount: 3000,
+  percentOfVariable: 38,
+};
 
 export const navItems: NavItem[] = [
   { value: "home", labelKey: "nav.home", icon: Home01Icon },

@@ -490,12 +490,15 @@ function SettingsControls({
           }
           className="gap-3"
         >
-          <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
+          <TabsList className={cn(segmentedWellClass, "grid-cols-3")}>
             <TabsTrigger value="track" className="rounded-xs text-xs">
               {t("settings.trackPreview")}
             </TabsTrigger>
             <TabsTrigger value="overspent" className="rounded-xs text-xs">
               {t("settings.overspentPreview")}
+            </TabsTrigger>
+            <TabsTrigger value="emergency" className="rounded-xs text-xs">
+              {t("settings.emergencyPreview")}
             </TabsTrigger>
           </TabsList>
         </Tabs>
