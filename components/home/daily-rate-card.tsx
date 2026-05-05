@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import type { DailyRate } from "@/components/home/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn, getCardTint } from "@/lib/utils";
 
 type DailyRateCardProps = {
   rate: DailyRate;
@@ -56,19 +56,6 @@ function StateBadge({
       {label}
     </span>
   );
-}
-
-// ─── Shared Card Tint ──────────────────────────────────────────────────────────
-
-function getCardTint(tone: "success" | "warning" | "danger") {
-  switch (tone) {
-    case "warning":
-      return "bg-warning-subtle/40 border-warning/30";
-    case "danger":
-      return "bg-danger-subtle/40 border-danger/30";
-    default:
-      return "";
-  }
 }
 
 // ─── On-track state ──────────────────────────────────────────────────────────
