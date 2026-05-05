@@ -111,5 +111,87 @@ Resumed from previous conversation which had completed the plan and pre-read pha
 
 ## Open Blockers
 
-1. **`fixed-summary-card.tsx` status badge label** — The badge currently uses a temporary string interpolation hack to show a label (e.g., "~80%" or ">100%") since the design system Badge component accepts a `variant` prop but no direct string content was planned for the status badge. The badge should instead display a fixed semantic label (e.g., "On Track", "Warning", "Over Budget"). This can be added in a follow-up with a `Tracker.fixed.summary.statusLabel.on_track` / `warning` / `over_budget` i18n key set.
-2. None others.
+1. ~~**`fixed-summary-card.tsx` status badge label hack**~~ — Resolved in Session 2. Proper `summary.statusLabel.*` i18n keys added.
+2. None.
+
+---
+
+# Session 2 — Post-Implementation Refinements
+
+**Time:** 19:14–19:44
+
+---
+
+## Status at Session Start
+
+All 7 phases of the Fixed Tracker UX redesign were complete and clean. The page was first tested visually, which revealed several UX and correctness issues that needed fixing before the session closed.
+
+---
+
+## Completed This Session
+
+- **Tracker screen simplified to fixed-only**
+  - Removed `TrackerMajorTab`, `TrackerTabBar`, `TrackerDrawer`, `TrackerFab`, and `TrackerOverview` from `tracker-screen.tsx`
+  - Removed tab routing from `app/[locale]/tracker/page.tsx`
+  - `TrackerTab` type removed from `types.ts`; legacy files that still reference it patched with local type aliases so TSC stays clean
+  - The `FixedSummaryCard` inside `TrackerFixedTab` is now the sole overview on the page
+
+- **Section order and naming**
+  - Reordered sections: **Budgets → Recurring → Installments** (budgets promoted to top as primary user concern)
+  - "Subscriptions" section renamed to **"Recurring"** (EN) / **"متكررة"** (AR) in section headers and type badges — the concept covers any repeated monthly payment, not just subscriptions
+  - Type badge for recurring items updated to "Recurring" / "متكررة"
+
+- **Installment overview card upgraded**
+  - Wrapped the mini-overview 3-tile strip in `heroSurfaceClass` card (matching `FixedSummaryCard` structure)
+  - Added overall lifecycle progress bar (total paid all-time / total committed, `tone="fixed"`)
+  - Stat tile labels shortened (EN: "Monthly / Paid / Remaining"; AR: "شهرياً / مدفوع / متبقي") to prevent 3-column overflow
+  - Value text reduced from `text-sm` to `text-xs` + `truncate` to handle large EGP amounts
+
+- **Progress bar system fixed (root cause: Tailwind JIT)**
+  - All dynamic `basis-[N%]` class strings were never scanned by Tailwind — only Coffee (100%) appeared because `basis-[100%]` is a standard utility
+  - `TrackerProgress` now accepts a numeric `value` (0–100) prop and uses `style={{ flexBasis: \`${value}%\` }}` instead of Tailwind arbitrary classes
+  - All 7 active call sites updated to pass numeric `value` prop
+  - Track background changed from `bg-surface-offset` → `bg-border-subtle` for visible empty state at 0%
+  - 0% progress bars (e.g., Eating Out) now show a clear gray track
+
+- **Percentage labels on all progress bars**
+  - Added `showPercent` boolean prop to `TrackerProgress`
+  - When enabled: renders a small `N%` label to the right of the bar
+  - Raw value used for display (Coffee shows "124%" while bar fills to 100%)
+  - Enabled on all 6 progress bar instances: summary card, all budget cards, installment cards, installment overview, detail sheet bars
+
+- **Summary card badge bug fixed**
+  - The badge was rendering the word "due" by reusing `t("status.due", { date: "" })` — a payment-due string intended for subscription pills
+  - Added proper `summary.statusLabel.{on_track|warning|over_budget}` i18n keys in both locales
+  - Badge now shows: "On Track" / "Warning" / "Over Budget" in EN; "في المسار" / "تحذير" / "تجاوز الميزانية" in AR
+
+- **`overallStatus` logic corrected + collapsible callout added**
+  - Previous logic: worst-case item escalation → Coffee's blown envelope made the whole summary card red ("Over Budget")
+  - New logic: `overallStatus` reflects `totalPaid / totalBudgeted` ratio only (on_track < 75%, warning 75–100%, over_budget > 100%); with mock data ≈ 68% → green "On Track"
+  - Added `overBudgetItems: { name, overageAmount }[]` field to `FixedTrackerSummary` type
+  - Mock populates this from manual items with `status === "over_budget"` (currently just Coffee & Cafes, 120 EGP over)
+  - `FixedSummaryCard` now renders a **collapsible amber callout** when `overBudgetItems.length > 0`:
+    - Header always visible: "1 budget envelope is over ▾" — amber surface, tappable
+    - Expanded: explains by name + overage amount that the excess settles from variable budget, total fixed commitment is still within budget
+    - Single vs. multi-item body copy handled separately
+    - Collapsed by default; `useState` local to the card
+  - i18n keys added: `overBudgetCallout.title`, `body`, `bodyMulti`, `dismiss` in EN + AR
+
+- All changes passed `pnpm typecheck` + `pnpm lint` clean
+
+---
+
+## Decisions Made
+
+- **`overallStatus` is a total-ratio signal, not an item-level alarm.** Individual envelopes can be over without the overall fixed budget being over. These are two separate signals with different UX treatments.
+- **Section order: Budgets first.** Budget envelopes require active user attention (they spend throughout the month). Recurring payments are set-and-forget. Installments are passive.
+- **"Recurring" over "Subscriptions".** The recurring section covers any repeated monthly payment (rent, gym, phone bill, etc.), not just subscription services.
+- **Progress bars use inline `style` not Tailwind arbitrary classes.** Any dynamic percentage that isn't a compile-time constant must use `style={{ flexBasis: ... }}`. The `TrackerProgress` `value` prop enforces this pattern going forward.
+- **Collapsible callout uses amber (warning) not red (expense).** An over-budget envelope is a soft signal — the total budget is fine, just one envelope leaked. Red would mislead the user into thinking something is seriously wrong.
+
+---
+
+## Open Blockers
+
+1. None.
+
