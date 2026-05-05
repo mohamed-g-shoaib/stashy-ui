@@ -1,135 +1,230 @@
-import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { useTranslations } from "next-intl"
+"use client";
 
-import type { DailyRate } from "@/components/home/types"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { statTileClass } from "@/lib/design-system-classes"
-import { semanticProgressClass, semanticTextClass } from "@/lib/semantic-styles"
-import { cn } from "@/lib/utils"
+import { useTranslations } from "next-intl";
+
+import type { DailyRate } from "@/components/home/types";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn, getCardTint } from "@/lib/utils";
 
 type DailyRateCardProps = {
-  rate: DailyRate
+  rate: DailyRate;
+  onInject: () => void;
+};
+
+function formatCurrency(amount: number): string {
+  return `${Math.abs(amount).toLocaleString("en", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} EGP`;
 }
 
-export function DailyRateCard({ rate }: DailyRateCardProps) {
-  const t = useTranslations("Home")
-  const showsTomorrow = rate.tomorrow !== null
+export function DailyRateCard({ rate, onInject }: DailyRateCardProps) {
+  const isEmergency = rate.overByAmount !== null;
+  const isOverspent = rate.remainingAmount < 0 && rate.overByAmount === null;
 
-  return (
-    <Card size="sm" className="py-4">
-      <CardContent className="flex flex-col gap-4 px-4">
-        <p className="text-sm leading-[1.6] text-text-secondary text-pretty">{rate.explanation}</p>
-        <DailyRateAmounts rate={rate} />
-        <DailyAllowanceBar rate={rate} label={t("daily.progressLabel")} />
-        <DailyRateStatus rate={rate} />
-        {showsTomorrow ? (
-          <>
-            <Separator className="bg-border-subtle" />
-            <TomorrowRate rate={rate} />
-          </>
-        ) : null}
-      </CardContent>
-    </Card>
-  )
-}
-
-function DailyRateAmounts({ rate }: { rate: DailyRate }) {
-  const t = useTranslations("Home")
-
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      <MoneyBlock label={t("daily.remaining")} value={rate.remaining} />
-      <MoneyBlock label={t("daily.allowance")} value={rate.allowance} />
-    </div>
-  )
-}
-
-function MoneyBlock({ label, value }: { label: string; value: string }) {
-  return (
-    <div className={cn("flex min-w-0 flex-col gap-1 text-start", statTileClass)}>
-      <p className="text-[0.6875rem] font-semibold tracking-[0.14em] text-text-tertiary uppercase">
-        {label}
-      </p>
-      <p
-        dir="ltr"
-        className="mt-1 truncate text-[1.25rem] font-semibold leading-[1.1] text-foreground tabular-nums"
-      >
-        {value}
-      </p>
-    </div>
-  )
-}
-
-function DailyAllowanceBar({ rate, label }: { rate: DailyRate; label: string }) {
-  return (
-    <div
-      className="flex h-4 overflow-hidden rounded-full bg-surface-offset shadow-ring"
-      aria-label={label}
-    >
-      <div className={cn(semanticProgressClass.brand, rate.fill)} />
-      <div
-        className={cn(
-          "bg-[repeating-linear-gradient(135deg,var(--color-warning-subtle)_0,var(--color-warning-subtle)_4px,var(--color-warning)_4px,var(--color-warning)_6px)]",
-          rate.spentFill,
-        )}
-      />
-    </div>
-  )
-}
-
-function DailyRateStatus({ rate }: { rate: DailyRate }) {
-  const t = useTranslations("Home")
-  const isOnTrack = rate.statusTone === "fixed"
-
-  return (
-    <div className="flex items-center justify-between gap-3 text-sm">
-      <p className="text-text-secondary">
-        {t("daily.spent")}{" "}
-        <span dir="ltr" className="font-semibold text-foreground tabular-nums">
-          {rate.spent}
-        </span>
-      </p>
-      <Badge
-        variant={isOnTrack ? "fixed" : "expense"}
-        className="rounded-full"
-      >
-        {rate.status}
-      </Badge>
-    </div>
-  )
-}
-
-function TomorrowRate({ rate }: { rate: DailyRate }) {
-  const t = useTranslations("Home")
-  const isOverspent = rate.statusTone === "expense"
-
-  if (!rate.tomorrow) {
-    return null
+  if (isEmergency) {
+    return <EmergencyState rate={rate} onInject={onInject} />;
   }
 
+  if (isOverspent) {
+    return <OverspentState rate={rate} />;
+  }
+
+  return <OnTrackState rate={rate} />;
+}
+
+// ─── State badge ─────────────────────────────────────────────────────────────
+
+function StateBadge({
+  label,
+  tone,
+}: {
+  label: string;
+  tone: "success" | "warning" | "danger";
+}) {
+  const classes = {
+    success: "bg-success-subtle text-success",
+    warning: "bg-warning-subtle text-warning-hover",
+    danger: "bg-danger-subtle text-danger",
+  };
+
   return (
-    <div className="flex items-center justify-between gap-3">
-      <p className="text-sm font-medium text-foreground">
-        {t("daily.tomorrow")}{" "}
-        <span
+    <span
+      className={cn(
+        "inline-flex items-center self-start rounded-full px-2.5 py-0.5 text-xs font-medium",
+        classes[tone],
+      )}
+    >
+      {label}
+    </span>
+  );
+}
+
+// ─── On-track state ──────────────────────────────────────────────────────────
+
+function OnTrackState({ rate }: { rate: DailyRate }) {
+  const t = useTranslations("Home");
+  const fillPct = Math.min(
+    100,
+    Math.max(0, (rate.remainingAmount / rate.allowanceAmount) * 100),
+  );
+
+  return (
+    <Card size="sm" className={cn("py-4", getCardTint("success"))}>
+      <CardContent className="flex flex-col gap-0 px-4">
+        <StateBadge label={t("daily.statusTrack")} tone="success" />
+
+        <p className="mt-3 text-xs text-text-secondary">
+          {t("daily.remainingLabel")}
+        </p>
+        <p
           dir="ltr"
-          className={cn("tabular-nums", isOverspent && semanticTextClass.expense)}
+          className="text-4xl font-semibold leading-tight text-foreground tabular-nums"
         >
-          {rate.tomorrow}
-        </span>
-      </p>
-      <HugeiconsIcon
-        icon={ArrowUpRight01Icon}
-        size={20}
-          className={cn(
-            "shrink-0",
-            isOverspent ? `rotate-90 ${semanticTextClass.expense}` : semanticTextClass.fixed,
-          )}
-        aria-hidden="true"
-      />
-    </div>
-  )
+          {formatCurrency(rate.remainingAmount)}
+        </p>
+
+        {/* Progress bar */}
+        <div className="mt-3 mb-3 h-1.5 overflow-hidden rounded-full bg-surface-offset">
+          <div
+            className="h-full rounded-full bg-income"
+            style={{ width: `${fillPct}%` }}
+          />
+        </div>
+
+        {/* Secondary row */}
+        <div className="flex justify-between">
+          <div>
+            <p className="text-xs text-text-secondary">{t("daily.allowanceLabel")}</p>
+            <p className="text-sm font-medium text-foreground tabular-nums" dir="ltr">
+              {formatCurrency(rate.allowanceAmount)}
+            </p>
+          </div>
+          <div className="text-end">
+            <p className="text-xs text-text-secondary">{t("daily.spentLabel")}</p>
+            <p className="text-sm font-medium text-foreground tabular-nums" dir="ltr">
+              {formatCurrency(rate.spentAmount)}
+            </p>
+          </div>
+        </div>
+
+        {/* Tomorrow row */}
+        <div className="mt-3 border-t border-border pt-3" />
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-text-secondary">
+            {t("daily.tomorrowLabel")}
+          </span>
+          <span
+            dir="ltr"
+            className="font-medium text-foreground tabular-nums"
+          >
+            {formatCurrency(rate.tomorrowAmount ?? 0)}
+          </span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Overspent state ─────────────────────────────────────────────────────────
+
+function OverspentState({ rate }: { rate: DailyRate }) {
+  const t = useTranslations("Home");
+
+  return (
+    <Card size="sm" className={cn("py-4", getCardTint("danger"))}>
+      <CardContent className="flex flex-col gap-0 px-4">
+        <StateBadge label={t("daily.statusOverspent")} tone="danger" />
+
+        <p className="mt-3 text-xs text-text-secondary">
+          {t("daily.remainingLabel")}
+        </p>
+        <p
+          dir="ltr"
+          className="text-4xl font-semibold leading-tight text-danger tabular-nums"
+        >
+          −{formatCurrency(Math.abs(rate.remainingAmount))}
+        </p>
+
+        {/* Progress bar — capped at full */}
+        <div className="mt-3 mb-3 h-1.5 overflow-hidden rounded-full bg-surface-offset">
+          <div className="h-full w-full rounded-full bg-danger" />
+        </div>
+
+        {/* Secondary row */}
+        <div className="flex justify-between">
+          <div>
+            <p className="text-xs text-text-secondary">{t("daily.allowanceLabel")}</p>
+            <p className="text-sm font-medium text-foreground tabular-nums" dir="ltr">
+              {formatCurrency(rate.allowanceAmount)}
+            </p>
+          </div>
+          <div className="text-end">
+            <p className="text-xs text-text-secondary">{t("daily.spentLabel")}</p>
+            <p className="text-sm font-medium text-foreground tabular-nums" dir="ltr">
+              {formatCurrency(rate.spentAmount)}
+            </p>
+          </div>
+        </div>
+
+        {/* Tomorrow row */}
+        <div className="mt-3 border-t border-border pt-3" />
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-warning-hover">
+            {t("daily.tomorrowDropLabel")}
+          </span>
+          <span
+            dir="ltr"
+            className="font-semibold text-danger tabular-nums"
+          >
+            {formatCurrency(rate.tomorrowAmount ?? 0)}
+          </span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Emergency state ─────────────────────────────────────────────────────────
+
+function EmergencyState({
+  rate,
+  onInject,
+}: {
+  rate: DailyRate;
+  onInject: () => void;
+}) {
+  const t = useTranslations("Home");
+
+  return (
+    <Card size="sm" className={cn("py-4", getCardTint("danger"))}>
+      <CardContent className="flex flex-col gap-0 px-4">
+        <StateBadge label={t("daily.statusEmergency")} tone="danger" />
+
+        <p className="mt-3 text-xs text-text-secondary">
+          {t("daily.overByLabel")}
+        </p>
+        <p
+          dir="ltr"
+          className="text-4xl font-semibold leading-tight text-danger tabular-nums"
+        >
+          {rate.overByAmount !== null
+            ? formatCurrency(rate.overByAmount)
+            : null}
+        </p>
+        <p className="mt-1 mb-4 text-xs text-text-secondary">
+          {t("daily.overBySubtext")}
+        </p>
+
+        {/* Inject button — wired to onInject */}
+        {/* TODO: wire to dedicated inject drawer */}
+        <Button
+          type="button"
+          variant="destructive"
+          className="w-full"
+          onClick={onInject}
+        >
+          {t("daily.injectAction")}
+        </Button>
+      </CardContent>
+    </Card>
+  );
 }

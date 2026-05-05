@@ -46,7 +46,7 @@ export function HomeScreen() {
           <HomeContent
             dailyRate={dailyRate}
             introCardVisible={introCardVisible}
-            majorScenario={majorScenario}
+            majorScenario={dailyScenario === "emergency" ? "active" : majorScenario}
             onDismissIntroCard={() => handleIntroCardVisibleChange(false)}
             onOpenDrawer={setDrawer}
           />
@@ -96,26 +96,50 @@ function getDailyRate(
   if (scenario === "track") {
     return {
       remaining: "615.38 EGP",
+      remainingAmount: 615.38,
       allowance: "815.38 EGP",
+      allowanceAmount: 815.38,
       spent: "200 EGP",
+      spentAmount: 200,
       explanation: t("daily.explanationTrack"),
-      tomorrow: null,
+      tomorrow: "812 EGP",
+      tomorrowAmount: 812,
       status: t("daily.statusTrack"),
       statusTone: "fixed",
-      fill: "basis-[75%]",
-      spentFill: "basis-[25%]",
+      overByAmount: null,
     }
   }
 
+  if (scenario === "emergency") {
+    return {
+      remaining: "−1,240 EGP",
+      remainingAmount: -1240,
+      allowance: "815.38 EGP",
+      allowanceAmount: 815.38,
+      spent: "2,055.38 EGP",
+      spentAmount: 2055.38,
+      explanation: "",
+      tomorrow: null,
+      tomorrowAmount: null,
+      status: t("daily.statusEmergency"),
+      statusTone: "expense",
+      overByAmount: 1240,
+    }
+  }
+
+  // overspent
   return {
     remaining: "-84.62 EGP",
+    remainingAmount: -84.62,
     allowance: "815.38 EGP",
+    allowanceAmount: 815.38,
     spent: "900 EGP",
+    spentAmount: 900,
     explanation: t("daily.explanationOverspent"),
     tomorrow: "742 EGP",
+    tomorrowAmount: 742,
     status: t("daily.statusOverspent"),
     statusTone: "expense",
-    fill: "basis-[8%]",
-    spentFill: "basis-[92%]",
+    overByAmount: null,
   }
 }

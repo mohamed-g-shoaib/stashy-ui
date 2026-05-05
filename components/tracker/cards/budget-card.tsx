@@ -4,7 +4,7 @@ import { TrackerProgress } from "@/components/tracker/tracker-progress"
 import type { FixedExpenseItem, FixedExpenseStatus } from "@/components/tracker/types"
 import { surfacePanelClass } from "@/lib/design-system-classes"
 import { semanticTextClass } from "@/lib/semantic-styles"
-import { cn } from "@/lib/utils"
+import { cn, getCardTint } from "@/lib/utils"
 
 type BudgetCardProps = {
   item: FixedExpenseItem
@@ -23,6 +23,12 @@ const statusTextClass = {
   over_budget: semanticTextClass.expense,
 } as const satisfies Record<FixedExpenseStatus, string>
 
+const statusTintTone = {
+  on_track: "success",
+  warning: "warning",
+  over_budget: "danger",
+} as const satisfies Record<FixedExpenseStatus, "success" | "warning" | "danger">
+
 export function BudgetCard({ item, onTap }: BudgetCardProps) {
   const t = useTranslations("Tracker.fixed")
   const tone = statusProgressTone[item.status]
@@ -36,6 +42,7 @@ export function BudgetCard({ item, onTap }: BudgetCardProps) {
       type="button"
       className={cn(
         surfacePanelClass,
+        getCardTint(statusTintTone[item.status]),
         "flex w-full flex-col gap-2.5 px-4 py-3 text-start",
       )}
       onClick={() => onTap(item)}

@@ -1,0 +1,183 @@
+
+<style>
+  .phone { background: #f5f0e8; border-radius: 24px; padding: 20px 16px 24px; max-width: 320px; margin: 0 auto; border: 0.5px solid var(--color-border-secondary); }
+  .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; background: #c9b99a; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: #5a4a35; }
+  .header-text { flex: 1; margin-left: 10px; }
+  .header-name { font-size: 14px; font-weight: 500; color: #2e2318; }
+  .header-date { font-size: 11px; color: #8a7a68; }
+  .header-icons { display: flex; gap: 8px; }
+  .icon-btn { width: 32px; height: 32px; border-radius: 50%; border: 0.5px solid #c9b99a; background: #f0ebe0; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+
+  .strip { background: #ede8dc; border-radius: 10px; padding: 10px 12px 8px; margin-bottom: 6px; }
+  .strip-bar { height: 5px; border-radius: 3px; overflow: hidden; display: flex; margin-bottom: 8px; }
+  .strip-bar-fixed { background: #5a8a7a; flex: 1; }
+  .strip-bar-variable { background: #c9853a; flex: 5; }
+  .strip-nums { display: flex; justify-content: space-between; }
+  .strip-item { font-size: 10px; color: #7a6a58; }
+  .strip-item span { display: block; font-size: 12px; font-weight: 500; color: #2e2318; margin-bottom: 1px; }
+
+  .section-label { font-size: 11px; font-weight: 500; color: #8a7a68; letter-spacing: 0.03em; margin: 14px 0 6px; text-transform: uppercase; }
+
+  .daily-card { background: #fff9f2; border-radius: 14px; border: 0.5px solid #d9cfc0; padding: 14px; margin-bottom: 4px; }
+  .daily-card.overspent { background: #fff5ed; border-color: #e8b088; }
+  .daily-card.emergency { background: #fff0ed; border-color: #e8a088; }
+  .state-badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 20px; margin-bottom: 10px; }
+  .badge-track { background: #e0f0e8; color: #2a6645; }
+  .badge-over { background: #fde8d8; color: #8a3a15; }
+  .badge-emergency { background: #fdddd8; color: #8a2515; }
+  .remaining-label { font-size: 10px; color: #8a7a68; margin-bottom: 2px; }
+  .remaining-amount { font-size: 28px; font-weight: 500; color: #2e2318; line-height: 1.1; margin-bottom: 8px; }
+  .remaining-amount.red { color: #b03a1a; }
+  .progress-bar-wrap { height: 5px; background: #e8e0d4; border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+  .progress-fill { height: 100%; border-radius: 3px; background: #c9853a; }
+  .progress-fill.red { background: #c0501a; }
+  .daily-row { display: flex; justify-content: space-between; align-items: center; }
+  .daily-meta { font-size: 11px; color: #8a7a68; }
+  .daily-meta strong { color: #4a3a28; font-weight: 500; }
+  .tomorrow-row { margin-top: 8px; padding-top: 8px; border-top: 0.5px solid #e0d8cc; display: flex; justify-content: space-between; font-size: 11px; color: #8a7a68; }
+  .tomorrow-row.red { border-top-color: #e8b088; color: #a05020; }
+  .tomorrow-val { font-weight: 500; color: #4a3a28; }
+  .tomorrow-val.red { color: #b03a1a; }
+
+  .allowance-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .allowance-item { }
+  .allowance-item .lbl { font-size: 10px; color: #8a7a68; }
+  .allowance-item .val { font-size: 13px; font-weight: 500; color: #4a3a28; }
+
+  .emergency-num { font-size: 28px; font-weight: 500; color: #b02510; line-height: 1.1; margin-bottom: 4px; }
+  .emergency-sub { font-size: 11px; color: #8a4535; margin-bottom: 10px; }
+  .inject-btn { font-size: 11px; font-weight: 500; padding: 6px 14px; border-radius: 20px; background: #b02510; color: white; border: none; display: inline-block; }
+
+  .payments-card { background: #fff9f2; border-radius: 14px; border: 0.5px solid #d9cfc0; padding: 10px 12px; }
+  .payments-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .payments-title { font-size: 12px; font-weight: 500; color: #2e2318; }
+  .view-all { font-size: 10px; color: #8a6a48; }
+  .payment-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-top: 0.5px solid #ece4d8; }
+  .pay-left .pay-name { font-size: 12px; font-weight: 500; color: #2e2318; }
+  .pay-left .pay-due { font-size: 10px; color: #a0856a; }
+  .pay-right .pay-amt { font-size: 12px; font-weight: 500; color: #2e2318; text-align: right; }
+  .pay-right .pay-date { font-size: 10px; color: #a0856a; text-align: right; }
+  .due-soon { color: #b05020; }
+
+  .state-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tab { font-size: 10px; padding: 4px 10px; border-radius: 20px; border: 0.5px solid #c9b99a; background: #ede8dc; color: #7a6a58; cursor: pointer; }
+  .tab.active { background: #5a4a35; color: #f0e8dc; border-color: #5a4a35; }
+
+  .divider { height: 0.5px; background: #d9cfc0; margin: 14px 0 4px; }
+  .fab { position: absolute; bottom: 20px; right: 16px; width: 40px; height: 40px; border-radius: 50%; background: #5a4a35; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #f0e8dc; }
+  .phone-wrap { position: relative; }
+</style>
+
+<div style="padding: 1rem 0;">
+  <p style="font-size: 12px; color: var(--color-text-secondary); text-align: center; margin-bottom: 12px;">tap a state to preview the daily rate card</p>
+
+  <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 16px;">
+    <button class="tab active" onclick="setState('track')">On track</button>
+    <button class="tab" onclick="setState('over')">Overspent</button>
+    <button class="tab" onclick="setState('emergency')">Emergency</button>
+  </div>
+
+  <div class="phone-wrap">
+  <div class="phone">
+
+    <div class="header-row">
+      <div class="avatar">M</div>
+      <div class="header-text">
+        <div class="header-name">Hi, Mohamed</div>
+        <div class="header-date">Sat, 18 Apr</div>
+      </div>
+      <div class="header-icons">
+        <div class="icon-btn">?</div>
+        <div class="icon-btn">⚙</div>
+      </div>
+    </div>
+
+    <div class="strip">
+      <div class="strip-bar">
+        <div class="strip-bar-fixed"></div>
+        <div class="strip-bar-variable"></div>
+      </div>
+      <div class="strip-nums">
+        <div class="strip-item"><span>1,240 EGP</span>Fixed left</div>
+        <div class="strip-item" style="text-align:center"><span>7,960 EGP</span>Variable left</div>
+        <div class="strip-item" style="text-align:right"><span>12 days</span>Remaining</div>
+      </div>
+    </div>
+
+    <div id="daily-card" class="daily-card">
+    </div>
+
+    <div class="section-label">Upcoming payments</div>
+    <div class="payments-card">
+      <div class="payments-header">
+        <div class="payments-title">3 due this week</div>
+        <div class="view-all">View all →</div>
+      </div>
+      <div class="payment-row">
+        <div class="pay-left"><div class="pay-name">Rent</div><div class="pay-due due-soon">Due tomorrow</div></div>
+        <div class="pay-right"><div class="pay-amt">3,000 EGP</div><div class="pay-date">Sun, 19 Apr</div></div>
+      </div>
+      <div class="payment-row">
+        <div class="pay-left"><div class="pay-name">Internet</div><div class="pay-due">2 days left</div></div>
+        <div class="pay-right"><div class="pay-amt">260 EGP</div><div class="pay-date">Mon, 20 Apr</div></div>
+      </div>
+      <div class="payment-row">
+        <div class="pay-left"><div class="pay-name">Spotify</div><div class="pay-due">5 days left</div></div>
+        <div class="pay-right"><div class="pay-amt">120 EGP</div><div class="pay-date">Thu, 23 Apr</div></div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<script>
+function setState(s) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  const card = document.getElementById('daily-card');
+  if (s === 'track') {
+    card.className = 'daily-card';
+    card.innerHTML = `
+      <span class="state-badge badge-track">On track</span>
+      <div class="remaining-label">Remaining today</div>
+      <div class="remaining-amount">615.38 EGP</div>
+      <div class="progress-bar-wrap"><div class="progress-fill" style="width:75%"></div></div>
+      <div class="allowance-row">
+        <div class="allowance-item"><div class="lbl">Allowance</div><div class="val">815.38 EGP</div></div>
+        <div class="allowance-item" style="text-align:right"><div class="lbl">Spent today</div><div class="val">200 EGP</div></div>
+      </div>
+      <div class="tomorrow-row">
+        <div>Tomorrow's rate</div>
+        <div class="tomorrow-val">812 EGP</div>
+      </div>`;
+  } else if (s === 'over') {
+    card.className = 'daily-card overspent';
+    card.innerHTML = `
+      <span class="state-badge badge-over">Overspent</span>
+      <div class="remaining-label">Remaining today</div>
+      <div class="remaining-amount red">−74 EGP</div>
+      <div class="progress-bar-wrap"><div class="progress-fill red" style="width:100%"></div></div>
+      <div class="allowance-row">
+        <div class="allowance-item"><div class="lbl">Allowance</div><div class="val">815.38 EGP</div></div>
+        <div class="allowance-item" style="text-align:right"><div class="lbl">Spent today</div><div class="val">889 EGP</div></div>
+      </div>
+      <div class="tomorrow-row red">
+        <div>Tomorrow's rate drops to</div>
+        <div class="tomorrow-val red">738 EGP</div>
+      </div>`;
+  } else {
+    card.className = 'daily-card emergency';
+    card.innerHTML = `
+      <span class="state-badge badge-emergency">Over budget</span>
+      <div class="remaining-label">Over by</div>
+      <div class="emergency-num">1,240 EGP</div>
+      <div class="emergency-sub">Variable budget exhausted for this month</div>
+      <div style="display:flex; gap:8px;">
+        <div class="inject-btn">Inject budget</div>
+      </div>`;
+  }
+}
+setState('track');
+</script>

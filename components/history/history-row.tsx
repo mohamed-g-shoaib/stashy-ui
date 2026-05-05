@@ -2,19 +2,23 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 
-import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
+import { CheckmarkCircle02Icon, Delete01Icon } from "@hugeicons/core-free-icons";
 
 import type {
   HistoryTransaction,
   HistoryTransactionType,
 } from "@/components/history/types";
 import { semanticSurfaceClass, semanticTextClass } from "@/lib/semantic-styles";
+import { getDirectionForLocale } from "@/lib/i18n";
+import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 type HistoryRowProps = {
   transaction: HistoryTransaction;
   showDate?: boolean;
   isStandalone?: boolean;
+  onClick?: (transaction: HistoryTransaction) => void;
+  onDelete?: (transaction: HistoryTransaction) => void;
 };
 
 type TypeTone =
@@ -37,11 +41,67 @@ export function HistoryRow({
   transaction,
   showDate = false,
   isStandalone = false,
+  onClick,
+  onDelete,
 }: HistoryRowProps) {
   const t = useTranslations("History");
-  const locale = useLocale();
+  const locale = useLocale() as Locale;
+  const direction = getDirectionForLocale(locale);
   const typeTone = getSurfaceTone(transaction);
   const amountTone = getAmountTone(transaction);
+
+  const [offset, setOffset] = React.useState(0);
+  const touchStartX = React.useRef<number | null>(null);
+  const isSwiping = React.useRef(false);
+  const MAX_SWIPE = 80;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    isSwiping.current = false;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const currentX = e.touches[0].clientX;
+    const diff = currentX - touchStartX.current;
+
+    if (Math.abs(diff) > 5) {
+      isSwiping.current = true;
+    }
+
+    let target = offset + diff;
+    if (direction === "ltr") {
+      target = Math.max(-MAX_SWIPE, Math.min(0, target));
+    } else {
+      target = Math.max(0, Math.min(MAX_SWIPE, target));
+    }
+
+    setOffset(target);
+    touchStartX.current = currentX;
+  };
+
+  const handleTouchEnd = () => {
+    if (direction === "ltr") {
+      if (offset < -MAX_SWIPE / 2) setOffset(-MAX_SWIPE);
+      else setOffset(0);
+    } else {
+      if (offset > MAX_SWIPE / 2) setOffset(MAX_SWIPE);
+      else setOffset(0);
+    }
+    touchStartX.current = null;
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (isSwiping.current || Math.abs(offset) > 0) {
+      if (Math.abs(offset) > 0) {
+        setOffset(0);
+      }
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    onClick?.(transaction);
+  };
 
   const description = transaction.descriptionKey
     ? t(`transactions.${transaction.descriptionKey}`)
@@ -77,15 +137,48 @@ export function HistoryRow({
   }, [transaction.dateISO, transaction.date, dateFormatter]);
 
   return (
-    <div
-      className={cn(
-        "flex items-start gap-3 transition-all active:scale-[0.98]",
-        isStandalone 
-          ? "rounded-[var(--radius-lg)] p-4 shadow-soft ring-1 ring-border-subtle/50" 
-          : "rounded-xl p-3",
-        semanticSurfaceClass[typeTone],
-      )}
-    >
+    <div className="relative w-full overflow-hidden">
+      {/* Background delete action */}
+      <div 
+        className={cn(
+          "absolute inset-y-0 flex items-center bg-danger",
+          isStandalone ? "rounded-[var(--radius-lg)]" : "rounded-xl",
+          direction === "ltr" ? "right-0 justify-end pe-6 w-1/2" : "left-0 justify-start ps-6 w-1/2"
+        )}
+      >
+        <button
+          type="button"
+          className="text-white outline-none transition-transform active:scale-95"
+          onClick={(e) => {
+            e.stopPropagation();
+            setOffset(0);
+            onDelete?.(transaction);
+          }}
+          aria-label={t("actions.delete", { fallback: "Delete" })}
+        >
+          <HugeiconsIcon icon={Delete01Icon} size={24} />
+        </button>
+      </div>
+
+      {/* Main Row */}
+      <button
+        type="button"
+        className={cn(
+          "relative flex w-full appearance-none items-start gap-3 text-start outline-none active:scale-[0.98]",
+          isStandalone 
+            ? "rounded-[var(--radius-lg)] p-4 shadow-soft ring-1 ring-border-subtle/50" 
+            : "rounded-xl p-3",
+          semanticSurfaceClass[typeTone],
+        )}
+        style={{
+          transform: `translate3d(${offset}px, 0, 0)`,
+          transition: touchStartX.current === null ? "transform 0.2s cubic-bezier(0.32, 0.72, 0, 1)" : "none",
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onClick={handleClick}
+      >
       <span
         className={cn(
           "flex size-10 shrink-0 items-center justify-center rounded-full bg-background/80 shadow-ring-sm",
@@ -142,6 +235,7 @@ export function HistoryRow({
           </div>
         </div>
       </div>
+    </button>
     </div>
   );
 }

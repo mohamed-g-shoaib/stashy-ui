@@ -10,7 +10,7 @@
   "Home": {
     "header": {
       "greeting": "أهلا، محمد",
-      "date": "السبت، 18/أبريل 12 يوم متبقي",
+      "date": "السبت، 18/أبريل",
       "help": "المساعدة",
       "settings": "الإعدادات"
     },
@@ -36,7 +36,16 @@
       "explanationTrack": "ما زال لديك هامش داخل حد الصرف الآمن لليوم.",
       "explanationOverspent": "لقد تجاوزت الحد الآمن لليوم، لذلك أصبح معدل الغد تحت ضغط.",
       "tomorrow": "معدل الغد:",
-      "progressLabel": "تقدم المصروف اليومي"
+      "progressLabel": "تقدم المصروف اليومي",
+      "remainingLabel": "المتبقي اليوم",
+      "overByLabel": "تجاوزت بمقدار",
+      "overBySubtext": "استُنفدت الميزانية المتغيرة لهذا الشهر",
+      "injectAction": "دعم الميزانية",
+      "allowanceLabel": "المتاح",
+      "spentLabel": "مصروف اليوم",
+      "tomorrowLabel": "معدل الغد",
+      "tomorrowDropLabel": "معدل الغد سينخفض إلى",
+      "statusEmergency": "تجاوز الميزانية"
     },
     "budget": {
       "title": "نظرة عامة على الميزانية",
@@ -49,7 +58,23 @@
     "major": {
       "title": "المصاريف الكبيرة",
       "ofVariable": "من ميزانية {amount} المتغيرة",
-      "warning": "المصاريف الكبيرة مرتفعة هذا الشهر"
+      "warning": "المصاريف الكبيرة مرتفعة هذا الشهر",
+      "rowLabel": "المصاريف الكبيرة",
+      "ofVariableRow": "{percent}% من المتغير",
+      "viewAction": "عرض"
+    },
+    "strip": {
+      "remainingMonth": "المتبقي هذا الشهر",
+      "fixedLeft": "متبقي ثابت",
+      "variableLeft": "متبقي متغير",
+      "daysRemaining": "{count} أيام"
+    },
+    "payments": {
+      "sectionLabel": "المدفوعات القادمة",
+      "title": "3 مستحقات هذا الأسبوع",
+      "viewAll": "عرض الكل",
+      "urgencyToday": "مستحق اليوم",
+      "urgencyTomorrow": "مستحق غدًا"
     },
     "fixed": {
       "title": "المدفوعات الثابتة القادمة"
@@ -57,6 +82,7 @@
     "fixedPayments": {
       "rent": "الإيجار",
       "internet": "الإنترنت",
+      "spotify": "سبوتيفاي",
       "oneDay": "متبقي يوم واحد",
       "twoDays": "متبقي يومان"
     },
@@ -208,6 +234,7 @@
         "previewLabel": "حالة المعدل اليومي في مساحة التجربة",
         "trackPreview": "على المسار",
         "overspentPreview": "تم التجاوز",
+        "emergencyPreview": "طوارئ",
         "introLabel": "معاينة بطاقة المقدمة",
         "introHint": "أبقِ أسطح الإرشاد القابلة للإخفاء قابلة لإعادة التفعيل هنا حتى يمكن مراجعة حالة الوافد الجديد وحالة المستخدم العائد.",
         "majorLabel": "معاينة المصروف الكبير",
@@ -226,6 +253,9 @@
   },
   "History": {
     "title": "السجل",
+    "actions": {
+      "delete": "حذف"
+    },
     "dailyTotal": "إجمالي اليوم",
     "overview": {
       "title": "نظرة عامة",

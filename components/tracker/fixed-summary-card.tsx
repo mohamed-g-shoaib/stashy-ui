@@ -15,18 +15,23 @@ import {
   semanticSurfaceClass,
   semanticTextClass,
 } from "@/lib/semantic-styles"
-import { cn } from "@/lib/utils"
+import { cn, getCardTint } from "@/lib/utils"
 
 type FixedSummaryCardProps = {
   summary: FixedTrackerSummary
 }
 
-// Overall status maps to semantic role
 const statusRole = {
   on_track: "income",
   warning: "warning",
   over_budget: "expense",
 } as const satisfies Record<FixedExpenseStatus, keyof typeof semanticSurfaceClass>
+
+const statusTintTone = {
+  on_track: "success",
+  warning: "warning",
+  over_budget: "danger",
+} as const satisfies Record<FixedExpenseStatus, "success" | "warning" | "danger">
 
 export function FixedSummaryCard({ summary }: FixedSummaryCardProps) {
   const t = useTranslations("Tracker.fixed")
@@ -40,7 +45,7 @@ export function FixedSummaryCard({ summary }: FixedSummaryCardProps) {
   const hasOverBudget = summary.overBudgetItems.length > 0
 
   return (
-    <div className={cn(heroSurfaceClass, "p-4")}>
+    <div className={cn(heroSurfaceClass, getCardTint(statusTintTone[summary.overallStatus]), "p-4")}>
       {/* Header row */}
       <div className="mb-3 flex items-center justify-between gap-2">
         <p className={cn("text-sm font-semibold", semanticTextClass.fixed)}>

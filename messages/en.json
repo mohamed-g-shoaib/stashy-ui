@@ -10,7 +10,7 @@
   "Home": {
     "header": {
       "greeting": "Hi, Mohamed",
-      "date": "Sat, 18/Apr 12 Days Left",
+      "date": "Sat, 18/Apr",
       "help": "Help",
       "settings": "Settings"
     },
@@ -36,7 +36,16 @@
       "explanationTrack": "You still have room inside today’s safe spending limit.",
       "explanationOverspent": "You’ve spent past today’s safe limit, so tomorrow’s rate is now under pressure.",
       "tomorrow": "Your Rate Tomorrow:",
-      "progressLabel": "Daily allowance progress"
+      "progressLabel": "Daily allowance progress",
+      "remainingLabel": "Remaining today",
+      "overByLabel": "Over by",
+      "overBySubtext": "Variable budget exhausted for this month",
+      "injectAction": "Inject budget",
+      "allowanceLabel": "Allowance",
+      "spentLabel": "Spent today",
+      "tomorrowLabel": "Tomorrow's rate",
+      "tomorrowDropLabel": "Tomorrow's rate drops to",
+      "statusEmergency": "Over budget"
     },
     "budget": {
       "title": "Budget Overview",
@@ -49,7 +58,23 @@
     "major": {
       "title": "Major Expenses",
       "ofVariable": "of {amount} variable budget",
-      "warning": "Major expenses are high this month"
+      "warning": "Major expenses are high this month",
+      "rowLabel": "Major expenses",
+      "ofVariableRow": "{percent}% of variable",
+      "viewAction": "View"
+    },
+    "strip": {
+      "remainingMonth": "Remaining this month",
+      "fixedLeft": "Fixed left",
+      "variableLeft": "Variable left",
+      "daysRemaining": "{count} days"
+    },
+    "payments": {
+      "sectionLabel": "Upcoming payments",
+      "title": "3 due this week",
+      "viewAll": "View all",
+      "urgencyToday": "Due today",
+      "urgencyTomorrow": "Due tomorrow"
     },
     "fixed": {
       "title": "Upcoming Fixed Payments"
@@ -57,6 +82,7 @@
     "fixedPayments": {
       "rent": "Rent",
       "internet": "Internet",
+      "spotify": "Spotify",
       "oneDay": "1 Day Left",
       "twoDays": "2 Days Left"
     },
@@ -208,6 +234,7 @@
         "previewLabel": "Sandbox daily-rate state",
         "trackPreview": "On track",
         "overspentPreview": "Overspent",
+        "emergencyPreview": "Emergency",
         "introLabel": "Intro card preview",
         "introHint": "Keep dismissable onboarding surfaces re-toggleable here so newcomer and returning states can both be reviewed.",
         "majorLabel": "Major expense preview",
@@ -226,6 +253,9 @@
   },
   "History": {
     "title": "History",
+    "actions": {
+      "delete": "Delete"
+    },
     "dailyTotal": "Daily total",
     "overview": {
       "title": "Overview",
