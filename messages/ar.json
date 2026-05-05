@@ -64,6 +64,7 @@
       "viewAction": "عرض"
     },
     "strip": {
+      "remainingMonth": "المتبقي هذا الشهر",
       "fixedLeft": "متبقي ثابت",
       "variableLeft": "متبقي متغير",
       "daysRemaining": "{count} أيام"

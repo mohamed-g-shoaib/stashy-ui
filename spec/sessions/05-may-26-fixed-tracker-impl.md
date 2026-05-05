@@ -276,6 +276,10 @@ Starting fresh from `spec-home-restructure.md`, a comprehensive locked-decision 
 - **Directional Localization**: Wired `getDirectionForLocale()` to the swipe thresholds, ensuring swipe-left applies to LTR (English) and swipe-right applies to RTL (Arabic) interfaces naturally.
 - **Click Preservation**: Replaced the `div` wrapper with a `button` for valid accessibility parsing, wired `onClick` appropriately, and used an `isSwiping` ref lock so that swiping the row does not inadvertently trigger the click-to-edit drawer.
 - **Strict Adherence to Linting**: Updated row elements to `<button type="button">` to fix `oxlint` accessibility complaints regarding static element interactions.
+- **BudgetStripCard Redesign**: Updated `BudgetStrip` type and `mockBudgetStrip` to track paid/spent vs remaining for both fixed and variable budgets.
+- **Four-Segment Progress Bar**: Rebuilt the budget strip progress bar to feature 4 segments (`fixedPaid`, `fixedRemaining`, `variableSpent`, `variableRemaining`) using existing design tokens (`bg-fixed`, `bg-fixed-subtle`, `bg-warning`, `bg-warning-subtle`).
+- **Budget Strip Layout Adjustments**: Added a new top row for "Remaining this month" and "Days remaining" and simplified the bottom row to only show Fixed and Variable remaining.
+- **Semantic Typography**: Mapped the budget textual monetary values to their matching structural color tokens (`text-fixed` for Fixed left, `text-variable` for Variable left, and `text-income` for overall budget left) to reinforce visual categorization.
 - `pnpm typecheck && pnpm lint` all pass clean.
 
 ## Decisions Made

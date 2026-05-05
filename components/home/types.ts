@@ -21,11 +21,16 @@ export type DailyRate = {
 };
 
 export type BudgetStrip = {
-  fixedLeft: number;
-  variableLeft: number;
-  daysRemaining: number;
   fixedTotal: number;
+  fixedPaid: number;
+  fixedRemaining: number;
+
   variableTotal: number;
+  variableSpent: number;
+  variableRemaining: number;
+
+  totalRemaining: number;
+  daysRemaining: number;
 };
 
 export type MajorExpensesRow = {

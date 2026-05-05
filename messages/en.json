@@ -64,6 +64,7 @@
       "viewAction": "View"
     },
     "strip": {
+      "remainingMonth": "Remaining this month",
       "fixedLeft": "Fixed left",
       "variableLeft": "Variable left",
       "daysRemaining": "{count} days"

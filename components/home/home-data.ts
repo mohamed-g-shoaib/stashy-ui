@@ -45,11 +45,14 @@ export const upcomingPayments: UpcomingPayment[] = [
 ];
 
 export const mockBudgetStrip: BudgetStrip = {
-  fixedLeft: 1240,
-  variableLeft: 7960,
-  daysRemaining: 12,
   fixedTotal: 2400,
+  fixedPaid: 1160,
+  fixedRemaining: 1240,
   variableTotal: 7600,
+  variableSpent: 3640,
+  variableRemaining: 3960,
+  totalRemaining: 5200,
+  daysRemaining: 12,
 };
 
 export const mockMajorExpensesRow: MajorExpensesRow = {
