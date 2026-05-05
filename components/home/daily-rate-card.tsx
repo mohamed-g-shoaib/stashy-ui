@@ -58,6 +58,19 @@ function StateBadge({
   );
 }
 
+// ─── Shared Card Tint ──────────────────────────────────────────────────────────
+
+function getCardTint(tone: "success" | "warning" | "danger") {
+  switch (tone) {
+    case "warning":
+      return "bg-warning-subtle/40 border-warning/30";
+    case "danger":
+      return "bg-danger-subtle/40 border-danger/30";
+    default:
+      return "";
+  }
+}
+
 // ─── On-track state ──────────────────────────────────────────────────────────
 
 function OnTrackState({ rate }: { rate: DailyRate }) {
@@ -68,7 +81,7 @@ function OnTrackState({ rate }: { rate: DailyRate }) {
   );
 
   return (
-    <Card size="sm" className="py-4">
+    <Card size="sm" className={cn("py-4", getCardTint("success"))}>
       <CardContent className="flex flex-col gap-0 px-4">
         <StateBadge label={t("daily.statusTrack")} tone="success" />
 
@@ -130,9 +143,9 @@ function OverspentState({ rate }: { rate: DailyRate }) {
   const t = useTranslations("Home");
 
   return (
-    <Card size="sm" className="py-4">
+    <Card size="sm" className={cn("py-4", getCardTint("danger"))}>
       <CardContent className="flex flex-col gap-0 px-4">
-        <StateBadge label={t("daily.statusOverspent")} tone="warning" />
+        <StateBadge label={t("daily.statusOverspent")} tone="danger" />
 
         <p className="mt-3 text-xs text-text-secondary">
           {t("daily.remainingLabel")}
@@ -195,7 +208,7 @@ function EmergencyState({
   const t = useTranslations("Home");
 
   return (
-    <Card size="sm" className="py-4">
+    <Card size="sm" className={cn("py-4", getCardTint("danger"))}>
       <CardContent className="flex flex-col gap-0 px-4">
         <StateBadge label={t("daily.statusEmergency")} tone="danger" />
 
