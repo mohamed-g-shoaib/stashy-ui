@@ -352,11 +352,13 @@ export const fixedItems: FixedExpenseItem[] = [
 // ─── Derived summary ──────────────────────────────────────────────────────────
 
 function computeOverallStatus(
-  items: FixedExpenseItem[],
+  paid: number,
+  budgeted: number,
 ): "on_track" | "warning" | "over_budget" {
-  // Worst-case escalation: over_budget > warning > on_track
-  if (items.some((item) => item.status === "over_budget")) return "over_budget";
-  if (items.some((item) => item.status === "warning")) return "warning";
+  if (budgeted === 0) return "on_track";
+  const pct = (paid / budgeted) * 100;
+  if (pct > 100) return "over_budget";
+  if (pct >= 75) return "warning";
   return "on_track";
 }
 
@@ -365,13 +367,20 @@ const totalPaid = fixedItems.reduce((sum, item) => sum + item.paid, 0);
 const totalRemaining = totalBudgeted - totalPaid;
 const summaryPct = totalBudgeted > 0 ? (totalPaid / totalBudgeted) * 100 : 0;
 
-// With current data: Coffee is over_budget → overallStatus is "over_budget" → summary card renders red
+// Items whose individual envelope is over — shown in the summary card callout
+const overBudgetItems = fixedItems
+  .filter((item) => item.type === "manual" && item.status === "over_budget")
+  .map((item) => ({ name: item.name, overageAmount: Math.abs(item.remaining) }));
+
+// With current data: totalPaid ≈ 7,540 / 11,049 ≈ 68% → on_track overall
+// Coffee is over its envelope (120 EGP) → shown in callout, not escalated to summary
 export const mockSummary: FixedTrackerSummary = {
   totalBudgeted,
   totalPaid,
   totalRemaining,
   paidProgressClass: progressClass(summaryPct),
-  overallStatus: computeOverallStatus(fixedItems),
+  overallStatus: computeOverallStatus(totalPaid, totalBudgeted),
+  overBudgetItems,
 };
 
 // ─── Installment overview ─────────────────────────────────────────────────────

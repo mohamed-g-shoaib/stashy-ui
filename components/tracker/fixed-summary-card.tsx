@@ -1,3 +1,6 @@
+"use client"
+
+import * as React from "react"
 import { useTranslations } from "next-intl"
 
 import { TrackerProgress } from "@/components/tracker/tracker-progress"
@@ -18,7 +21,7 @@ type FixedSummaryCardProps = {
   summary: FixedTrackerSummary
 }
 
-// Worst-case status maps to semantic role for consequence meaning
+// Overall status maps to semantic role
 const statusRole = {
   on_track: "income",
   warning: "warning",
@@ -28,10 +31,13 @@ const statusRole = {
 export function FixedSummaryCard({ summary }: FixedSummaryCardProps) {
   const t = useTranslations("Tracker.fixed")
   const role = statusRole[summary.overallStatus]
+  const [calloutOpen, setCalloutOpen] = React.useState(false)
 
   const budgetedFormatted = formatAmount(summary.totalBudgeted)
   const paidFormatted = formatAmount(summary.totalPaid)
   const remainingFormatted = formatAmount(Math.abs(summary.totalRemaining))
+
+  const hasOverBudget = summary.overBudgetItems.length > 0
 
   return (
     <div className={cn(heroSurfaceClass, "p-4")}>
@@ -90,6 +96,66 @@ export function FixedSummaryCard({ summary }: FixedSummaryCardProps) {
         tone={role as keyof typeof semanticProgressClass}
         showPercent
       />
+
+      {/* Over-budget envelope callout */}
+      {hasOverBudget && (
+        <div className="mt-3">
+          <button
+            type="button"
+            className={cn(
+              "flex w-full items-center justify-between gap-2 rounded-[var(--radius-sm)] px-3 py-2.5 text-start transition-colors",
+              semanticSurfaceClass.warning,
+            )}
+            onClick={() => setCalloutOpen((o) => !o)}
+            aria-expanded={calloutOpen}
+          >
+            <p className="text-[0.6875rem] font-semibold">
+              {t("overBudgetCallout.title", { count: summary.overBudgetItems.length })}
+            </p>
+            <span
+              className={cn(
+                "shrink-0 text-[0.625rem] transition-transform duration-200",
+                calloutOpen ? "rotate-180" : "rotate-0",
+              )}
+              aria-hidden
+            >
+              ▾
+            </span>
+          </button>
+
+          {calloutOpen && (
+            <div className="mt-1.5 flex flex-col gap-1.5 rounded-[var(--radius-sm)] bg-surface-offset px-3 py-3">
+              {summary.overBudgetItems.length === 1 ? (
+                <p className="text-[0.6875rem] leading-relaxed text-text-secondary">
+                  {t("overBudgetCallout.body", {
+                    name: summary.overBudgetItems[0].name,
+                    amount: formatAmount(summary.overBudgetItems[0].overageAmount),
+                  })}
+                </p>
+              ) : (
+                <>
+                  <p className="text-[0.6875rem] leading-relaxed text-text-secondary">
+                    {t("overBudgetCallout.bodyMulti")}
+                  </p>
+                  <ul className="flex flex-col gap-0.5">
+                    {summary.overBudgetItems.map((item) => (
+                      <li key={item.name} className="flex items-center justify-between gap-2">
+                        <span className="text-[0.6875rem] text-text-secondary">{item.name}</span>
+                        <span
+                          dir="ltr"
+                          className={cn("text-[0.6875rem] font-semibold tabular-nums", semanticTextClass.warning)}
+                        >
+                          +{formatAmount(item.overageAmount)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

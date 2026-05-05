@@ -42,6 +42,8 @@ export type FixedTrackerSummary = {
   totalRemaining: number;
   paidProgressClass: string; // e.g. "basis-[58%]"
   overallStatus: FixedExpenseStatus;
+  /** Items whose individual envelope is exceeded — drives the callout in the summary card */
+  overBudgetItems: { name: string; overageAmount: number }[];
 };
 
 // Installment section mini-overview (computed from installment items)
