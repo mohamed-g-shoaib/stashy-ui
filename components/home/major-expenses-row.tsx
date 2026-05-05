@@ -22,7 +22,7 @@ export function MajorExpensesRowCard({ data, onView }: MajorExpensesRowProps) {
 
   return (
     <div className="flex items-center justify-between rounded-lg border border-warning bg-warning-subtle px-4 py-3">
-      <p className="text-sm text-foreground">
+      <p className="text-sm text-foreground truncate">
         <span className="font-medium">{t("major.rowLabel")}:</span>{" "}
         <span dir="ltr">{formatCurrency(data.totalAmount)}</span>{" "}
         <span className="text-text-secondary">

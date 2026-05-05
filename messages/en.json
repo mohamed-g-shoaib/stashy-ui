@@ -69,6 +69,7 @@
       "daysRemaining": "{count} days"
     },
     "payments": {
+      "sectionLabel": "Upcoming payments",
       "title": "3 due this week",
       "viewAll": "View all",
       "urgencyToday": "Due today",

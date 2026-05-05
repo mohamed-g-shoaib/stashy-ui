@@ -69,6 +69,7 @@
       "daysRemaining": "{count} أيام"
     },
     "payments": {
+      "sectionLabel": "المدفوعات القادمة",
       "title": "3 مستحقات هذا الأسبوع",
       "viewAll": "عرض الكل",
       "urgencyToday": "مستحق اليوم",

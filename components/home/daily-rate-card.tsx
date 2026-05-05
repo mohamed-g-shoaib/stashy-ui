@@ -18,7 +18,7 @@ function formatCurrency(amount: number): string {
 
 export function DailyRateCard({ rate, onInject }: DailyRateCardProps) {
   const isEmergency = rate.overByAmount !== null;
-  const isOverspent = rate.tomorrowAmount !== null && rate.overByAmount === null;
+  const isOverspent = rate.remainingAmount < 0 && rate.overByAmount === null;
 
   if (isEmergency) {
     return <EmergencyState rate={rate} onInject={onInject} />;
@@ -49,7 +49,7 @@ function StateBadge({
   return (
     <span
       className={cn(
-        "inline-block rounded-full px-2.5 py-0.5 text-xs font-medium",
+        "inline-flex items-center self-start rounded-full px-2.5 py-0.5 text-xs font-medium",
         classes[tone],
       )}
     >
@@ -91,25 +91,34 @@ function OnTrackState({ rate }: { rate: DailyRate }) {
         </div>
 
         {/* Secondary row */}
-        <div className="flex justify-between text-sm text-text-secondary">
-          <span>
-            {t("daily.allowanceLabel")}{" "}
-            <span dir="ltr" className="font-medium text-foreground tabular-nums">
+        <div className="flex justify-between">
+          <div>
+            <p className="text-xs text-text-secondary">{t("daily.allowanceLabel")}</p>
+            <p className="text-sm font-medium text-foreground tabular-nums" dir="ltr">
               {formatCurrency(rate.allowanceAmount)}
-            </span>
-          </span>
-          <span>
-            {t("daily.spentLabel")}{" "}
-            <span dir="ltr" className="font-medium text-foreground tabular-nums">
+            </p>
+          </div>
+          <div className="text-end">
+            <p className="text-xs text-text-secondary">{t("daily.spentLabel")}</p>
+            <p className="text-sm font-medium text-foreground tabular-nums" dir="ltr">
               {formatCurrency(rate.spentAmount)}
-            </span>
-          </span>
+            </p>
+          </div>
         </div>
 
-        {/* On-track peaceful footer */}
-        <p className="mt-3 text-center text-xs text-text-secondary">
-          You&apos;re on pace for the rest of the month
-        </p>
+        {/* Tomorrow row */}
+        <div className="mt-3 border-t border-border pt-3" />
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-text-secondary">
+            {t("daily.tomorrowLabel")}
+          </span>
+          <span
+            dir="ltr"
+            className="font-medium text-foreground tabular-nums"
+          >
+            {formatCurrency(rate.tomorrowAmount ?? 0)}
+          </span>
+        </div>
       </CardContent>
     </Card>
   );
@@ -141,38 +150,34 @@ function OverspentState({ rate }: { rate: DailyRate }) {
         </div>
 
         {/* Secondary row */}
-        <div className="flex justify-between text-sm text-text-secondary">
-          <span>
-            {t("daily.allowanceLabel")}{" "}
-            <span dir="ltr" className="font-medium text-foreground tabular-nums">
+        <div className="flex justify-between">
+          <div>
+            <p className="text-xs text-text-secondary">{t("daily.allowanceLabel")}</p>
+            <p className="text-sm font-medium text-foreground tabular-nums" dir="ltr">
               {formatCurrency(rate.allowanceAmount)}
-            </span>
-          </span>
-          <span>
-            {t("daily.spentLabel")}{" "}
-            <span dir="ltr" className="font-medium text-foreground tabular-nums">
+            </p>
+          </div>
+          <div className="text-end">
+            <p className="text-xs text-text-secondary">{t("daily.spentLabel")}</p>
+            <p className="text-sm font-medium text-foreground tabular-nums" dir="ltr">
               {formatCurrency(rate.spentAmount)}
-            </span>
-          </span>
+            </p>
+          </div>
         </div>
 
         {/* Tomorrow row */}
-        {rate.tomorrowAmount !== null ? (
-          <>
-            <div className="mt-3 border-t border-warning pt-3" />
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-medium text-warning-hover">
-                {t("daily.tomorrowDropLabel")}
-              </span>
-              <span
-                dir="ltr"
-                className="font-semibold text-danger tabular-nums"
-              >
-                {formatCurrency(rate.tomorrowAmount)}
-              </span>
-            </div>
-          </>
-        ) : null}
+        <div className="mt-3 border-t border-border pt-3" />
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-warning-hover">
+            {t("daily.tomorrowDropLabel")}
+          </span>
+          <span
+            dir="ltr"
+            className="font-semibold text-danger tabular-nums"
+          >
+            {formatCurrency(rate.tomorrowAmount ?? 0)}
+          </span>
+        </div>
       </CardContent>
     </Card>
   );

@@ -33,57 +33,62 @@ export function UpcomingPayments({ payments, onViewAll }: UpcomingPaymentsProps)
   const t = useTranslations("Home");
 
   return (
-    <Card size="sm" className="overflow-hidden py-0">
-      {/* Internal header */}
-      <div className="flex items-center justify-between px-4 pb-2 pt-4">
-        <p className="text-sm font-medium text-foreground">
-          {t("payments.title")}
-        </p>
-        <button
-          type="button"
-          onClick={onViewAll}
-          className="min-h-11 min-w-11 text-xs text-text-secondary"
-        >
-          {t("payments.viewAll")} →
-        </button>
-      </div>
+    <div className="flex flex-col gap-1.5">
+      <p className="ms-1 text-[11px] font-medium uppercase tracking-[0.03em] text-text-secondary">
+        {t("payments.sectionLabel")}
+      </p>
+      <Card size="sm" className="overflow-hidden p-3 pb-2.5">
+        {/* Internal header */}
+        <div className="mb-2 flex items-center justify-between">
+          <p className="text-xs font-medium text-foreground">
+            {t("payments.title")}
+          </p>
+          <button
+            type="button"
+            onClick={onViewAll}
+            className="text-[10px] text-text-secondary"
+          >
+            {t("payments.viewAll")} →
+          </button>
+        </div>
 
-      {/* Payment rows */}
-      <CardContent className="px-0 pb-0">
-        {payments.map((payment) => {
-          const { text: urgencyText, className: urgencyClass } = urgencyLabel(
-            payment.urgency,
-            t,
-          );
+        {/* Payment rows */}
+        <CardContent className="p-0">
+          {payments.map((payment) => {
+            const { text: urgencyText, className: urgencyClass } = urgencyLabel(
+              payment.urgency,
+              t,
+            );
 
-          return (
-            <div
-              key={payment.id}
-              className="flex items-center justify-between border-t border-border px-4 py-3"
-            >
-              <div>
-                <p className="text-sm font-medium text-foreground">
-                  {t(payment.nameKey as "payments.title")}
-                </p>
-                {urgencyText ? (
-                  <p className={cn("text-xs", urgencyClass)}>{urgencyText}</p>
-                ) : (
-                  <p className="text-xs text-text-secondary">&nbsp;</p>
-                )}
+            return (
+              <div
+                key={payment.id}
+                className="flex items-center justify-between border-t border-border-subtle py-1.5"
+              >
+                <div>
+                  <p className="text-xs font-medium text-foreground">
+                    {t(payment.nameKey as "payments.title")}
+                  </p>
+                  {urgencyText ? (
+                    <p className={cn("text-[10px]", urgencyClass)}>{urgencyText}</p>
+                  ) : (
+                    <p className="text-[10px] text-text-secondary">&nbsp;</p>
+                  )}
+                </div>
+                <div className="text-end">
+                  <p
+                    dir="ltr"
+                    className="text-xs font-medium text-foreground tabular-nums text-end"
+                  >
+                    {payment.amount}
+                  </p>
+                  <p className="text-[10px] text-text-secondary text-end">{payment.date}</p>
+                </div>
               </div>
-              <div className="text-end">
-                <p
-                  dir="ltr"
-                  className="text-sm font-medium text-foreground tabular-nums"
-                >
-                  {payment.amount}
-                </p>
-                <p className="text-xs text-text-secondary">{payment.date}</p>
-              </div>
-            </div>
-          );
-        })}
-      </CardContent>
-    </Card>
+            );
+          })}
+        </CardContent>
+      </Card>
+    </div>
   );
 }
