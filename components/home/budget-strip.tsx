@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { Card, CardContent } from "@/components/ui/card";
 import type { BudgetStrip } from "@/components/home/types";
 
 type BudgetStripProps = {
@@ -29,7 +30,8 @@ export function BudgetStripCard({ data }: BudgetStripProps) {
   const varSpentPct = total > 0 ? (variableSpent / total) * 100 : 0;
 
   return (
-    <div className="rounded-lg bg-surface-offset px-4 py-3">
+    <Card size="sm" className="py-3">
+      <CardContent className="flex flex-col gap-0 px-4">
       {/* Top row */}
       <div className="flex items-baseline justify-between mb-2">
         <div className="flex items-baseline gap-2">
@@ -80,6 +82,7 @@ export function BudgetStripCard({ data }: BudgetStripProps) {
           </p>
         </div>
       </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

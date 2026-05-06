@@ -280,6 +280,7 @@ Starting fresh from `spec-home-restructure.md`, a comprehensive locked-decision 
 - **Four-Segment Progress Bar**: Rebuilt the budget strip progress bar to feature 4 segments (`fixedPaid`, `fixedRemaining`, `variableSpent`, `variableRemaining`) using existing design tokens (`bg-fixed`, `bg-fixed-subtle`, `bg-warning`, `bg-warning-subtle`).
 - **Budget Strip Layout Adjustments**: Added a new top row for "Remaining this month" and "Days remaining" and simplified the bottom row to only show Fixed and Variable remaining.
 - **Semantic Typography**: Mapped the budget textual monetary values to their matching structural color tokens (`text-fixed` for Fixed left, `text-variable` for Variable left, and `text-income` for overall budget left) to reinforce visual categorization.
+- **Card Wrapper Update**: Replaced the tinted `div` wrapper with the Stashy `Card` primitive to give `BudgetStripCard` the standard white (`bg-surface`) background, border, and shadow to match the `DailyRateCard`.
 - `pnpm typecheck && pnpm lint` all pass clean.
 
 ## Decisions Made
