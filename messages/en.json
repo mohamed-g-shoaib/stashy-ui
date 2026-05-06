@@ -632,7 +632,14 @@
       "projectedSavings": "Proj. Savings",
       "positiveNarrative": "If you keep this pace, you'll finish {month} {amount} under budget.",
       "negativeNarrative": "At this rate, you'll overspend by {amount} by end of month. Consider pulling back on variable spending.",
-      "savingsRate": "~{rate}% projected savings rate"
+      "savingsRate": "~{rate}% projected savings rate",
+      "confidence": {
+        "early": "Too early to call — only {day} days of data so far",
+        "sweet": "Based on {day} days of spending",
+        "late": "Near certain — {day} of {total} days elapsed"
+      },
+      "lowConfidenceBadge": "Low confidence",
+      "highConfidenceBadge": "High confidence"
     },
     "shaping": {
       "title": "What’s Shaping This Month",
@@ -667,6 +674,54 @@
       "largePurchasesMessage": "Fewer large purchases than last month",
       "emptyDescription": "No previous month data yet. Close {month} to unlock comparison.",
       "closeMonth": "Close {month}"
+    },
+    "section": {
+      "monthlyHealth": "Monthly health",
+      "whereMoneyWent": "Where your money went",
+      "improving": "Are you improving"
+    },
+    "rollover": {
+      "title": "Monthly cushion",
+      "aheadLabel": "ahead this month",
+      "deficitLabel": "deficit so far",
+      "contextSentence": "You've spent {budgetUsed}% of your budget with {monthProgress}% of the month elapsed.",
+      "dotGridLabel": "Days within daily rate",
+      "overspentDays": "{overspent} of {tracked} days overspent"
+    },
+    "composition": {
+      "title": "Budget breakdown",
+      "subtitle": "Where your monthly budget was allocated",
+      "fixedLabel": "Fixed",
+      "majorLabel": "Major",
+      "variableLabel": "Variable",
+      "committedAnnotation": "{pct}% of your budget is committed before the month starts"
+    },
+    "rhythm": {
+      "title": "Spending rhythm",
+      "subtitle": "Variable spend per week vs. your daily rate target",
+      "weekLabel": "Wk {n}",
+      "targetLabel": "Target",
+      "insightHeavyStart": "You tend to spend most heavily at the start of the month.",
+      "insightHeavyEnd": "Spending picked up toward the end of the month.",
+      "insightConsistent": "Your spending was consistent this month."
+    },
+    "methods": {
+      "title": "Payment methods",
+      "subtitle": "Where money moved, by method and type",
+      "filterAll": "All",
+      "filterVariable": "Variable",
+      "filterFixed": "Fixed",
+      "filterMajor": "Major",
+      "fixedNote": "Fixed includes recurring and installment payments. Manual fixed may span multiple methods."
+    },
+    "trends": {
+      "title": "Savings rate trend",
+      "savingsRateLabel": "Savings Rate",
+      "deltaPositive": "+{delta}% vs last month",
+      "deltaNegative": "{delta}% vs last month",
+      "deltaNeutral": "Same as last month",
+      "closeMonthPrompt": "Close {month} to unlock your first comparison.",
+      "closeMonthCta": "Close {month}"
     },
     "upgrade": {
       "title": "Unlock Analytics",

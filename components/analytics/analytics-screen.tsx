@@ -5,19 +5,19 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useLocale, useTranslations } from "next-intl"
 import * as React from "react"
 
-import {
-  AnalyticsUpgradeGate,
-  MonthComparisonCard,
-  PacingCard,
-  ProjectionCard,
-  ShapingCard,
-} from "@/components/analytics/analytics-cards"
+import { AnalyticsUpgradeGate, ProjectionCard } from "@/components/analytics/analytics-cards"
+import { BudgetCompositionCard } from "@/components/analytics/budget-composition-card"
 import { ANALYTICS_PLAN, analyticsMonths } from "@/components/analytics/data"
 import {
   formatAnalyticsMonthLabel,
   getPreviousAnalyticsMonth,
 } from "@/components/analytics/formatters"
 import { MonthPickerDrawer } from "@/components/analytics/month-picker-drawer"
+import { PaymentMethodCard } from "@/components/analytics/payment-method-card"
+import { RolloverCard } from "@/components/analytics/rollover-card"
+import { SectionLabel } from "@/components/analytics/section-label"
+import { SpendingRhythmCard } from "@/components/analytics/spending-rhythm-card"
+import { TrendsCard } from "@/components/analytics/trends-card"
 import { AppBottomNavigation } from "@/components/app-bottom-navigation"
 import { navItems } from "@/components/home/home-data"
 import { Button } from "@/components/ui/button"
@@ -78,10 +78,21 @@ export function AnalyticsScreen() {
           <AnalyticsUpgradeGate />
         ) : (
           <div className="flex flex-col gap-3">
-            <PacingCard month={selectedMonth} />
+            <SectionLabel label={t("section.monthlyHealth")} />
+            <RolloverCard month={selectedMonth} />
             <ProjectionCard month={selectedMonth} />
-            <ShapingCard month={selectedMonth} />
-            <MonthComparisonCard currentMonth={selectedMonth} previousMonth={previousMonth} />
+
+            <SectionLabel label={t("section.whereMoneyWent")} />
+            <BudgetCompositionCard month={selectedMonth} />
+            <SpendingRhythmCard month={selectedMonth} />
+            <PaymentMethodCard month={selectedMonth} />
+
+            <SectionLabel label={t("section.improving")} />
+            <TrendsCard
+              months={analyticsMonths}
+              selectedMonth={selectedMonth}
+              previousMonth={previousMonth}
+            />
           </div>
         )}
       </main>

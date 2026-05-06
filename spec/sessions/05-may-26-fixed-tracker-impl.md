@@ -288,3 +288,85 @@ Starting fresh from `spec-home-restructure.md`, a comprehensive locked-decision 
 
 ## Open Blockers
 - None related to this specific row functionality.
+
+---
+
+# Session 3 — Analytics Screen Redesign (ANALYTICS_REDESIGN_PLAN.md)
+
+**Time:** (current session)
+
+---
+
+## Status at Session Start
+
+Starting from the approved `ANALYTICS_REDESIGN_PLAN.md`. The previous analytics screen had 4 cards (PacingCard, ProjectionCard, ShapingCard, MonthComparisonCard). Project was clean at session start. All spec files were read before any code was written.
+
+---
+
+## Completed This Session
+
+- **Phase 1 — Types + Data**
+  - Replaced `components/analytics/types.ts`: added `daysInMonth`, `rolloverEgp`, `budgetComposition`, `weeklySpend`, `weeklyBudgetTarget`, `paymentMethods`, `projectionConfidenceDay`, `baseRateChangeReason`; changed `budgetUsedPct`/`monthProgressPct` from literal unions to `number`; added `PaymentMethodBreakdown` and `PaymentMethodFilter` types
+  - Replaced `components/analytics/data.ts`: removed `FILL_WIDTH_CLASS`/`TICK_POSITION_CLASS`, added full mock data for all three months with all new fields
+  - Patched `analytics-cards.tsx`: updated `ProgressTrack` to accept `fillStyle`/`tickStyle` as `React.CSSProperties` props (inline style) instead of class-based lookup tables; updated `PacingCard` to use inline styles
+
+- **Phase 2 — SectionLabel primitive**
+  - Created `components/analytics/section-label.tsx`: simple `<p>` with uppercase tracking style
+
+- **Phase 3 — RolloverCard**
+  - Created `components/analytics/rollover-card.tsx`
+  - Hero area (Q2): large EGP rollover amount with income/expense tone, label, context sentence, directional fill bar with RTL-safe `insetInlineStart` tick
+  - Dot grid (Q1): `daysInMonth` dots in income/danger/surface-offset states; caption only when `overspentDaysMtd > 0`
+
+- **Phase 4 — ProjectionCard confidence framing**
+  - Added `getProjectionConfidence(day)` helper
+  - `"early"` (≤5 days): stat grid muted + amber "Low confidence" badge
+  - `"late"` (≥25 days): income "High confidence" badge
+  - `"sweet"` (6–24 days): no badge, normal style
+  - Also added all Phase 10 i18n keys here to keep builds clean ahead of the new card phases
+
+- **Phase 5 — BudgetCompositionCard**
+  - Created `components/analytics/budget-composition-card.tsx`
+  - Segmented bar (Fixed | Major | Variable) using `bg-fixed-subtle`/`bg-major-subtle`/`bg-variable-subtle` (closest available tokens; TODO comment added for future `-identity-bg` tokens)
+  - Legend row with colored squares + amounts; Q4 annotation callout
+
+- **Phase 6 — SpendingRhythmCard**
+  - Created `components/analytics/spending-rhythm-card.tsx`
+  - Recharts `BarChart` with clay bars, dashed reference line, `getSpendingRhythmInsight()` function for pattern detection
+
+- **Phase 7 — PaymentMethodCard**
+  - Created `components/analytics/payment-method-card.tsx`
+  - Four filter chips (All/Variable/Fixed/Major) with `min-h-12` touch targets; Recharts horizontal `BarChart` with `activeDataKey` driven by filter state
+
+- **Phase 8 — TrendsCard**
+  - Created `components/analytics/trends-card.tsx`
+  - Recharts `LineChart` sparkline with custom `dot` prop to highlight selected month; Q9 delta annotation with signed savings rate change + `baseRateChangeReason`; no-previous-month CTA
+
+- **Phase 9 — Rewire analytics-screen.tsx**
+  - Replaced 4-card layout with 3-section layout: Monthly health / Where your money went / Are you improving
+  - Removed `PacingCard`, `ShapingCard`, `MonthComparisonCard` imports; added all 6 new card imports
+
+- **Phase 10 — Messages (done in Phase 4)**
+  - Added `section`, `rollover`, `projection.confidence`, `composition`, `rhythm`, `methods`, `trends` keys to both `messages/en.json` and `messages/ar.json` with full Arabic translations
+
+- **Phase 11 — Final cleanup**
+  - Deleted `PacingCard`, `ShapingCard`, `MonthComparisonCard` from `analytics-cards.tsx`
+  - Deleted private helpers: `InsightRow`, `ComparisonRow`, `SummaryItem`, `getPacingNarrative`, `getComparisonVerdict`
+  - Removed all dead imports: icon imports, `Separator`, `ComparisonTone`, `semanticProgressClass`, `semanticSurfaceClass`, etc.
+  - `pnpm typecheck` + `pnpm lint` + `pnpm build` + `pnpm exec oxfmt --check` all pass clean
+
+---
+
+## Decisions Made
+
+- **`ProgressTrack` now uses inline style props** (`fillStyle`, `tickStyle`) instead of Tailwind arbitrary-value lookup tables. This makes it JIT-safe and RTL-safe.
+- **Segment colors use `bg-*-subtle` tokens.** The plan referenced `--color-fixed-identity-bg` etc. which don't exist. Using `bg-fixed-subtle`/`bg-major-subtle`/`bg-variable-subtle` as the closest available design-system tokens; TODO comment left in `BudgetCompositionCard`.
+- **All i18n keys added in Phase 4** to keep all 6 new card files typechecking cleanly from their creation phase onward.
+- **Recharts v3 dot type fix:** `cx`/`cy` are `number | undefined` in v3; used default values `cx = 0, cy = 0` in the dot render function.
+- **Recharts label formatter type fix:** `Bar` label `formatter` accepts `unknown`; used `Number(v)` cast instead of typed `number` parameter.
+
+---
+
+## Open Blockers
+
+1. None.
