@@ -635,9 +635,12 @@
       "paceCaption": "per day · {days} days left",
       "lowConfidenceBadge": "Low confidence",
       "forecastSpent": "Spent so far",
-      "forecastProjected": "Still coming",
-      "forecastBuffer": "Buffer left",
-      "forecastOverrun": "Over budget"
+      "forecastProjected": "Projected",
+      "dailyPaceLabel": "Daily spend",
+      "dailyBudgetLine": "Budget {amount}/day",
+      "underTarget": "Under daily target",
+      "overTarget": "Over daily target",
+      "projectedSavingsLabel": "Projected saved"
     },
     "shaping": {
       "title": "What’s Shaping This Month",

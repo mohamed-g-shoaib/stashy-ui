@@ -1,6 +1,15 @@
 "use client"
 
 import { useLocale, useTranslations } from "next-intl"
+import {
+  Area,
+  AreaChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts"
 
 import { formatAnalyticsCurrency } from "@/components/analytics/formatters"
 import type { AnalyticsMonth } from "@/components/analytics/types"
@@ -16,117 +25,190 @@ export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
   const t = useTranslations("Analytics")
 
   const confidence = getProjectionConfidence(month.projectionConfidenceDay)
+  const isEarly = confidence === "early"
   const isOverBudget = month.projectedEndSpend > month.effectiveBudget
 
   const actualSpent = month.totalVariableSpent + month.fixedTotalSpent + month.majorPurchasesTotal
-  const projectedAdditional = Math.max(0, month.projectedEndSpend - actualSpent)
+  const dailyBudget = Math.round(month.effectiveBudget / month.daysInMonth)
+  const isOverDailyRate = month.avgDailySpend > dailyBudget
 
-  const spentPct = Math.min(100, Math.round((actualSpent / month.effectiveBudget) * 100))
-  const additionalPct = Math.min(
-    100 - spentPct,
-    Math.round((projectedAdditional / month.effectiveBudget) * 100),
-  )
-  const bufferPct = Math.max(0, 100 - spentPct - additionalPct)
+  // Build cumulative spend trajectory — day 0 = start of month (zero spending)
+  const daysTracked = month.projectionConfidenceDay
+  const dailyActualRate = daysTracked > 0 ? actualSpent / daysTracked : 0
 
-  const isEarly = confidence === "early"
+  const trajectoryData = Array.from({ length: month.daysInMonth + 1 }, (_, day) => ({
+    day,
+    actual: day <= daysTracked ? Math.round(dailyActualRate * day) : null,
+    // projected starts at the handoff point so both lines share that value
+    projected:
+      day >= daysTracked
+        ? Math.round(actualSpent + (day - daysTracked) * month.avgDailySpend)
+        : null,
+  }))
+
+  // Savings gauge via CSS conic-gradient
+  const savingsRate = Math.max(0, Math.min(100, month.projectedSavingsRate))
+  const gaugeDeg = Math.round(savingsRate * 3.6)
+  const gaugeColor = isOverBudget ? "var(--color-expense)" : "var(--color-income)"
 
   return (
     <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
         <h2 className="text-[1.0625rem] font-semibold text-foreground">{t("projection.title")}</h2>
 
-        {/* Layer 1 — Hero: the answer */}
-        <div
-          className={cn(
-            "rounded-xl p-4",
-            isEarly ? "bg-surface-offset" : isOverBudget ? "bg-expense-subtle" : "bg-income-subtle",
-          )}
-        >
-          <p className="mb-1 text-xs text-text-tertiary">
-            {isEarly
-              ? t("projection.heroEarly", { day: month.projectionConfidenceDay })
-              : isOverBudget
-                ? t("projection.heroOverspend")
-                : t("projection.heroSaving")}
-          </p>
-          <p
-            dir="ltr"
-            className={cn(
-              "text-[2rem] font-bold leading-none tabular-nums",
-              isEarly
-                ? "text-text-tertiary"
-                : isOverBudget
-                  ? semanticTextClass.expense
-                  : semanticTextClass.income,
-            )}
-          >
-            {formatAnalyticsCurrency(locale, Math.abs(month.projectedSavings))}
-          </p>
-          <p className="mt-2 text-sm leading-[1.5] text-text-secondary">
-            {isEarly
-              ? t("projection.heroEarlyCaption")
-              : isOverBudget
-                ? t("projection.heroOverspendCaption")
-                : t("projection.heroSavingCaption", { rate: month.projectedSavingsRate })}
-          </p>
-        </div>
-
-        {/* Layer 2 — Bar: the evidence */}
+        {/* Chart 1 — Spend trajectory */}
         <div className="space-y-2">
-          <div className="flex h-3 w-full overflow-hidden rounded-full bg-surface-offset shadow-ring">
-            <div className="h-full bg-expense-subtle" style={{ width: `${spentPct}%` }} />
-            <div
-              className={cn("h-full", isOverBudget ? "bg-warning-subtle" : "bg-border")}
-              style={{ width: `${additionalPct}%` }}
-            />
-            {bufferPct > 0 && (
-              <div className="h-full bg-income-subtle" style={{ width: `${bufferPct}%` }} />
-            )}
-          </div>
+          <ResponsiveContainer width="100%" height={160}>
+            <AreaChart data={trajectoryData} margin={{ top: 16, right: 4, left: 0, bottom: 0 }}>
+              <XAxis
+                dataKey="day"
+                ticks={[1, daysTracked, month.daysInMonth]}
+                tick={{ fontSize: 10, fill: "var(--color-text-tertiary)" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis hide domain={[0, Math.max(month.effectiveBudget * 1.1, month.projectedEndSpend * 1.05)]} />
+              <Tooltip
+                formatter={(value, name) => [
+                  formatAnalyticsCurrency(locale, Number(value)),
+                  name === "actual" ? t("projection.forecastSpent") : t("projection.forecastProjected"),
+                ]}
+                contentStyle={{
+                  backgroundColor: "var(--color-card)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                }}
+              />
+              <ReferenceLine
+                y={month.effectiveBudget}
+                stroke="var(--color-text-tertiary)"
+                strokeDasharray="4 3"
+                label={{
+                  value: formatAnalyticsCurrency(locale, month.effectiveBudget),
+                  position: "insideTopRight",
+                  fill: "var(--color-text-tertiary)",
+                  fontSize: 10,
+                }}
+              />
+              {/* Actual spend — solid area up to today */}
+              <Area
+                type="monotone"
+                dataKey="actual"
+                stroke="var(--color-expense)"
+                strokeWidth={1.5}
+                fill="var(--color-expense-subtle)"
+                fillOpacity={0.5}
+                dot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+              />
+              {/* Projected spend — dashed extension from today to month end */}
+              <Area
+                type="monotone"
+                dataKey="projected"
+                stroke="var(--color-warning)"
+                strokeWidth={1.5}
+                strokeDasharray="5 3"
+                fill="var(--color-warning-subtle)"
+                fillOpacity={0.35}
+                dot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
 
-          <div className="flex gap-3 text-[0.6875rem] text-text-tertiary">
-            <span className="flex items-center gap-1">
+          {/* Chart legend */}
+          <div className="flex gap-4 text-[0.6875rem] text-text-tertiary">
+            <span className="flex items-center gap-1.5">
               <span className="size-2 shrink-0 rounded-full bg-expense-subtle" />
               {t("projection.forecastSpent")}
             </span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5">
               <span
-                className={cn(
-                  "size-2 shrink-0 rounded-full",
-                  isOverBudget ? "bg-warning-subtle" : "bg-border",
-                )}
+                className="h-0.5 w-4 shrink-0 rounded-full"
+                style={{
+                  background:
+                    "repeating-linear-gradient(90deg,var(--color-warning) 0 5px,transparent 5px 8px)",
+                }}
               />
               {t("projection.forecastProjected")}
-            </span>
-            <span className="flex items-center gap-1">
-              <span
-                className={cn(
-                  "size-2 shrink-0 rounded-full",
-                  isOverBudget ? "bg-warning-subtle/50" : "bg-income-subtle",
-                )}
-              />
-              {isOverBudget ? t("projection.forecastOverrun") : t("projection.forecastBuffer")}
             </span>
           </div>
         </div>
 
-        {/* Layer 3 — Pace: the context */}
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-sm text-text-secondary">
-            <span dir="ltr" className="font-semibold text-foreground tabular-nums">
-              {formatAnalyticsCurrency(locale, month.avgDailySpend)}
-            </span>{" "}
-            {t("projection.paceCaption", { days: month.daysRemaining })}
-          </p>
-          {isEarly && (
-            <Badge
-              variant="warning"
-              className="h-auto shrink-0 rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
+        {/* Two tiles: daily pace + savings gauge */}
+        <div className="grid grid-cols-2 gap-2">
+          {/* Daily pace */}
+          <div className={cn(statTileClass, "flex flex-col gap-1.5")}>
+            <p className="text-[0.6875rem] font-medium text-text-tertiary">
+              {t("projection.dailyPaceLabel")}
+            </p>
+            <p
+              dir="ltr"
+              className={cn(
+                "text-base font-bold tabular-nums",
+                isOverDailyRate ? semanticTextClass.expense : semanticTextClass.income,
+              )}
             >
-              {t("projection.lowConfidenceBadge")}
-            </Badge>
-          )}
+              {formatAnalyticsCurrency(locale, month.avgDailySpend)}
+            </p>
+            <p dir="ltr" className="text-[0.6875rem] tabular-nums text-text-tertiary">
+              {t("projection.dailyBudgetLine", {
+                amount: formatAnalyticsCurrency(locale, dailyBudget),
+              })}
+            </p>
+            <p
+              className={cn(
+                "text-[0.6875rem] font-semibold",
+                isOverDailyRate ? semanticTextClass.expense : semanticTextClass.income,
+              )}
+            >
+              {isOverDailyRate ? t("projection.overTarget") : t("projection.underTarget")}
+            </p>
+          </div>
+
+          {/* Chart 2 — Savings rate gauge (CSS conic) */}
+          <div className={cn(statTileClass, "flex flex-col items-center justify-center gap-2")}>
+            <div
+              className="relative flex items-center justify-center rounded-full"
+              style={{
+                width: 64,
+                height: 64,
+                background: `conic-gradient(${gaugeColor} ${gaugeDeg}deg, var(--color-border) ${gaugeDeg}deg)`,
+              }}
+            >
+              <div
+                className="flex items-center justify-center rounded-full bg-surface-offset"
+                style={{ width: 46, height: 46 }}
+              >
+                <p
+                  dir="ltr"
+                  className={cn(
+                    "text-sm font-bold tabular-nums",
+                    isOverBudget ? semanticTextClass.expense : semanticTextClass.income,
+                  )}
+                >
+                  {savingsRate}%
+                </p>
+              </div>
+            </div>
+            <p className="text-center text-[0.6875rem] font-medium text-text-secondary">
+              {t("projection.projectedSavingsLabel")}
+            </p>
+          </div>
         </div>
+
+        {/* Low confidence warning */}
+        {isEarly && (
+          <Badge
+            variant="warning"
+            className="h-auto w-fit rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
+          >
+            {t("projection.lowConfidenceBadge")}
+          </Badge>
+        )}
       </CardContent>
     </Card>
   )

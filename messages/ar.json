@@ -634,10 +634,13 @@
       "heroEarlyCaption": "راجع مجدداً بعد بضعة أيام للحصول على تقدير أدق.",
       "paceCaption": "يومياً · {days} أيام متبقية",
       "lowConfidenceBadge": "ثقة منخفضة",
-      "forecastSpent": "مُنفَق",
-      "forecastProjected": "قادم",
-      "forecastBuffer": "هامش متبقٍ",
-      "forecastOverrun": "تجاوز الميزانية"
+      "forecastSpent": "مُنفَق حتى الآن",
+      "forecastProjected": "متوقع",
+      "dailyPaceLabel": "الإنفاق اليومي",
+      "dailyBudgetLine": "الميزانية {amount}/يوم",
+      "underTarget": "دون الهدف اليومي",
+      "overTarget": "فوق الهدف اليومي",
+      "projectedSavingsLabel": "توفير متوقع"
     },
     "shaping": {
       "title": "ما الذي يشكل هذا الشهر",
