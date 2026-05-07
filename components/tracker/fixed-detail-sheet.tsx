@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils"
 type FixedDetailSheetProps = {
   item: FixedExpenseItem | null
   onClose: () => void
+  onEdit: (item: FixedExpenseItem) => void
 }
 
 const statusBudgetTone: Record<FixedExpenseStatus, "income" | "warning" | "expense"> = {
@@ -35,7 +36,7 @@ const statusBudgetTone: Record<FixedExpenseStatus, "income" | "warning" | "expen
   over_budget: "expense",
 }
 
-export function FixedDetailSheet({ item, onClose }: FixedDetailSheetProps) {
+export function FixedDetailSheet({ item, onClose, onEdit }: FixedDetailSheetProps) {
   const locale = useLocale() as Locale
   const direction = getDirectionForLocale(locale)
   const t = useTranslations("Tracker.fixed")
@@ -43,7 +44,7 @@ export function FixedDetailSheet({ item, onClose }: FixedDetailSheetProps) {
   return (
     <Drawer open={item !== null} onOpenChange={(open) => { if (!open) onClose() }}>
       <DrawerContent dir={direction} className="mx-auto max-w-sm">
-        {item && <SheetBody item={item} t={t} direction={direction} />}
+        {item && <SheetBody item={item} t={t} direction={direction} onEdit={onEdit} />}
       </DrawerContent>
     </Drawer>
   )
@@ -55,9 +56,10 @@ type SheetBodyProps = {
   item: FixedExpenseItem
   t: ReturnType<typeof useTranslations<"Tracker.fixed">>
   direction: "ltr" | "rtl"
+  onEdit: (item: FixedExpenseItem) => void
 }
 
-function SheetBody({ item, t, direction: _direction }: SheetBodyProps) {
+function SheetBody({ item, t, direction: _direction, onEdit }: SheetBodyProps) {
   const typeBadgeClass =
     item.type === "manual"
       ? semanticSurfaceClass.brand
@@ -124,7 +126,7 @@ function SheetBody({ item, t, direction: _direction }: SheetBodyProps) {
           <Button
             variant="outline"
             className={item.type === "manual" ? "flex-1" : ""}
-            onClick={() => console.log("Edit — mock, no-op")}
+            onClick={() => onEdit(item)}
           >
             {t("edit")}
           </Button>

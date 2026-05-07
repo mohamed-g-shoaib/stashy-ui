@@ -316,9 +316,11 @@
     "title": "Tracker",
     "add": {
       "title": "Add Fixed Expense",
+      "editTitle": "Edit Fixed Expense",
       "fab": "Add fixed expense",
       "cancel": "Cancel",
       "save": "Add",
+      "saveEdit": "Save Changes",
       "description": {
         "budget": "A monthly spending envelope. Overruns pull from your variable budget.",
         "recurring": "A fixed bill that appears as paid or pending each month.",
@@ -333,6 +335,12 @@
         "name": "Name",
         "monthlyBudget": "Monthly Budget",
         "monthlyAmount": "Monthly Amount",
+        "paymentMethod": "Payment Method",
+        "methods": {
+          "cash": "Cash",
+          "card": "Card",
+          "bank": "Bank"
+        },
         "startDate": "Start Date",
         "recurringStartHint": "Sets the day of month this bill recurs. Can be a future date.",
         "endDate": "End Date",
