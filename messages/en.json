@@ -736,7 +736,8 @@
       "targetLabel": "Target",
       "insightHeavyStart": "You tend to spend most heavily at the start of the month.",
       "insightHeavyEnd": "Spending picked up toward the end of the month.",
-      "insightConsistent": "Your spending was consistent this month."
+      "insightConsistent": "Your spending was consistent this month.",
+      "insightOverTarget": "Several weeks ran over the weekly target — check the breakdown above."
     },
     "methods": {
       "title": "Payment methods",
@@ -745,6 +746,7 @@
       "filterVariable": "Variable",
       "filterFixed": "Fixed",
       "filterMajor": "Major",
+      "totalLabel": "total spent",
       "fixedNote": "Fixed includes recurring and installment payments. Manual fixed may span multiple methods."
     },
     "trends": {

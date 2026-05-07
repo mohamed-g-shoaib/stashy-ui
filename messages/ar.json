@@ -736,7 +736,8 @@
       "targetLabel": "الهدف",
       "insightHeavyStart": "تميل إلى الإنفاق بكثافة في بداية الشهر.",
       "insightHeavyEnd": "ارتفع الإنفاق نحو نهاية الشهر.",
-      "insightConsistent": "كان إنفاقك منتظماً هذا الشهر."
+      "insightConsistent": "كان إنفاقك منتظماً هذا الشهر.",
+      "insightOverTarget": "عدة أسابيع تجاوزت الهدف الأسبوعي — راجع التفاصيل أعلاه."
     },
     "methods": {
       "title": "طرق الدفع",
@@ -745,6 +746,7 @@
       "filterVariable": "متغير",
       "filterFixed": "ثابت",
       "filterMajor": "رئيسي",
+      "totalLabel": "إجمالي المصروف",
       "fixedNote": "يشمل الثابت الدفعات المتكررة وأقساط التقسيط. قد يمتد الثابت اليدوي على طرق دفع متعددة."
     },
     "trends": {

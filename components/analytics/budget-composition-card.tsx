@@ -57,7 +57,7 @@ export function BudgetCompositionCard({ month }: { month: AnalyticsMonth }) {
 
         {/* Q4 annotation */}
         <div className="rounded-xl bg-surface-offset px-3 py-2">
-          <p className="text-sm leading-[1.5] text-text-secondary text-pretty">
+          <p className="text-sm leading-[1.5] text-fixed text-pretty">
             {t("composition.committedAnnotation", { pct: fixedPct })}
           </p>
         </div>

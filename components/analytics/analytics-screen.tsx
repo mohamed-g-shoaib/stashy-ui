@@ -99,8 +99,8 @@ export function AnalyticsScreen() {
             <TabsContent value="spending" className="px-screen pt-4">
               <div className="flex flex-col gap-3">
                 <BudgetCompositionCard month={selectedMonth} />
-                <SpendingRhythmCard month={selectedMonth} />
                 <PaymentMethodCard month={selectedMonth} />
+                <SpendingRhythmCard month={selectedMonth} />
               </div>
             </TabsContent>
 

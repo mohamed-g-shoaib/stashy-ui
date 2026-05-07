@@ -2,24 +2,37 @@
 
 import * as React from "react"
 
-import { useTranslations } from "next-intl"
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { useLocale, useTranslations } from "next-intl"
 
 import type { AnalyticsMonth, PaymentMethodFilter } from "@/components/analytics/types"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
+import { formatAnalyticsCurrency } from "./formatters"
+
+const filterBarClass: Record<PaymentMethodFilter, string> = {
+  all: "bg-brand",
+  variable: "bg-variable",
+  fixed: "bg-fixed",
+  major: "bg-major",
+}
+
 export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
+  const locale = useLocale()
   const t = useTranslations("Analytics")
   const [filter, setFilter] = React.useState<PaymentMethodFilter>("all")
 
   const activeDataKey = filter === "all" ? "total" : filter
-  const chartHeight = month.paymentMethods.length * 52
 
-  const totalForFilter = month.paymentMethods.reduce(
-    (sum, m) => sum + Number(m[activeDataKey as keyof typeof m]),
-    0,
+  // Static — always the grand total regardless of active filter
+  const overallTotal = month.paymentMethods.reduce((sum, m) => sum + m.total, 0)
+
+  // Changes with filter — drives bar widths and percentages
+  const valuesForFilter = month.paymentMethods.map(
+    (m) => Number(m[activeDataKey as keyof typeof m]),
   )
+  const maxForFilter = Math.max(...valuesForFilter, 1)
+  const totalForFilter = valuesForFilter.reduce((a, b) => a + b, 0)
 
   const filters: { value: PaymentMethodFilter; label: string }[] = [
     { value: "all", label: t("methods.filterAll") },
@@ -31,11 +44,18 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
   return (
     <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
-        <div className="space-y-1">
-          <h2 className="text-[1.0625rem] font-semibold text-foreground">{t("methods.title")}</h2>
-          <p className="text-sm leading-[1.6] text-text-secondary text-pretty">
-            {t("methods.subtitle")}
-          </p>
+        {/* Header with static overall total */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h2 className="text-[1.0625rem] font-semibold text-foreground">{t("methods.title")}</h2>
+            <p className="mt-0.5 text-sm text-text-secondary">{t("methods.subtitle")}</p>
+          </div>
+          <div className="shrink-0 text-end">
+            <p dir="ltr" className="text-[1.125rem] font-semibold tabular-nums text-foreground">
+              {formatAnalyticsCurrency(locale, overallTotal)}
+            </p>
+            <p className="text-xs text-text-tertiary">{t("methods.totalLabel")}</p>
+          </div>
         </div>
 
         {/* Filter chips */}
@@ -57,51 +77,57 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
           ))}
         </div>
 
-        <ResponsiveContainer width="100%" height={chartHeight}>
-          {/* TODO: RTL bar direction */}
-          <BarChart
-            layout="vertical"
-            data={month.paymentMethods}
-            margin={{ top: 0, right: 80, left: 0, bottom: 0 }}
-          >
-            <CartesianGrid horizontal={false} stroke="var(--color-border-subtle)" />
-            <YAxis
-              dataKey="name"
-              type="category"
-              width={90}
-              tick={{ fontSize: 12, fill: "var(--color-text-secondary)" }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <XAxis type="number" hide />
-            <Tooltip
-              formatter={(value) => [`${value} EGP`, activeDataKey]}
-              contentStyle={{
-                backgroundColor: "var(--color-card)",
-                border: `1px solid var(--color-border)`,
-                borderRadius: "8px",
-                fontSize: "12px",
-              }}
-            />
-            <Bar
-              dataKey={activeDataKey}
-              fill="var(--color-clay)"
-              radius={[0, 4, 4, 0]}
-              label={{
-                position: "right",
-                formatter: (v: unknown) => {
-                  const val = Number(v)
-                  if (val <= 0) return ""
-                  const pct =
-                    totalForFilter > 0 ? Math.round((val / totalForFilter) * 100) : 0
-                  return `${val} EGP · ${pct}%`
-                },
-                fill: "var(--color-text-tertiary)",
-                fontSize: 11,
-              }}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        {/* Bar rows */}
+        <div className="flex flex-col gap-3">
+          {month.paymentMethods.map((method, i) => {
+            const val = valuesForFilter[i]
+            const pct = totalForFilter > 0 ? Math.round((val / totalForFilter) * 100) : 0
+            const barWidthPct = Math.round((val / maxForFilter) * 100)
+            const pctInside = barWidthPct >= 28 && val > 0
+
+            return (
+              <div key={method.id} className="space-y-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <p
+                    className={cn(
+                      "text-sm font-medium",
+                      val === 0 ? "text-text-tertiary" : "text-foreground",
+                    )}
+                  >
+                    {method.name}
+                  </p>
+                  {val > 0 && (
+                    <p dir="ltr" className="text-xs text-text-tertiary tabular-nums">
+                      {formatAnalyticsCurrency(locale, val)}
+                    </p>
+                  )}
+                </div>
+
+                <div className="relative h-9 overflow-hidden rounded-[var(--radius-sm)] bg-surface-offset shadow-ring">
+                  {val > 0 && (
+                    <div
+                      className={cn(
+                        "flex h-full items-center justify-end rounded-[var(--radius-sm)] pe-3 transition-all duration-300",
+                        filterBarClass[filter],
+                      )}
+                      style={{ width: `${barWidthPct}%` }}
+                    >
+                      {pctInside && (
+                        <p
+                          dir="ltr"
+                          className="text-xs font-medium tabular-nums"
+                          style={{ color: "var(--color-text-on-brand)" }}
+                        >
+                          {pct}%
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
 
         <p className="text-xs leading-[1.5] text-text-tertiary">{t("methods.fixedNote")}</p>
       </CardContent>
