@@ -399,6 +399,12 @@
           "over_budget": "Over Budget"
         }
       },
+      "subscriptionOverview": {
+        "paid": "Paid",
+        "total": "Total",
+        "settledLabel": "Settled",
+        "settledValue": "{paid} / {total}"
+      },
       "installmentOverview": {
         "obligation": "Monthly",
         "paidAllTime": "Paid",
