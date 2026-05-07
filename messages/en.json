@@ -208,6 +208,9 @@
         "trackPreview": "On track",
         "overspentPreview": "Overspent",
         "emergencyPreview": "Emergency",
+        "planLabel": "User plan",
+        "planFree": "Free",
+        "planPro": "Pro",
         "introLabel": "Intro card preview",
         "introHint": "Keep dismissable onboarding surfaces re-toggleable here so newcomer and returning states can both be reviewed.",
         "majorLabel": "Major expense preview",
@@ -805,12 +808,17 @@
     "profile": {
       "title": "Profile",
       "subtitle": "Username, email, and member info",
-      "edit": "Edit",
+      "edit": "Edit Profile",
       "username": "Username",
       "email": "Email",
-      "memberSince": "Member Since",
+      "memberSince": "Member since",
       "active": "Active",
-      "inactive": "Inactive"
+      "inactive": "Inactive",
+      "proTitle": "Stashy Pro",
+      "proActive": "Active ✓",
+      "upgradeTitle": "Upgrade to Stashy Pro",
+      "upgradeDescription": "Unlock analytics, spending trends, monthly projections, and data exports.",
+      "upgradeCta": "Go Pro"
     },
     "budget": {
       "title": "Monthly Budget",

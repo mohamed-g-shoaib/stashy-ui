@@ -10,6 +10,7 @@ import {
   INITIAL_PAYMENT_METHODS,
   LANGUAGE,
   MONTHLY_BUDGET,
+  PLAN,
   PROFILE_EMAIL,
   PROFILE_MEMBER_SINCE,
   PROFILE_STATUS,
@@ -36,6 +37,13 @@ export function SettingsScreen() {
   const direction = getDirectionForLocale(locale)
   const [drawer, setDrawer] = React.useState<DrawerKind>(null)
   const [language, setLanguage] = React.useState<LanguageValue>(LANGUAGE)
+  const [plan, setPlan] = React.useState<"free" | "pro">(() => {
+    if (typeof window !== "undefined") {
+      const stored = window.localStorage.getItem("stashy-mock-plan")
+      if (stored === "free" || stored === "pro") return stored
+    }
+    return PLAN
+  })
   const [profile, setProfile] = React.useState({
     username: PROFILE_USERNAME,
     status: PROFILE_STATUS,
@@ -115,7 +123,7 @@ export function SettingsScreen() {
 
       <main className="flex-1 px-screen pb-32 pt-5">
         <div className="flex flex-col gap-6">
-          <ProfileHeroBlock profile={profile} onEdit={() => setDrawer("profile")} />
+          <ProfileHeroBlock profile={profile} plan={plan} onEdit={() => setDrawer("profile")} />
 
           <BudgetSection
             monthlyBudget={monthlyBudget}

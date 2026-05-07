@@ -10,6 +10,7 @@ import {
   Clock01Icon,
   Coins01Icon,
   CreditCardIcon,
+  CrownIcon,
   Delete01Icon,
   Download04Icon,
   Globe02Icon,
@@ -58,42 +59,63 @@ function getInitials(name: string): string {
 
 export function ProfileHeroBlock({
   profile,
+  plan,
   onEdit,
 }: {
   profile: ProfileState
+  plan?: "free" | "pro"
   onEdit: () => void
 }) {
   const t = useTranslations("Settings")
   const initials = getInitials(profile.username)
+  const isPro = (plan ?? PLAN) === "pro"
 
   return (
-    <div className="flex items-center gap-4 rounded-[var(--radius-lg)] border border-border-subtle bg-card p-4 shadow-soft">
-      <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-brand shadow-ring">
-        <span className="text-base font-bold tracking-wide text-primary-foreground">
-          {initials}
-        </span>
-      </div>
-
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
+    <div className="rounded-[var(--radius-lg)] border border-border-subtle bg-card p-4 shadow-soft">
+      {/* Avatar + info — one unified block, no dividers */}
+      <div className="flex items-start gap-3">
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-brand shadow-ring">
+          <span className="text-sm font-bold tracking-wide text-primary-foreground">
+            {initials}
+          </span>
+        </div>
+        <div className="min-w-0 flex-1 pt-0.5">
           <p className="text-[1.0625rem] font-semibold leading-[1.2] text-foreground">
             {profile.username}
           </p>
-          {PLAN === "pro" && (
-            <Badge variant="brand" className="rounded-full px-2 py-0.5 text-[0.625rem] font-semibold">
-              Pro
-            </Badge>
-          )}
+          <p className="mt-1 break-all text-xs leading-[1.5] text-text-secondary">
+            {profile.email}
+          </p>
+          <p className="mt-0.5 text-xs text-text-tertiary">
+            {t("profile.memberSince")} · {profile.memberSince}
+          </p>
         </div>
-        <p className="mt-0.5 truncate text-sm text-text-secondary">{profile.email}</p>
-        <p className="mt-0.5 text-xs text-text-tertiary">
-          {t("profile.memberSince")} · {profile.memberSince}
-        </p>
       </div>
 
-      <Button type="button" variant="outline" size="xs" className="shrink-0" onClick={onEdit}>
-        {t("profile.edit")}
-      </Button>
+      {/* Actions row — plan pill + edit button */}
+      <div className="mt-4 flex items-center justify-between gap-3">
+        {isPro ? (
+          <span className={cn(
+            "inline-flex items-center gap-1.5 rounded-full border border-major/20 bg-major-subtle px-3 py-1.5 shadow-ring",
+          )}>
+            <HugeiconsIcon icon={CrownIcon} size={12} aria-hidden="true" className="text-major" />
+            <span className="text-xs font-semibold text-major">{t("profile.proTitle")}</span>
+            <span className="text-xs text-major/70">{t("profile.proActive")}</span>
+          </span>
+        ) : (
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 rounded-full bg-brand px-3 py-1.5 shadow-ring transition-opacity active:opacity-80 hover:opacity-90"
+          >
+            <HugeiconsIcon icon={CrownIcon} size={12} aria-hidden="true" className="text-primary-foreground" />
+            <span className="text-xs font-semibold text-primary-foreground">{t("profile.upgradeCta")}</span>
+          </button>
+        )}
+
+        <Button type="button" variant="outline" size="xs" onClick={onEdit}>
+          {t("profile.edit")}
+        </Button>
+      </div>
     </div>
   )
 }

@@ -50,10 +50,12 @@ type HomeDrawerProps = {
   dailyScenario: DailyScenario;
   introCardVisible: boolean;
   majorScenario: "active" | "none";
+  plan: "free" | "pro";
   direction: "ltr" | "rtl";
   onDailyScenarioChange: (value: DailyScenario) => void;
   onIntroCardVisibleChange: (value: boolean) => void;
   onMajorScenarioChange: (value: "active" | "none") => void;
+  onPlanChange: (value: "free" | "pro") => void;
   onPreviewAddAction: (action: AddActionKind, amount: number) => void;
   onOpenChange: (open: boolean) => void;
 };
@@ -86,10 +88,12 @@ export function HomeDrawer({
   dailyScenario,
   introCardVisible,
   majorScenario,
+  plan,
   direction,
   onDailyScenarioChange,
   onIntroCardVisibleChange,
   onMajorScenarioChange,
+  onPlanChange,
   onPreviewAddAction,
   onOpenChange,
 }: HomeDrawerProps) {
@@ -146,6 +150,8 @@ export function HomeDrawer({
               onIntroCardVisibleChange={onIntroCardVisibleChange}
               majorScenario={majorScenario}
               onMajorChange={onMajorScenarioChange}
+              plan={plan}
+              onPlanChange={onPlanChange}
             />
           ) : kind === "add" ? (
             <AddFlow
@@ -667,6 +673,8 @@ function SettingsControls({
   onIntroCardVisibleChange,
   majorScenario,
   onMajorChange,
+  plan,
+  onPlanChange,
 }: {
   value: DailyScenario;
   onValueChange: (value: DailyScenario) => void;
@@ -674,6 +682,8 @@ function SettingsControls({
   onIntroCardVisibleChange: (value: boolean) => void;
   majorScenario: "active" | "none";
   onMajorChange: (value: "active" | "none") => void;
+  plan: "free" | "pro";
+  onPlanChange: (value: "free" | "pro") => void;
 }) {
   const t = useTranslations("Home.drawer");
 
@@ -689,6 +699,14 @@ function SettingsControls({
             <TabsTrigger value="track" className="rounded-xs text-xs">{t("settings.trackPreview")}</TabsTrigger>
             <TabsTrigger value="overspent" className="rounded-xs text-xs">{t("settings.overspentPreview")}</TabsTrigger>
             <TabsTrigger value="emergency" className="rounded-xs text-xs">{t("settings.emergencyPreview")}</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="mt-2 h-px bg-border-subtle" />
+        <p className="mt-1 text-sm font-semibold text-foreground">{t("settings.planLabel")}</p>
+        <Tabs value={plan} onValueChange={(v) => onPlanChange(v as "free" | "pro")} className="gap-3">
+          <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
+            <TabsTrigger value="free" className="rounded-xs text-xs">{t("settings.planFree")}</TabsTrigger>
+            <TabsTrigger value="pro" className="rounded-xs text-xs">{t("settings.planPro")}</TabsTrigger>
           </TabsList>
         </Tabs>
         <div className="mt-2 h-px bg-border-subtle" />
