@@ -1,3 +1,5 @@
+import { Wallet02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useTranslations } from "next-intl"
 
 import { BudgetCard } from "@/components/tracker/cards/budget-card"
@@ -16,19 +18,19 @@ export function BudgetsSection({ items, onCardTap }: BudgetsSectionProps) {
   if (items.length === 0) return null
 
   return (
-    <section>
-      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 shadow-soft">
-        <div className="px-4 pb-2 pt-3">
-          <span
-            className={cn(
-              "text-[0.6875rem] font-semibold uppercase tracking-[0.08em]",
-              semanticTextClass.fixed,
-            )}
-          >
-            {t("sections.budgets")}
-          </span>
+    <section className="flex flex-col gap-2">
+      <div className="flex items-center justify-between px-1">
+        <div className={cn("flex items-center gap-1.5", semanticTextClass.fixed)}>
+          <HugeiconsIcon icon={Wallet02Icon} size={15} aria-hidden="true" />
+          <span className="text-sm font-semibold">{t("sections.budgets")}</span>
         </div>
-        <div className="flex flex-col gap-1.5 p-1.5 pt-0">
+        <span className="text-xs font-medium tabular-nums text-text-tertiary">
+          {items.length}
+        </span>
+      </div>
+
+      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 shadow-soft">
+        <div className="flex flex-col gap-1.5 p-1.5">
           {items.map((item) => (
             <BudgetCard key={item.id} item={item} onTap={onCardTap} />
           ))}

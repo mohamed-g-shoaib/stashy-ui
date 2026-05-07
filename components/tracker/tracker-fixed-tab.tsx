@@ -22,7 +22,7 @@ export function TrackerFixedTab() {
   const manualItems = fixedItems.filter((item) => item.type === "manual")
 
   return (
-    <div className="flex flex-col gap-section">
+    <div className="flex flex-col gap-8">
       <FixedSummaryCard summary={mockSummary} />
       <BudgetsSection items={manualItems} onCardTap={setSelectedItem} />
       <SubscriptionsSection items={recurringItems} onCardTap={setSelectedItem} />
