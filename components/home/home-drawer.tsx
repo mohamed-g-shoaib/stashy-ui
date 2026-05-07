@@ -7,6 +7,7 @@ import {
   ChartLineData01Icon,
   HelpCircleIcon,
   Invoice03Icon,
+  Package01Icon,
   Wallet02Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
@@ -124,28 +125,16 @@ export function HomeDrawer({
   }, [open, resetAddFlow]);
 
   const title = kind ? t(`${kind}.title`) : t("add.title");
-  const description =
-    kind === "add"
-      ? isMajor
-        ? t("add.variable.majorDescription")
-        : t(`add.${selectedAction}.description`)
-      : kind
-        ? t(`${kind}.description`)
-        : t("add.description");
+  const description = kind !== "add"
+    ? (kind ? t(`${kind}.description`) : t("add.description"))
+    : null;
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="bottom">
       <DrawerContent dir={direction} className="mx-auto max-w-sm">
         <DrawerHeader className="text-start">
           <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription
-            className={cn(
-              "transition-colors duration-200",
-              kind === "add" && isMajor ? semanticTextClass.major : undefined,
-            )}
-          >
-            {description}
-          </DrawerDescription>
+          {description && <DrawerDescription>{description}</DrawerDescription>}
         </DrawerHeader>
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-2">
@@ -301,47 +290,66 @@ function AddFlow({
         ))}
       </div>
 
+      {/* Type context tile */}
+      <TypeContextTile selectedAction={selectedAction} isMajor={isMajor} />
+
       {/* Variable → budget hint */}
       {selectedAction === "variable" && (
         <Link
           href="/tracker"
-          className="flex items-center justify-between rounded-[var(--radius-sm)] bg-surface-offset px-3 py-2.5 shadow-ring"
+          className="flex items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-fixed/20 bg-fixed-subtle px-3 py-2.5 shadow-ring transition-opacity active:opacity-70"
         >
-          <p className="text-xs leading-[1.4] text-text-secondary text-pretty">
+          <p className="flex-1 text-xs leading-[1.4] text-fixed/80 text-pretty">
             {t("variable.budgetHint")}
           </p>
-          <span className="ms-3 shrink-0 text-xs font-semibold text-fixed">
+          <span className="shrink-0 text-xs font-semibold text-fixed">
             {t("variable.budgetHintAction")} →
           </span>
         </Link>
       )}
 
-      {/* Variable → major toggle */}
+      {/* Variable → major toggle — row with sliding switch */}
       {selectedAction === "variable" && (
         <button
           type="button"
           onClick={() => onIsMajorChange(!isMajor)}
           className={cn(
-            "flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-2.5 text-start shadow-ring transition-colors duration-150",
+            "flex w-full items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2.5 text-start shadow-ring transition-colors duration-200",
             isMajor ? semanticSurfaceClass.major : "bg-surface-offset",
           )}
         >
+          <HugeiconsIcon
+            icon={Package01Icon}
+            size={16}
+            aria-hidden="true"
+            className={cn(
+              "shrink-0 transition-colors duration-200",
+              isMajor ? semanticTextClass.major : "text-text-tertiary",
+            )}
+          />
           <span
             className={cn(
-              "text-xs leading-[1.4] text-pretty",
+              "flex-1 text-xs leading-[1.4] text-pretty transition-colors duration-200",
               isMajor ? semanticTextClass.major : "text-text-secondary",
             )}
           >
             {t("variable.majorHint")}
           </span>
-          <span
+          {/* Sliding toggle switch */}
+          <div
             className={cn(
-              "ms-3 shrink-0 text-xs font-semibold",
-              isMajor ? semanticTextClass.major : "text-text-tertiary",
+              "relative flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200",
+              isMajor ? "bg-major" : "bg-border",
             )}
+            aria-hidden="true"
           >
-            {isMajor ? t("variable.majorOn") : t("variable.majorOff")}
-          </span>
+            <div
+              className={cn(
+                "absolute ms-0.5 size-4 rounded-full bg-card shadow-ring transition-all duration-200",
+                isMajor ? "translate-x-4" : "translate-x-0",
+              )}
+            />
+          </div>
         </button>
       )}
 
@@ -478,6 +486,66 @@ function AddFlow({
           + {t("fields.addNote")}
         </button>
       )}
+    </div>
+  );
+}
+
+// ─── Type context tile ────────────────────────────────────────────────────────
+
+function TypeContextTile({
+  selectedAction,
+  isMajor,
+}: {
+  selectedAction: AddActionKind;
+  isMajor: boolean;
+}) {
+  const t = useTranslations("Home.drawer.add");
+
+  const config = isMajor
+    ? {
+        icon: Package01Icon,
+        surface: semanticSurfaceClass.major,
+        text: semanticTextClass.major,
+        message: t("variable.majorDescription"),
+      }
+    : selectedAction === "variable"
+      ? {
+          icon: Invoice03Icon,
+          surface: semanticSurfaceClass.variable,
+          text: semanticTextClass.variable,
+          message: t("variable.description"),
+        }
+      : selectedAction === "budget"
+        ? {
+            icon: Wallet02Icon,
+            surface: semanticSurfaceClass.fixed,
+            text: semanticTextClass.fixed,
+            message: t("budget.description"),
+          }
+        : {
+            icon: ArrowDown01Icon,
+            surface: semanticSurfaceClass.income,
+            text: semanticTextClass.income,
+            message: t("refund.description"),
+          };
+
+  return (
+    <div
+      key={isMajor ? "major" : selectedAction}
+      className={cn(
+        "flex items-start gap-2.5 rounded-[var(--radius-sm)] px-3 py-2.5 shadow-ring",
+        config.surface,
+      )}
+    >
+      <HugeiconsIcon
+        icon={config.icon}
+        size={14}
+        aria-hidden="true"
+        className={cn("mt-[0.1rem] shrink-0", config.text)}
+      />
+      <p className={cn("text-xs leading-[1.55]", config.text)}>
+        {config.message}
+      </p>
     </div>
   );
 }
