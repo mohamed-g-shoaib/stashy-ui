@@ -24,18 +24,18 @@ export function InstallmentsSection({ items, overview, onCardTap }: Installments
   const pct = total > 0 ? Math.round((overview.totalPaidAllTime / total) * 100) : 0
 
   return (
-    <section className="flex flex-col gap-2">
+    <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between px-1">
-        <div className={cn("flex items-center gap-1.5", semanticTextClass.fixed)}>
-          <HugeiconsIcon icon={Layers01Icon} size={15} aria-hidden="true" />
-          <span className="text-sm font-semibold">{t("sections.installments")}</span>
+        <div className={cn("flex items-center gap-2", semanticTextClass.fixed)}>
+          <HugeiconsIcon icon={Layers01Icon} size={18} aria-hidden="true" />
+          <span className="text-[1.0625rem] font-semibold">{t("sections.installments")}</span>
         </div>
         <span className="text-xs font-medium tabular-nums text-text-tertiary">
           {items.length}
         </span>
       </div>
 
-      {/* Overview summary */}
+      {/* Overview summary tile */}
       <div className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 p-4 shadow-soft">
         <div className="grid grid-cols-3 gap-2">
           <div className={cn(statTileClass, "col-span-1 text-start")}>
@@ -78,13 +78,11 @@ export function InstallmentsSection({ items, overview, onCardTap }: Installments
         <TrackerProgress value={pct} tone="fixed" showPercent />
       </div>
 
-      {/* Item list */}
-      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 shadow-soft">
-        <div className="flex flex-col gap-1.5 p-1.5">
-          {items.map((item) => (
-            <InstallmentCard key={item.id} item={item} onTap={onCardTap} />
-          ))}
-        </div>
+      {/* Item cards — no wrapper */}
+      <div className="flex flex-col gap-2">
+        {items.map((item) => (
+          <InstallmentCard key={item.id} item={item} onTap={onCardTap} />
+        ))}
       </div>
     </section>
   )
