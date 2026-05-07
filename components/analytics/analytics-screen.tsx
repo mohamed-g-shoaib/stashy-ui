@@ -80,27 +80,27 @@ export function AnalyticsScreen() {
             <AnalyticsUpgradeGate />
           </div>
         ) : (
-          <Tabs defaultValue="month">
+          <Tabs defaultValue="spending">
             <div className="px-screen pt-3">
               <TabsList className="w-full">
-                <TabsTrigger value="month">{t("tabs.month")}</TabsTrigger>
                 <TabsTrigger value="spending">{t("tabs.spending")}</TabsTrigger>
+                <TabsTrigger value="overview">{t("tabs.overview")}</TabsTrigger>
                 <TabsTrigger value="trends">{t("tabs.trends")}</TabsTrigger>
               </TabsList>
             </div>
-
-            <TabsContent value="month" className="px-screen pt-4">
-              <div className="flex flex-col gap-3">
-                <RolloverCard month={selectedMonth} />
-                <ProjectionCard month={selectedMonth} />
-              </div>
-            </TabsContent>
 
             <TabsContent value="spending" className="px-screen pt-4">
               <div className="flex flex-col gap-3">
                 <BudgetCompositionCard month={selectedMonth} />
                 <PaymentMethodCard month={selectedMonth} />
                 <SpendingRhythmCard month={selectedMonth} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="overview" className="px-screen pt-4">
+              <div className="flex flex-col gap-3">
+                <RolloverCard month={selectedMonth} />
+                <ProjectionCard month={selectedMonth} />
               </div>
             </TabsContent>
 

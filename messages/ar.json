@@ -683,8 +683,8 @@
       "closeMonth": "أغلق {month}"
     },
     "tabs": {
-      "month": "الشهر",
       "spending": "الإنفاق",
+      "overview": "نظرة عامة",
       "trends": "الاتجاهات"
     },
     "section": {

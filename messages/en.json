@@ -683,8 +683,8 @@
       "closeMonth": "Close {month}"
     },
     "tabs": {
-      "month": "Month",
       "spending": "Spending",
+      "overview": "Overview",
       "trends": "Trends"
     },
     "section": {
