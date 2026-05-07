@@ -66,16 +66,16 @@ export function HomeScreen() {
         onIntroCardVisibleChange={handleIntroCardVisibleChange}
         onMajorScenarioChange={setMajorScenario}
         onPreviewAddAction={(action, amount) => {
-          if (action === "major") {
-            setMajorScenario("active")
-            return
-          }
-
-          if (action === "receive" || action === "injection") {
+          if (action === "refund") {
             setDailyScenario("track")
             return
           }
 
+          if (action === "budget") {
+            return
+          }
+
+          // variable
           setDailyScenario(amount > 615.38 ? "overspent" : "track")
         }}
         onOpenChange={(open) => {
