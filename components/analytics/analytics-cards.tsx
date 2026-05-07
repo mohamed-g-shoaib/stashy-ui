@@ -1,7 +1,5 @@
 "use client"
 
-import { Invoice03Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
 import { useLocale, useTranslations } from "next-intl"
 
 import { formatAnalyticsCurrency } from "@/components/analytics/formatters"
@@ -30,29 +28,53 @@ export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
   )
   const bufferPct = Math.max(0, 100 - spentPct - additionalPct)
 
-  const projectedSavingsTone =
-    month.projectedSavings > 0 && confidence !== "early"
-      ? semanticTextClass.income
-      : month.projectedSavings < 0 && confidence !== "early"
-        ? semanticTextClass.expense
-        : undefined
+  const isEarly = confidence === "early"
 
   return (
     <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
-        <SectionHeader
-          icon={Invoice03Icon}
-          title={t("projection.title")}
-          subtitle={t("projection.subtitle")}
-        />
+        <h2 className="text-[1.0625rem] font-semibold text-foreground">{t("projection.title")}</h2>
 
-        {/* Tri-segment forecast bar */}
+        {/* Layer 1 — Hero: the answer */}
+        <div
+          className={cn(
+            "rounded-xl p-4",
+            isEarly ? "bg-surface-offset" : isOverBudget ? "bg-expense-subtle" : "bg-income-subtle",
+          )}
+        >
+          <p className="mb-1 text-xs text-text-tertiary">
+            {isEarly
+              ? t("projection.heroEarly", { day: month.projectionConfidenceDay })
+              : isOverBudget
+                ? t("projection.heroOverspend")
+                : t("projection.heroSaving")}
+          </p>
+          <p
+            dir="ltr"
+            className={cn(
+              "text-[2rem] font-bold leading-none tabular-nums",
+              isEarly
+                ? "text-text-tertiary"
+                : isOverBudget
+                  ? semanticTextClass.expense
+                  : semanticTextClass.income,
+            )}
+          >
+            {formatAnalyticsCurrency(locale, Math.abs(month.projectedSavings))}
+          </p>
+          <p className="mt-2 text-sm leading-[1.5] text-text-secondary">
+            {isEarly
+              ? t("projection.heroEarlyCaption")
+              : isOverBudget
+                ? t("projection.heroOverspendCaption")
+                : t("projection.heroSavingCaption", { rate: month.projectedSavingsRate })}
+          </p>
+        </div>
+
+        {/* Layer 2 — Bar: the evidence */}
         <div className="space-y-2">
-          <div className="flex h-4 w-full overflow-hidden rounded-full bg-surface-offset shadow-ring">
-            <div
-              className="h-full bg-expense-subtle"
-              style={{ width: `${spentPct}%` }}
-            />
+          <div className="flex h-3 w-full overflow-hidden rounded-full bg-surface-offset shadow-ring">
+            <div className="h-full bg-expense-subtle" style={{ width: `${spentPct}%` }} />
             <div
               className={cn("h-full", isOverBudget ? "bg-warning-subtle" : "bg-border")}
               style={{ width: `${additionalPct}%` }}
@@ -62,57 +84,46 @@ export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
             )}
           </div>
 
-          {/* Segment legend */}
           <div className="flex gap-3 text-[0.6875rem] text-text-tertiary">
             <span className="flex items-center gap-1">
-              <span className="size-2 rounded-full bg-expense-subtle" />
+              <span className="size-2 shrink-0 rounded-full bg-expense-subtle" />
               {t("projection.forecastSpent")}
             </span>
             <span className="flex items-center gap-1">
-              <span className={cn("size-2 rounded-full", isOverBudget ? "bg-warning-subtle" : "bg-border")} />
+              <span
+                className={cn(
+                  "size-2 shrink-0 rounded-full",
+                  isOverBudget ? "bg-warning-subtle" : "bg-border",
+                )}
+              />
               {t("projection.forecastProjected")}
             </span>
             <span className="flex items-center gap-1">
-              <span className="size-2 rounded-full bg-income-subtle" />
+              <span
+                className={cn(
+                  "size-2 shrink-0 rounded-full",
+                  isOverBudget ? "bg-warning-subtle/50" : "bg-income-subtle",
+                )}
+              />
               {isOverBudget ? t("projection.forecastOverrun") : t("projection.forecastBuffer")}
             </span>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className={cn("grid grid-cols-3 gap-2", confidence === "early" && "opacity-60")}>
-          <CompactStat
-            label={t("projection.avgDaily")}
-            value={formatAnalyticsCurrency(locale, month.avgDailySpend)}
-          />
-          <CompactStat
-            label={t("projection.projectedSpend")}
-            value={formatAnalyticsCurrency(locale, month.projectedEndSpend)}
-          />
-          <CompactStat
-            label={t("projection.projectedSavings")}
-            value={formatAnalyticsCurrency(locale, Math.abs(month.projectedSavings))}
-            valueClassName={projectedSavingsTone}
-          />
-        </div>
-
-        {/* Footer: savings rate pill + confidence badge */}
-        <div className="flex flex-wrap items-center gap-2">
-          <MutedPill label={t("projection.savingsRate", { rate: month.projectedSavingsRate })} />
-          {confidence === "early" && (
+        {/* Layer 3 — Pace: the context */}
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm text-text-secondary">
+            <span dir="ltr" className="font-semibold text-foreground tabular-nums">
+              {formatAnalyticsCurrency(locale, month.avgDailySpend)}
+            </span>{" "}
+            {t("projection.paceCaption", { days: month.daysRemaining })}
+          </p>
+          {isEarly && (
             <Badge
               variant="warning"
-              className="h-auto rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
+              className="h-auto shrink-0 rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
             >
               {t("projection.lowConfidenceBadge")}
-            </Badge>
-          )}
-          {confidence === "late" && (
-            <Badge
-              variant="income"
-              className="h-auto rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
-            >
-              {t("projection.highConfidenceBadge")}
             </Badge>
           )}
         </div>
@@ -161,62 +172,6 @@ export function AnalyticsUpgradeGate() {
   )
 }
 
-function SectionHeader({
-  icon,
-  title,
-  subtitle,
-}: {
-  icon: Parameters<typeof HugeiconsIcon>[0]["icon"]
-  title: string
-  subtitle: string
-}) {
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <HugeiconsIcon icon={icon} aria-hidden="true" size={18} className="text-text-secondary" />
-        <h2 className="text-[1.0625rem] font-semibold text-foreground">{title}</h2>
-      </div>
-      <p className="text-sm leading-[1.6] text-text-secondary text-pretty">{subtitle}</p>
-    </div>
-  )
-}
-
-function CompactStat({
-  label,
-  value,
-  valueClassName,
-}: {
-  label: string
-  value: string
-  valueClassName?: string
-}) {
-  return (
-    <div className={cn("flex min-w-0 flex-col gap-1", statTileClass)}>
-      <p className="text-[0.6875rem] font-medium text-text-secondary">{label}</p>
-      <p
-        dir="ltr"
-        className={cn(
-          "text-[0.9375rem] font-semibold leading-[1.2] text-foreground tabular-nums",
-          valueClassName,
-        )}
-      >
-        {value}
-      </p>
-    </div>
-  )
-}
-
-function MutedPill({ label }: { label: string }) {
-  return (
-    <Badge
-      variant="quiet"
-      className="h-auto w-fit rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
-    >
-      {label}
-    </Badge>
-  )
-}
-
 function LockIllustration() {
   return (
     <div className="relative flex size-24 items-center justify-center rounded-full bg-brand-subtle shadow-ring">
@@ -235,4 +190,3 @@ function getProjectionConfidence(day: number): "early" | "sweet" | "late" {
   if (day >= 25) return "late"
   return "sweet"
 }
-

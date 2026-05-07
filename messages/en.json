@@ -625,24 +625,18 @@
       "overspentDays": "{count} days overspent so far"
     },
     "projection": {
-      "title": "Projection",
-      "subtitle": "Where this month is likely heading if nothing changes.",
-      "avgDaily": "Avg Daily",
-      "projectedSpend": "Proj. Spend",
-      "projectedSavings": "Proj. Savings",
-      "positiveNarrative": "If you keep this pace, you'll finish {month} {amount} under budget.",
-      "negativeNarrative": "At this rate, you'll overspend by {amount} by end of month. Consider pulling back on variable spending.",
-      "savingsRate": "~{rate}% projected savings rate",
-      "confidence": {
-        "early": "Too early to call — only {day} days of data so far",
-        "sweet": "Based on {day} days of spending",
-        "late": "Near certain — {day} of {total} days elapsed"
-      },
+      "title": "End of month forecast",
+      "heroSaving": "On track to save",
+      "heroOverspend": "Likely to overspend by",
+      "heroEarly": "Only {day} days of data so far",
+      "heroSavingCaption": "That's {rate}% of your income saved this month.",
+      "heroOverspendCaption": "Try cutting back on flexible spending to get back on track.",
+      "heroEarlyCaption": "Check back in a few days for a more reliable estimate.",
+      "paceCaption": "per day · {days} days left",
       "lowConfidenceBadge": "Low confidence",
-      "highConfidenceBadge": "High confidence",
-      "forecastSpent": "Spent",
-      "forecastProjected": "Projected",
-      "forecastBuffer": "Buffer",
+      "forecastSpent": "Spent so far",
+      "forecastProjected": "Still coming",
+      "forecastBuffer": "Buffer left",
       "forecastOverrun": "Over budget"
     },
     "shaping": {

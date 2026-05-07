@@ -625,24 +625,18 @@
       "overspentDays": "تم التجاوز {count} أيام حتى الآن"
     },
     "projection": {
-      "title": "التوقع",
-      "subtitle": "إلى أين يتجه هذا الشهر إذا لم يتغير شيء.",
-      "avgDaily": "المتوسط اليومي",
-      "projectedSpend": "المصروف المتوقع",
-      "projectedSavings": "التوفير المتوقع",
-      "positiveNarrative": "إذا استمر هذا الإيقاع فستنهي {month} وأنت أقل من الميزانية بمقدار {amount}.",
-      "negativeNarrative": "بهذا المعدل ستتجاوز الميزانية بمقدار {amount} مع نهاية الشهر. من الأفضل تهدئة الإنفاق المتغير.",
-      "savingsRate": "نحو {rate}% معدل توفير متوقع",
-      "confidence": {
-        "early": "أوان مبكر — {day} أيام فقط من البيانات حتى الآن",
-        "sweet": "بناءً على {day} يوماً من الإنفاق",
-        "late": "شبه مؤكد — {day} من {total} يوماً مضت"
-      },
+      "title": "توقعات نهاية الشهر",
+      "heroSaving": "في طريقك للتوفير",
+      "heroOverspend": "قد تتجاوز الميزانية بـ",
+      "heroEarly": "فقط {day} أيام من البيانات حتى الآن",
+      "heroSavingCaption": "هذا {rate}% من دخلك توفيراً هذا الشهر.",
+      "heroOverspendCaption": "حاول تقليل الإنفاق المرن للعودة للمسار الصحيح.",
+      "heroEarlyCaption": "راجع مجدداً بعد بضعة أيام للحصول على تقدير أدق.",
+      "paceCaption": "يومياً · {days} أيام متبقية",
       "lowConfidenceBadge": "ثقة منخفضة",
-      "highConfidenceBadge": "ثقة عالية",
       "forecastSpent": "مُنفَق",
-      "forecastProjected": "متوقع",
-      "forecastBuffer": "هامش",
+      "forecastProjected": "قادم",
+      "forecastBuffer": "هامش متبقٍ",
       "forecastOverrun": "تجاوز الميزانية"
     },
     "shaping": {
