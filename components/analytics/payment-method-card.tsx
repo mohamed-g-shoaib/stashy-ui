@@ -16,6 +16,11 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
   const activeDataKey = filter === "all" ? "total" : filter
   const chartHeight = month.paymentMethods.length * 52
 
+  const totalForFilter = month.paymentMethods.reduce(
+    (sum, m) => sum + Number(m[activeDataKey as keyof typeof m]),
+    0,
+  )
+
   const filters: { value: PaymentMethodFilter; label: string }[] = [
     { value: "all", label: t("methods.filterAll") },
     { value: "variable", label: t("methods.filterVariable") },
@@ -57,7 +62,7 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
           <BarChart
             layout="vertical"
             data={month.paymentMethods}
-            margin={{ top: 0, right: 48, left: 0, bottom: 0 }}
+            margin={{ top: 0, right: 80, left: 0, bottom: 0 }}
           >
             <CartesianGrid horizontal={false} stroke="var(--color-border-subtle)" />
             <YAxis
@@ -84,7 +89,13 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
               radius={[0, 4, 4, 0]}
               label={{
                 position: "right",
-                formatter: (v: unknown) => (Number(v) > 0 ? `${v} EGP` : ""),
+                formatter: (v: unknown) => {
+                  const val = Number(v)
+                  if (val <= 0) return ""
+                  const pct =
+                    totalForFilter > 0 ? Math.round((val / totalForFilter) * 100) : 0
+                  return `${val} EGP · ${pct}%`
+                },
                 fill: "var(--color-text-tertiary)",
                 fontSize: 11,
               }}

@@ -639,7 +639,11 @@
         "late": "شبه مؤكد — {day} من {total} يوماً مضت"
       },
       "lowConfidenceBadge": "ثقة منخفضة",
-      "highConfidenceBadge": "ثقة عالية"
+      "highConfidenceBadge": "ثقة عالية",
+      "forecastSpent": "مُنفَق",
+      "forecastProjected": "متوقع",
+      "forecastBuffer": "هامش",
+      "forecastOverrun": "تجاوز الميزانية"
     },
     "shaping": {
       "title": "ما الذي يشكل هذا الشهر",
@@ -675,10 +679,39 @@
       "emptyDescription": "لا توجد بيانات للشهر السابق بعد. أغلق {month} لفتح المقارنة.",
       "closeMonth": "أغلق {month}"
     },
+    "tabs": {
+      "month": "الشهر",
+      "spending": "الإنفاق",
+      "trends": "الاتجاهات"
+    },
     "section": {
       "monthlyHealth": "الصحة المالية للشهر",
       "whereMoneyWent": "أين ذهبت أموالك",
       "improving": "هل تتحسن؟"
+    },
+    "summary": {
+      "title": "ملخص الشهر",
+      "verdict": {
+        "strong": "شهر قوي",
+        "solid": "شهر جيد",
+        "mixed": "شهر مختلط",
+        "challenging": "شهر صعب"
+      },
+      "savings": {
+        "up": "معدل التوفير تحسّن مقارنة بالشهر الماضي",
+        "down": "معدل التوفير انخفض مقارنة بالشهر الماضي",
+        "same": "معدل التوفير ظل ثابتاً",
+        "first": "لا مقارنة بعد — أول شهر مسجل"
+      },
+      "days": {
+        "clean": "كل يوم مُتابَع ظل ضمن المعدل اليومي",
+        "mostlyClean": "{overspent} أيام تجاوزت المعدل اليومي",
+        "rough": "{overspent} من {tracked} يوماً تجاوزت الإنفاق"
+      },
+      "rhythm": {
+        "consistent": "كان إيقاع الإنفاق منتظماً طوال الشهر",
+        "volatile": "الإنفاق كان غير منتظم — تركّز في جزء من الشهر"
+      }
     },
     "rollover": {
       "title": "الوسادة الشهرية",

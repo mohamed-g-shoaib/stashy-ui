@@ -13,15 +13,16 @@ import {
   getPreviousAnalyticsMonth,
 } from "@/components/analytics/formatters"
 import { MonthPickerDrawer } from "@/components/analytics/month-picker-drawer"
+import { MonthSummaryCard } from "@/components/analytics/month-summary-card"
 import { PaymentMethodCard } from "@/components/analytics/payment-method-card"
 import { RolloverCard } from "@/components/analytics/rollover-card"
-import { SectionLabel } from "@/components/analytics/section-label"
 import { SpendingRhythmCard } from "@/components/analytics/spending-rhythm-card"
 import { TrendsCard } from "@/components/analytics/trends-card"
 import { AppBottomNavigation } from "@/components/app-bottom-navigation"
 import { navItems } from "@/components/home/home-data"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { type Locale } from "@/i18n/routing"
 import { getDirectionForLocale } from "@/lib/i18n"
 
@@ -73,27 +74,47 @@ export function AnalyticsScreen() {
         <Separator className="mt-4 bg-border-subtle" />
       </header>
 
-      <main className="flex-1 px-screen pb-32 pt-4">
+      <main className="flex-1 pb-32">
         {ANALYTICS_PLAN === "free" ? (
-          <AnalyticsUpgradeGate />
-        ) : (
-          <div className="flex flex-col gap-3">
-            <SectionLabel label={t("section.monthlyHealth")} />
-            <RolloverCard month={selectedMonth} />
-            <ProjectionCard month={selectedMonth} />
-
-            <SectionLabel label={t("section.whereMoneyWent")} />
-            <BudgetCompositionCard month={selectedMonth} />
-            <SpendingRhythmCard month={selectedMonth} />
-            <PaymentMethodCard month={selectedMonth} />
-
-            <SectionLabel label={t("section.improving")} />
-            <TrendsCard
-              months={analyticsMonths}
-              selectedMonth={selectedMonth}
-              previousMonth={previousMonth}
-            />
+          <div className="px-screen pt-4">
+            <AnalyticsUpgradeGate />
           </div>
+        ) : (
+          <Tabs defaultValue="month">
+            <div className="px-screen pt-3">
+              <TabsList className="w-full">
+                <TabsTrigger value="month">{t("tabs.month")}</TabsTrigger>
+                <TabsTrigger value="spending">{t("tabs.spending")}</TabsTrigger>
+                <TabsTrigger value="trends">{t("tabs.trends")}</TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent value="month" className="px-screen pt-4">
+              <div className="flex flex-col gap-3">
+                <RolloverCard month={selectedMonth} />
+                <ProjectionCard month={selectedMonth} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="spending" className="px-screen pt-4">
+              <div className="flex flex-col gap-3">
+                <BudgetCompositionCard month={selectedMonth} />
+                <SpendingRhythmCard month={selectedMonth} />
+                <PaymentMethodCard month={selectedMonth} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="trends" className="px-screen pt-4">
+              <div className="flex flex-col gap-3">
+                <MonthSummaryCard month={selectedMonth} previousMonth={previousMonth} />
+                <TrendsCard
+                  months={analyticsMonths}
+                  selectedMonth={selectedMonth}
+                  previousMonth={previousMonth}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
         )}
       </main>
 

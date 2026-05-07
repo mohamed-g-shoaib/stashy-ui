@@ -4,10 +4,7 @@ import { Invoice03Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useLocale, useTranslations } from "next-intl"
 
-import {
-  formatAnalyticsCurrency,
-  formatAnalyticsMonthLabel,
-} from "@/components/analytics/formatters"
+import { formatAnalyticsCurrency } from "@/components/analytics/formatters"
 import type { AnalyticsMonth } from "@/components/analytics/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -19,14 +16,26 @@ import { cn } from "@/lib/utils"
 export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
-  const projectedSavingsTone =
-    month.projectedSavings > 0
-      ? semanticTextClass.income
-      : month.projectedSavings < 0
-        ? semanticTextClass.expense
-        : "text-foreground"
 
   const confidence = getProjectionConfidence(month.projectionConfidenceDay)
+  const isOverBudget = month.projectedEndSpend > month.effectiveBudget
+
+  const actualSpent = month.totalVariableSpent + month.fixedTotalSpent + month.majorPurchasesTotal
+  const projectedAdditional = Math.max(0, month.projectedEndSpend - actualSpent)
+
+  const spentPct = Math.min(100, Math.round((actualSpent / month.effectiveBudget) * 100))
+  const additionalPct = Math.min(
+    100 - spentPct,
+    Math.round((projectedAdditional / month.effectiveBudget) * 100),
+  )
+  const bufferPct = Math.max(0, 100 - spentPct - additionalPct)
+
+  const projectedSavingsTone =
+    month.projectedSavings > 0 && confidence !== "early"
+      ? semanticTextClass.income
+      : month.projectedSavings < 0 && confidence !== "early"
+        ? semanticTextClass.expense
+        : undefined
 
   return (
     <Card size="sm" className="py-4">
@@ -37,9 +46,41 @@ export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
           subtitle={t("projection.subtitle")}
         />
 
-        <div
-          className={cn("grid grid-cols-3 gap-2", confidence === "early" && "text-text-tertiary")}
-        >
+        {/* Tri-segment forecast bar */}
+        <div className="space-y-2">
+          <div className="flex h-4 w-full overflow-hidden rounded-full bg-surface-offset shadow-ring">
+            <div
+              className="h-full bg-expense-subtle"
+              style={{ width: `${spentPct}%` }}
+            />
+            <div
+              className={cn("h-full", isOverBudget ? "bg-warning-subtle" : "bg-border")}
+              style={{ width: `${additionalPct}%` }}
+            />
+            {bufferPct > 0 && (
+              <div className="h-full bg-income-subtle" style={{ width: `${bufferPct}%` }} />
+            )}
+          </div>
+
+          {/* Segment legend */}
+          <div className="flex gap-3 text-[0.6875rem] text-text-tertiary">
+            <span className="flex items-center gap-1">
+              <span className="size-2 rounded-full bg-expense-subtle" />
+              {t("projection.forecastSpent")}
+            </span>
+            <span className="flex items-center gap-1">
+              <span className={cn("size-2 rounded-full", isOverBudget ? "bg-warning-subtle" : "bg-border")} />
+              {t("projection.forecastProjected")}
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="size-2 rounded-full bg-income-subtle" />
+              {isOverBudget ? t("projection.forecastOverrun") : t("projection.forecastBuffer")}
+            </span>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className={cn("grid grid-cols-3 gap-2", confidence === "early" && "opacity-60")}>
           <CompactStat
             label={t("projection.avgDaily")}
             value={formatAnalyticsCurrency(locale, month.avgDailySpend)}
@@ -51,25 +92,11 @@ export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
           <CompactStat
             label={t("projection.projectedSavings")}
             value={formatAnalyticsCurrency(locale, Math.abs(month.projectedSavings))}
-            valueClassName={confidence !== "early" ? projectedSavingsTone : undefined}
+            valueClassName={projectedSavingsTone}
           />
         </div>
 
-        <p className="text-sm leading-[1.6] text-text-tertiary text-pretty">
-          {confidence === "early"
-            ? t("projection.confidence.early", { day: month.projectionConfidenceDay })
-            : confidence === "late"
-              ? t("projection.confidence.late", {
-                  day: month.projectionConfidenceDay,
-                  total: month.daysInMonth,
-                })
-              : t("projection.confidence.sweet", { day: month.projectionConfidenceDay })}
-        </p>
-
-        <p className="text-[0.9375rem] leading-[1.6] text-text-secondary text-pretty">
-          {getProjectionNarrative(t, locale, month)}
-        </p>
-
+        {/* Footer: savings rate pill + confidence badge */}
         <div className="flex flex-wrap items-center gap-2">
           <MutedPill label={t("projection.savingsRate", { rate: month.projectedSavingsRate })} />
           {confidence === "early" && (
@@ -209,19 +236,3 @@ function getProjectionConfidence(day: number): "early" | "sweet" | "late" {
   return "sweet"
 }
 
-function getProjectionNarrative(
-  t: ReturnType<typeof useTranslations<"Analytics">>,
-  locale: string,
-  month: AnalyticsMonth,
-) {
-  if (month.projectedSavings >= 0) {
-    return t("projection.positiveNarrative", {
-      month: formatAnalyticsMonthLabel(locale, month.isoDate),
-      amount: formatAnalyticsCurrency(locale, month.projectedSavings),
-    })
-  }
-
-  return t("projection.negativeNarrative", {
-    amount: formatAnalyticsCurrency(locale, Math.abs(month.projectedSavings)),
-  })
-}

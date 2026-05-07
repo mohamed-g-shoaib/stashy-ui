@@ -639,7 +639,11 @@
         "late": "Near certain — {day} of {total} days elapsed"
       },
       "lowConfidenceBadge": "Low confidence",
-      "highConfidenceBadge": "High confidence"
+      "highConfidenceBadge": "High confidence",
+      "forecastSpent": "Spent",
+      "forecastProjected": "Projected",
+      "forecastBuffer": "Buffer",
+      "forecastOverrun": "Over budget"
     },
     "shaping": {
       "title": "What’s Shaping This Month",
@@ -675,10 +679,39 @@
       "emptyDescription": "No previous month data yet. Close {month} to unlock comparison.",
       "closeMonth": "Close {month}"
     },
+    "tabs": {
+      "month": "Month",
+      "spending": "Spending",
+      "trends": "Trends"
+    },
     "section": {
       "monthlyHealth": "Monthly health",
       "whereMoneyWent": "Where your money went",
       "improving": "Are you improving"
+    },
+    "summary": {
+      "title": "Month summary",
+      "verdict": {
+        "strong": "A strong month",
+        "solid": "A solid month",
+        "mixed": "A mixed month",
+        "challenging": "A challenging month"
+      },
+      "savings": {
+        "up": "Savings rate improved vs. last month",
+        "down": "Savings rate dipped vs. last month",
+        "same": "Savings rate held steady",
+        "first": "No comparison yet — first recorded month"
+      },
+      "days": {
+        "clean": "Every tracked day stayed within the daily rate",
+        "mostlyClean": "{overspent} days went over the daily rate",
+        "rough": "{overspent} of {tracked} days overspent"
+      },
+      "rhythm": {
+        "consistent": "Spending rhythm was steady across the month",
+        "volatile": "Spending was uneven — concentrated in one part of the month"
+      }
     },
     "rollover": {
       "title": "Monthly cushion",
