@@ -143,17 +143,30 @@
         },
         "refund": {
           "label": "Refund",
+          "description": "Returns money to your variable pool or back to a budget envelope.",
           "notePlaceholder": "What was refunded?",
-          "impact": "+{amount} back into this month"
+          "targetLabel": "Refund to",
+          "targetVariable": "Variable",
+          "impactVariable": "+{amount} back to variable pool",
+          "impactBudget": "+{amount} back to {name}"
         },
         "variable": {
           "label": "Variable",
+          "description": "Counts against today's spending limit and affects your daily rate.",
+          "majorDescription": "Reduces your monthly budget directly. Not counted as daily spending. Best for large one-time purchases.",
           "notePlaceholder": "What did you spend this on?",
           "impactTrack": "On track today",
-          "impactOver": "Pushes past today's limit"
+          "impactOver": "Pushes past today's limit",
+          "majorImpact": "{amount} lowers the monthly rate for remaining days",
+          "majorHint": "Large one-time purchase? Log it as major.",
+          "majorOn": "Major ✓",
+          "majorOff": "Mark as major",
+          "budgetHint": "Spend on this regularly? Track it as a budget.",
+          "budgetHintAction": "Add budget"
         },
         "budget": {
           "label": "Budget",
+          "description": "Logged against a category envelope. Overspending it pulls from your daily rate.",
           "notePlaceholder": "What did you buy?",
           "impactNoCategory": "Select a category",
           "impactRemaining": "{name} · {amount} left",

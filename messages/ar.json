@@ -143,17 +143,30 @@
         },
         "refund": {
           "label": "استرداد",
+          "description": "يُعيد المبلغ إلى مساحتك المتغيرة أو إلى مظروف ميزانية.",
           "notePlaceholder": "ما الذي تم استرداده؟",
-          "impact": "+{amount} عودة لهذا الشهر"
+          "targetLabel": "استرداد إلى",
+          "targetVariable": "متغير",
+          "impactVariable": "+{amount} عودة للمساحة المتغيرة",
+          "impactBudget": "+{amount} عودة إلى {name}"
         },
         "variable": {
           "label": "متغير",
+          "description": "يُحتسب من حد الصرف اليومي ويؤثر على معدلك.",
+          "majorDescription": "يُخفّض الميزانية الشهرية مباشرةً. لا يُحسب ضمن المصروف اليومي. الأنسب للمشتريات الكبيرة.",
           "notePlaceholder": "على ماذا صُرف هذا المبلغ؟",
           "impactTrack": "على المسار اليوم",
-          "impactOver": "يتجاوز حد اليوم"
+          "impactOver": "يتجاوز حد اليوم",
+          "majorImpact": "{amount} يُخفّض المعدل الشهري للأيام المتبقية",
+          "majorHint": "شراء كبير لمرة واحدة؟ سجّله كمصروف كبير.",
+          "majorOn": "كبير ✓",
+          "majorOff": "تحديد كمصروف كبير",
+          "budgetHint": "تصرف على هذا بانتظام؟ تابعه كميزانية.",
+          "budgetHintAction": "إضافة ميزانية"
         },
         "budget": {
           "label": "ميزانية",
+          "description": "يُسجَّل ضمن مظروف فئة. تجاوز الحد يُقتطع من معدلك اليومي.",
           "notePlaceholder": "ماذا اشتريت؟",
           "impactNoCategory": "اختر فئة",
           "impactRemaining": "{name} · {amount} متبقي",

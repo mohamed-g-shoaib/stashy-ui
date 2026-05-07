@@ -39,6 +39,7 @@ import {
 } from "@/lib/design-system-classes";
 import { semanticSurfaceClass, semanticTextClass } from "@/lib/semantic-styles";
 import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/navigation";
 import { fixedItems } from "@/data/fixed-tracker-mock";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -103,6 +104,8 @@ export function HomeDrawer({
   const [selectedCategory, setSelectedCategory] = React.useState<string>(
     budgetCategories[0]?.id ?? "",
   );
+  const [refundTarget, setRefundTarget] = React.useState<string>("variable");
+  const [isMajor, setIsMajor] = React.useState(false);
 
   const resetAddFlow = React.useCallback(() => {
     setSelectedAction("variable");
@@ -112,6 +115,8 @@ export function HomeDrawer({
     setNoteExpanded(false);
     setMethod("cash");
     setSelectedCategory(budgetCategories[0]?.id ?? "");
+    setRefundTarget("variable");
+    setIsMajor(false);
   }, []);
 
   React.useEffect(() => {
@@ -119,14 +124,28 @@ export function HomeDrawer({
   }, [open, resetAddFlow]);
 
   const title = kind ? t(`${kind}.title`) : t("add.title");
-  const description = kind ? t(`${kind}.description`) : t("add.description");
+  const description =
+    kind === "add"
+      ? isMajor
+        ? t("add.variable.majorDescription")
+        : t(`add.${selectedAction}.description`)
+      : kind
+        ? t(`${kind}.description`)
+        : t("add.description");
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="bottom">
       <DrawerContent dir={direction} className="mx-auto max-w-sm">
         <DrawerHeader className="text-start">
           <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription>{description}</DrawerDescription>
+          <DrawerDescription
+            className={cn(
+              "transition-colors duration-200",
+              kind === "add" && isMajor ? semanticTextClass.major : undefined,
+            )}
+          >
+            {description}
+          </DrawerDescription>
         </DrawerHeader>
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-2">
@@ -143,21 +162,26 @@ export function HomeDrawer({
             <AddFlow
               amount={amount}
               date={date}
+              isMajor={isMajor}
               method={method}
               note={note}
               noteExpanded={noteExpanded}
               selectedAction={selectedAction}
               selectedCategory={selectedCategory}
+              refundTarget={refundTarget}
               onAmountChange={setAmount}
               onDateChange={setDate}
+              onIsMajorChange={setIsMajor}
               onMethodChange={setMethod}
               onNoteChange={setNote}
               onNoteExpandedChange={setNoteExpanded}
               onSelectedActionChange={(action) => {
                 setSelectedAction(action);
                 setAmount("");
+                setIsMajor(false);
               }}
               onCategoryChange={setSelectedCategory}
+              onRefundTargetChange={setRefundTarget}
             />
           ) : kind === "help" ? (
             <HelpContent dailyScenario={dailyScenario} />
@@ -206,33 +230,41 @@ export function HomeDrawer({
 function AddFlow({
   amount,
   date,
+  isMajor,
   method,
   note,
   noteExpanded,
   selectedAction,
   selectedCategory,
+  refundTarget,
   onAmountChange,
   onDateChange,
+  onIsMajorChange,
   onMethodChange,
   onNoteChange,
   onNoteExpandedChange,
   onSelectedActionChange,
   onCategoryChange,
+  onRefundTargetChange,
 }: {
   amount: string;
   date: string;
+  isMajor: boolean;
   method: "cash" | "card" | "bank";
   note: string;
   noteExpanded: boolean;
   selectedAction: AddActionKind;
   selectedCategory: string;
+  refundTarget: string;
   onAmountChange: (v: string) => void;
   onDateChange: (v: string) => void;
+  onIsMajorChange: (v: boolean) => void;
   onMethodChange: (v: "cash" | "card" | "bank") => void;
   onNoteChange: (v: string) => void;
   onNoteExpandedChange: (v: boolean) => void;
   onSelectedActionChange: (v: AddActionKind) => void;
   onCategoryChange: (v: string) => void;
+  onRefundTargetChange: (v: string) => void;
 }) {
   const t = useTranslations("Home.drawer.add");
   const parsedAmount = Number(amount) || 0;
@@ -269,6 +301,50 @@ function AddFlow({
         ))}
       </div>
 
+      {/* Variable → budget hint */}
+      {selectedAction === "variable" && (
+        <Link
+          href="/tracker"
+          className="flex items-center justify-between rounded-[var(--radius-sm)] bg-surface-offset px-3 py-2.5 shadow-ring"
+        >
+          <p className="text-xs leading-[1.4] text-text-secondary text-pretty">
+            {t("variable.budgetHint")}
+          </p>
+          <span className="ms-3 shrink-0 text-xs font-semibold text-fixed">
+            {t("variable.budgetHintAction")} →
+          </span>
+        </Link>
+      )}
+
+      {/* Variable → major toggle */}
+      {selectedAction === "variable" && (
+        <button
+          type="button"
+          onClick={() => onIsMajorChange(!isMajor)}
+          className={cn(
+            "flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-2.5 text-start shadow-ring transition-colors duration-150",
+            isMajor ? semanticSurfaceClass.major : "bg-surface-offset",
+          )}
+        >
+          <span
+            className={cn(
+              "text-xs leading-[1.4] text-pretty",
+              isMajor ? semanticTextClass.major : "text-text-secondary",
+            )}
+          >
+            {t("variable.majorHint")}
+          </span>
+          <span
+            className={cn(
+              "ms-3 shrink-0 text-xs font-semibold",
+              isMajor ? semanticTextClass.major : "text-text-tertiary",
+            )}
+          >
+            {isMajor ? t("variable.majorOn") : t("variable.majorOff")}
+          </span>
+        </button>
+      )}
+
       {/* Budget category scroll */}
       {selectedAction === "budget" && (
         <div className="flex gap-2 overflow-x-auto pb-0.5 [&::-webkit-scrollbar]:hidden">
@@ -290,21 +366,57 @@ function AddFlow({
         </div>
       )}
 
+      {/* Refund target scroll */}
+      {selectedAction === "refund" && (
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-text-tertiary">
+            {t("refund.targetLabel")}
+          </p>
+          <div className="flex gap-2 overflow-x-auto pb-0.5 [&::-webkit-scrollbar]:hidden">
+            <button
+              type="button"
+              className={cn(
+                "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                refundTarget === "variable"
+                  ? semanticSurfaceClass.income + " shadow-ring"
+                  : "bg-surface-offset text-text-secondary",
+              )}
+              onClick={() => onRefundTargetChange("variable")}
+            >
+              {t("refund.targetVariable")}
+            </button>
+            {budgetCategories.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                className={cn(
+                  "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                  refundTarget === cat.id
+                    ? semanticSurfaceClass.fixed + " shadow-ring"
+                    : "bg-surface-offset text-text-secondary",
+                )}
+                onClick={() => onRefundTargetChange(cat.id)}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Amount hero input */}
       <div className="flex flex-col items-center gap-1 py-2">
-        <div className="flex items-baseline gap-2">
-          <input
-            type="number"
-            inputMode="decimal"
-            value={amount}
-            onChange={(e) => onAmountChange(e.target.value)}
-            placeholder="0"
-            className="w-[10ch] bg-transparent text-center text-[3rem] font-bold leading-none tabular-nums text-foreground outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-          />
-          <span className="text-base font-medium text-text-tertiary">EGP</span>
-        </div>
-        <p className={cn("text-xs font-medium", getImpactColor(selectedAction, parsedAmount))}>
-          {getImpactLine(t, selectedAction, parsedAmount, selectedCategory)}
+        <input
+          type="number"
+          inputMode="decimal"
+          value={amount}
+          onChange={(e) => onAmountChange(e.target.value)}
+          placeholder="0"
+          className="w-full bg-transparent text-center text-[3rem] font-bold leading-none tabular-nums text-foreground outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        />
+        <span className="text-sm font-medium text-text-tertiary">EGP</span>
+        <p className={cn("text-xs font-medium", getImpactColor(selectedAction, parsedAmount, isMajor))}>
+          {getImpactLine(t, selectedAction, parsedAmount, selectedCategory, refundTarget, isMajor)}
         </p>
       </div>
 
@@ -377,17 +489,26 @@ function getImpactLine(
   action: AddActionKind,
   amount: number,
   categoryId: string,
+  refundTarget: string,
+  isMajor: boolean,
 ): string {
   if (amount === 0) return t("impactEmpty");
 
   if (action === "variable") {
+    if (isMajor) return t("variable.majorImpact", { amount: formatAmount(amount) });
     return amount > 615.38
       ? t("variable.impactOver")
       : t("variable.impactTrack");
   }
 
   if (action === "refund") {
-    return t("refund.impact", { amount: formatAmount(amount) });
+    if (refundTarget === "variable") {
+      return t("refund.impactVariable", { amount: formatAmount(amount) });
+    }
+    const cat = budgetCategories.find((c) => c.id === refundTarget);
+    return cat
+      ? t("refund.impactBudget", { name: cat.name, amount: formatAmount(amount) })
+      : t("refund.impactVariable", { amount: formatAmount(amount) });
   }
 
   if (action === "budget") {
@@ -402,9 +523,12 @@ function getImpactLine(
   return "";
 }
 
-function getImpactColor(action: AddActionKind, amount: number): string {
+function getImpactColor(action: AddActionKind, amount: number, isMajor: boolean): string {
   if (amount === 0) return "text-text-tertiary";
-  if (action === "variable") return amount > 615.38 ? semanticTextClass.expense : semanticTextClass.income;
+  if (action === "variable") {
+    if (isMajor) return semanticTextClass.major;
+    return amount > 615.38 ? semanticTextClass.expense : semanticTextClass.income;
+  }
   if (action === "refund") return semanticTextClass.income;
   return "text-text-secondary";
 }
