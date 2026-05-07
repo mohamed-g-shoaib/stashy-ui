@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl"
 import { InstallmentCard } from "@/components/tracker/cards/installment-card"
 import { TrackerProgress } from "@/components/tracker/tracker-progress"
 import type { FixedExpenseItem, InstallmentOverview } from "@/components/tracker/types"
-import { heroSurfaceClass, statTileClass } from "@/lib/design-system-classes"
+import { statTileClass } from "@/lib/design-system-classes"
 import { semanticTextClass } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
 
@@ -24,7 +24,7 @@ export function InstallmentsSection({ items, overview, onCardTap }: Installments
   return (
     <section className="flex flex-col gap-3">
       {/* Overview summary — outside the item card */}
-      <div className={cn(heroSurfaceClass, "flex flex-col gap-3 p-4")}>
+      <div className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 p-4 shadow-soft">
         <div className="grid grid-cols-3 gap-2">
           <div className={cn(statTileClass, "col-span-1 text-start")}>
             <p className="text-[0.6875rem] font-medium uppercase tracking-[0.08em] text-text-tertiary">
@@ -67,7 +67,7 @@ export function InstallmentsSection({ items, overview, onCardTap }: Installments
       </div>
 
       {/* Item list inside one big card */}
-      <div className={cn("overflow-hidden", heroSurfaceClass)}>
+      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 shadow-soft">
         <div className="px-4 pb-2 pt-3">
           <span
             className={cn(

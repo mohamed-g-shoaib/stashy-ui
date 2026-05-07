@@ -2,7 +2,6 @@ import { useTranslations } from "next-intl"
 
 import { SubscriptionCard } from "@/components/tracker/cards/subscription-card"
 import type { FixedExpenseItem } from "@/components/tracker/types"
-import { heroSurfaceClass } from "@/lib/design-system-classes"
 import { semanticTextClass } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
 
@@ -18,7 +17,7 @@ export function SubscriptionsSection({ items, onCardTap }: SubscriptionsSectionP
 
   return (
     <section>
-      <div className={cn("overflow-hidden", heroSurfaceClass)}>
+      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 shadow-soft">
         <div className="px-4 pb-2 pt-3">
           <span
             className={cn(
