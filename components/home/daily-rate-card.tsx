@@ -1,5 +1,7 @@
 "use client";
 
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useTranslations } from "next-intl";
 
 import type { DailyRate } from "@/components/home/types";
@@ -107,17 +109,23 @@ function OnTrackState({ rate }: { rate: DailyRate }) {
         </div>
 
         {/* Tomorrow row */}
-        <div className="mt-3 border-t border-border pt-3" />
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-text-secondary">
-            {t("daily.tomorrowLabel")}
-          </span>
-          <span
-            dir="ltr"
-            className="font-medium text-foreground tabular-nums"
-          >
-            {formatCurrency(rate.tomorrowAmount ?? 0)}
-          </span>
+        <div className="mt-3 border-t border-border pt-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <HugeiconsIcon
+                icon={ArrowUpRight01Icon}
+                size={13}
+                aria-hidden="true"
+                className="text-income"
+              />
+              <span className="text-sm text-income">
+                {t("daily.tomorrowLabel")}
+              </span>
+            </div>
+            <span dir="ltr" className="font-semibold text-income tabular-nums">
+              {formatCurrency(rate.tomorrowAmount ?? 0)}
+            </span>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -166,17 +174,15 @@ function OverspentState({ rate }: { rate: DailyRate }) {
         </div>
 
         {/* Tomorrow row */}
-        <div className="mt-3 border-t border-border pt-3" />
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-warning-hover">
-            {t("daily.tomorrowDropLabel")}
-          </span>
-          <span
-            dir="ltr"
-            className="font-semibold text-danger tabular-nums"
-          >
-            {formatCurrency(rate.tomorrowAmount ?? 0)}
-          </span>
+        <div className="mt-3 border-t border-border pt-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-warning-hover">
+              {t("daily.tomorrowDropLabel")}
+            </span>
+            <span dir="ltr" className="font-semibold text-danger tabular-nums">
+              {formatCurrency(rate.tomorrowAmount ?? 0)}
+            </span>
+          </div>
         </div>
       </CardContent>
     </Card>
