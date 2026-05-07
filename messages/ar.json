@@ -314,6 +314,39 @@
   },
   "Tracker": {
     "title": "المتابعة",
+    "add": {
+      "title": "إضافة مصروف ثابت",
+      "fab": "إضافة مصروف ثابت",
+      "cancel": "إلغاء",
+      "save": "إضافة",
+      "description": {
+        "budget": "مظروف إنفاق شهري. التجاوز يُخصم من ميزانيتك المتغيرة.",
+        "recurring": "فاتورة ثابتة تظهر كمدفوعة أو معلقة كل شهر.",
+        "installment": "خطة دفع متعددة الأشهر تُتابع حتى تاريخ الانتهاء."
+      },
+      "types": {
+        "budget": "ميزانية",
+        "recurring": "متكرر",
+        "installment": "قسط"
+      },
+      "fields": {
+        "name": "الاسم",
+        "monthlyBudget": "الميزانية الشهرية",
+        "monthlyAmount": "المبلغ الشهري",
+        "startDate": "تاريخ البداية",
+        "recurringStartHint": "يحدد يوم الشهر الذي يتكرر فيه هذا الاشتراك. يمكن أن يكون تاريخاً مستقبلياً.",
+        "endDate": "تاريخ الانتهاء",
+        "endDateHint": "موعد آخر دفعة.",
+        "totalInstallments": "عدد الأقساط",
+        "totalInstallmentsHint": "إجمالي عدد الدفعات الشهرية.",
+        "installmentSyncHint": "{count} دفعة · تنتهي {endDate}",
+        "namePlaceholder": {
+          "budget": "مثال: قهوة، بنزين، بقالة",
+          "recurring": "مثال: نتفليكس، سبوتيفاي، إيجار",
+          "installment": "مثال: قسط آيفون، قرض سيارة"
+        }
+      }
+    },
     "tabs": {
       "fixed": "ثابت",
       "major": "كبير",

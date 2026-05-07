@@ -314,6 +314,39 @@
   },
   "Tracker": {
     "title": "Tracker",
+    "add": {
+      "title": "Add Fixed Expense",
+      "fab": "Add fixed expense",
+      "cancel": "Cancel",
+      "save": "Add",
+      "description": {
+        "budget": "A monthly spending envelope. Overruns pull from your variable budget.",
+        "recurring": "A fixed bill that appears as paid or pending each month.",
+        "installment": "A multi-month payment plan tracked to its end date."
+      },
+      "types": {
+        "budget": "Budget",
+        "recurring": "Recurring",
+        "installment": "Installment"
+      },
+      "fields": {
+        "name": "Name",
+        "monthlyBudget": "Monthly Budget",
+        "monthlyAmount": "Monthly Amount",
+        "startDate": "Start Date",
+        "recurringStartHint": "Sets the day of month this bill recurs. Can be a future date.",
+        "endDate": "End Date",
+        "endDateHint": "When the final payment is due.",
+        "totalInstallments": "Installments",
+        "totalInstallmentsHint": "Total number of monthly payments.",
+        "installmentSyncHint": "{count} payments · ends {endDate}",
+        "namePlaceholder": {
+          "budget": "e.g. Coffee, Gas, Groceries",
+          "recurring": "e.g. Netflix, Spotify, Rent",
+          "installment": "e.g. iPhone plan, Car loan"
+        }
+      }
+    },
     "tabs": {
       "fixed": "Fixed",
       "major": "Major",
