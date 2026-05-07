@@ -3,6 +3,7 @@
 import { FilterIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import * as React from "react";
 
 import { AppBottomNavigation } from "@/components/app-bottom-navigation";
@@ -33,9 +34,17 @@ export function HistoryScreen() {
   const tFilter = useTranslations("History.drawer.filter");
   const locale = useLocale() as Locale;
   const direction = getDirectionForLocale(locale);
-  const [filterState, setFilterState] = React.useState<HistoryFilterState>(
-    defaultHistoryFilterState,
-  );
+  const searchParams = useSearchParams();
+  const [filterState, setFilterState] = React.useState<HistoryFilterState>(() => {
+    const filter = searchParams.get("filter");
+    const validTypes = ["all", "variable", "monthly", "budget", "major"] as const;
+    type ValidType = typeof validTypes[number];
+    const isValid = (v: string | null): v is ValidType =>
+      validTypes.includes(v as ValidType);
+    return isValid(filter)
+      ? { ...defaultHistoryFilterState, type: filter }
+      : defaultHistoryFilterState;
+  });
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const items = historyTransactions;
 

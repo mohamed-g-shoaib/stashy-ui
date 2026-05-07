@@ -25,7 +25,7 @@ export function InstallmentCard({ item, onTap }: InstallmentCardProps) {
       type="button"
       className={cn(
         surfacePanelClass,
-        "flex w-full flex-col gap-2.5 px-4 py-3 text-start",
+        "bg-card flex w-full flex-col gap-2.5 px-4 py-3 text-start",
       )}
       onClick={() => onTap(item)}
     >

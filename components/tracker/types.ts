@@ -52,16 +52,3 @@ export type InstallmentOverview = {
   totalPaidAllTime: number; // installmentsPaid * budget per item, summed
   totalRemainingAllTime: number; // installmentsRemaining * budget per item, summed
 };
-
-// ─── Major expense (major tab unchanged) ─────────────────────────────────────
-
-export type MajorExpense = {
-  nameKey?: string;
-  nameLabel?: string;
-  amount: string;
-  date: string;
-  methodKey?: string;
-  methodLabel?: string;
-  percent: string;
-  isLarge: boolean;
-};

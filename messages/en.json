@@ -124,80 +124,53 @@
       "close": "Close",
       "preview": "This interaction is ready for the next implementation pass.",
       "add": {
-        "title": "Add transaction",
-        "description": "Choose the kind of money movement you want to record.",
-        "impactTitle": "What this changes",
-        "nextTitle": "Next in the real flow",
-        "continue": "Continue",
+        "title": "Log money",
+        "description": "Record a spending, refund, or budget charge.",
         "cancel": "Cancel",
-        "back": "Back",
-        "savePreview": "Save transaction",
-        "previewTitle": "What happens now",
-        "previewMeta": "Paid with {method}",
-        "responseTitle": "Transaction added",
-        "responseAppliedTitle": "Your month now reflects",
-        "addAnother": "Add another",
-        "done": "Done",
+        "save": "Save",
+        "impactEmpty": "Enter an amount",
         "fields": {
           "amount": "Amount",
+          "date": "Date",
           "method": "Payment Method",
-          "note": "Note"
+          "note": "Note",
+          "addNote": "Add a note"
         },
         "methods": {
           "cash": "Cash",
           "card": "Card",
           "bank": "Bank"
         },
-        "spend": {
-          "label": "Log spending",
-          "description": "Record a normal day-to-day expense that should count against today’s allowance.",
-          "amountHint": "Enter the amount that should count against today’s spending room.",
-          "impact": "This lowers what remains safe to spend today and can trigger tomorrow-impact messaging if you go over.",
-          "next": "The form should ask for amount, payment method, and whether this is a normal variable expense.",
-          "formIntro": "Capture a normal variable expense and immediately preview whether it keeps you on track or pushes tomorrow down.",
+        "refund": {
+          "label": "Refund",
+          "description": "Returns money to your variable pool or back to a budget envelope.",
+          "notePlaceholder": "What was refunded?",
+          "targetLabel": "Refund to",
+          "targetVariable": "Variable",
+          "impactVariable": "+{amount} back to variable pool",
+          "impactBudget": "+{amount} back to {name}"
+        },
+        "variable": {
+          "label": "Variable",
+          "description": "Counts against today's spending limit and affects your daily rate.",
+          "majorDescription": "Reduces your monthly budget directly. Not counted as daily spending. Best for large one-time purchases.",
           "notePlaceholder": "What did you spend this on?",
-          "previewTrack": "This keeps you within today’s safe spending limit.",
-          "previewOverspent": "This pushes you past today’s safe limit and lowers tomorrow’s room.",
-          "responseTrack": "{amount} was added as everyday spending, and Home stays on track.",
-          "responseOverspent": "{amount} was added as spending, and Home switches to overspent.",
-          "appliedTrack": "On-track daily rate",
-          "appliedOverspent": "Overspent daily rate"
+          "impactTrack": "On track today",
+          "impactOver": "Pushes past today's limit",
+          "majorImpact": "{amount} lowers the monthly rate for remaining days",
+          "majorHint": "Large one-time purchase? Log it as major.",
+          "majorOn": "Major ✓",
+          "majorOff": "Mark as major",
+          "budgetHint": "Spend on this regularly? Track it as a budget.",
+          "budgetHintAction": "Add budget"
         },
-        "receive": {
-          "label": "Add received income",
-          "description": "Record money that increases this month’s variable budget for the days left.",
-          "amountHint": "Enter the amount that should increase this month’s available room.",
-          "impact": "Received income raises the month’s effective variable budget and can lift the daily rate for the days that remain.",
-          "next": "The form should ask for amount, payment method, and classify it as received money rather than a transfer or injection.",
-          "formIntro": "Capture money that genuinely increases this month’s variable budget rather than only offsetting a single day.",
-          "notePlaceholder": "Where did this money come from?",
-          "preview": "This lifts the month’s variable room and supports a stronger daily rate.",
-          "response": "{amount} was added as received income, and Home moves back to the safer on-track state.",
-          "applied": "Recovered on-track daily rate"
-        },
-        "injection": {
-          "label": "Add budget injection",
-          "description": "Top up the month on purpose when you need breathing room after going over budget.",
-          "amountHint": "Enter the top-up amount you want to add back into the month.",
-          "impact": "A budget injection deliberately gives the month more room, which helps recover the daily rate after pressure or emergency states.",
-          "next": "The form should make the recovery intent explicit so this action feels different from ordinary received income.",
-          "formIntro": "Capture a deliberate rescue or top-up so the interaction feels distinct from ordinary incoming money.",
-          "notePlaceholder": "Why are you topping up this month?",
-          "preview": "This restores breathing room and supports the daily rate for the remaining days.",
-          "response": "{amount} was added as a budget injection, and Home returns to a more stable state.",
-          "applied": "Recovered budget-support state"
-        },
-        "major": {
-          "label": "Add major purchase",
-          "description": "Record a large one-time expense that should lower the rate for the rest of the month.",
-          "amountHint": "Enter the purchase amount that should pressure the rest of the month.",
-          "impact": "Major purchases do not count as normal daily spending. They reduce the month’s effective budget and push the remaining daily rate down.",
-          "next": "The confirmation should preview the new daily rate before saving so the consequence feels immediate and clear.",
-          "formIntro": "Capture a one-time major purchase separately so it changes the month without pretending it was ordinary daily spend.",
-          "notePlaceholder": "What was the major purchase?",
-          "preview": "This keeps the purchase separate from daily spending while pushing the rest of the month harder.",
-          "response": "{amount} was added as a major purchase, and the major-expense state stays visible on Home.",
-          "applied": "Major-expense state"
+        "budget": {
+          "label": "Budget",
+          "description": "Logged against a category envelope. Overspending it pulls from your daily rate.",
+          "notePlaceholder": "What did you buy?",
+          "impactNoCategory": "Select a category",
+          "impactRemaining": "{name} · {amount} left",
+          "impactOver": "{name} · {amount} over envelope"
         }
       },
       "filter": {
@@ -235,6 +208,9 @@
         "trackPreview": "On track",
         "overspentPreview": "Overspent",
         "emergencyPreview": "Emergency",
+        "planLabel": "User plan",
+        "planFree": "Free",
+        "planPro": "Pro",
         "introLabel": "Intro card preview",
         "introHint": "Keep dismissable onboarding surfaces re-toggleable here so newcomer and returning states can both be reviewed.",
         "majorLabel": "Major expense preview",
@@ -341,6 +317,63 @@
   },
   "Tracker": {
     "title": "Tracker",
+    "transfer": {
+      "title": "Transfer Budget",
+      "description": "Move remaining funds from {name} to another envelope or your variable pool.",
+      "amountLabel": "Amount",
+      "availableHint": "{amount} available to transfer",
+      "destinationLabel": "Transfer To",
+      "destinationVariable": "Variable Pool",
+      "destinationVariableSub": "Returns to your monthly spending room",
+      "destinationBudgetSub": "{amount} remaining",
+      "destinationBudgetFull": "Envelope full",
+      "confirm": "Transfer",
+      "cancel": "Cancel",
+      "impactVariableRate": "+{rate}/day for {days} remaining days",
+      "impactVariablePool": "{amount} returns to your monthly variable pool",
+      "impactBudget": "+{amount} added to {name}'s envelope"
+    },
+    "add": {
+      "title": "Add Fixed Expense",
+      "editTitle": "Edit Fixed Expense",
+      "fab": "Add fixed expense",
+      "cancel": "Cancel",
+      "save": "Add",
+      "saveEdit": "Save Changes",
+      "description": {
+        "budget": "A monthly spending envelope. Overruns pull from your variable budget.",
+        "recurring": "A fixed bill that appears as paid or pending each month.",
+        "installment": "A multi-month payment plan tracked to its end date."
+      },
+      "types": {
+        "budget": "Budget",
+        "recurring": "Recurring",
+        "installment": "Installment"
+      },
+      "fields": {
+        "name": "Name",
+        "monthlyBudget": "Monthly Budget",
+        "monthlyAmount": "Monthly Amount",
+        "paymentMethod": "Payment Method",
+        "methods": {
+          "cash": "Cash",
+          "card": "Card",
+          "bank": "Bank"
+        },
+        "startDate": "Start Date",
+        "recurringStartHint": "Sets the day of month this bill recurs. Can be a future date.",
+        "endDate": "End Date",
+        "endDateHint": "When the final payment is due.",
+        "totalInstallments": "Installments",
+        "totalInstallmentsHint": "Total number of monthly payments.",
+        "installmentSyncHint": "{count} payments · ends {endDate}",
+        "namePlaceholder": {
+          "budget": "e.g. Coffee, Gas, Groceries",
+          "recurring": "e.g. Netflix, Spotify, Rent",
+          "installment": "e.g. iPhone plan, Car loan"
+        }
+      }
+    },
     "tabs": {
       "fixed": "Fixed",
       "major": "Major",
@@ -383,6 +416,7 @@
       "over": "{amount} over",
       "payNow": "Pay Now",
       "edit": "Edit",
+      "transfer": "Transfer",
       "types": {
         "manual": "Budget",
         "recurring": "Recurring",
@@ -398,6 +432,12 @@
           "warning": "Warning",
           "over_budget": "Over Budget"
         }
+      },
+      "subscriptionOverview": {
+        "paid": "Paid",
+        "total": "Total",
+        "settledLabel": "Settled",
+        "settledValue": "{paid} / {total}"
       },
       "installmentOverview": {
         "obligation": "Monthly",
@@ -625,14 +665,22 @@
       "overspentDays": "{count} days overspent so far"
     },
     "projection": {
-      "title": "Projection",
-      "subtitle": "Where this month is likely heading if nothing changes.",
-      "avgDaily": "Avg Daily",
-      "projectedSpend": "Proj. Spend",
-      "projectedSavings": "Proj. Savings",
-      "positiveNarrative": "If you keep this pace, you'll finish {month} {amount} under budget.",
-      "negativeNarrative": "At this rate, you'll overspend by {amount} by end of month. Consider pulling back on variable spending.",
-      "savingsRate": "~{rate}% projected savings rate"
+      "title": "End of month forecast",
+      "heroSaving": "On track to save",
+      "heroOverspend": "Likely to overspend by",
+      "heroEarly": "Only {day} days of data so far",
+      "heroSavingCaption": "That's {rate}% of your income saved this month.",
+      "heroOverspendCaption": "Try cutting back on flexible spending to get back on track.",
+      "heroEarlyCaption": "Check back in a few days for a more reliable estimate.",
+      "paceCaption": "per day · {days} days left",
+      "lowConfidenceBadge": "Low confidence",
+      "forecastSpent": "Spent so far",
+      "forecastProjected": "Projected",
+      "dailyPaceLabel": "Daily spend",
+      "dailyBudgetLine": "Budget {amount}/day",
+      "underTarget": "Under daily target",
+      "overTarget": "Over daily target",
+      "projectedSavingsLabel": "Projected saved"
     },
     "shaping": {
       "title": "What’s Shaping This Month",
@@ -668,6 +716,85 @@
       "emptyDescription": "No previous month data yet. Close {month} to unlock comparison.",
       "closeMonth": "Close {month}"
     },
+    "tabs": {
+      "spending": "Spending",
+      "overview": "Overview",
+      "trends": "Trends"
+    },
+    "section": {
+      "monthlyHealth": "Monthly health",
+      "whereMoneyWent": "Where your money went",
+      "improving": "Are you improving"
+    },
+    "summary": {
+      "title": "Month summary",
+      "verdict": {
+        "strong": "A strong month",
+        "solid": "A solid month",
+        "mixed": "A mixed month",
+        "challenging": "A challenging month"
+      },
+      "savings": {
+        "up": "Savings rate improved vs. last month",
+        "down": "Savings rate dipped vs. last month",
+        "same": "Savings rate held steady",
+        "first": "No comparison yet — first recorded month"
+      },
+      "days": {
+        "clean": "Every tracked day stayed within the daily rate",
+        "mostlyClean": "{overspent} days went over the daily rate",
+        "rough": "{overspent} of {tracked} days overspent"
+      },
+      "rhythm": {
+        "consistent": "Spending rhythm was steady across the month",
+        "volatile": "Spending was uneven — concentrated in one part of the month"
+      }
+    },
+    "rollover": {
+      "title": "Monthly cushion",
+      "aheadLabel": "ahead this month",
+      "deficitLabel": "deficit so far",
+      "contextSentence": "You've spent {budgetUsed}% of your budget with {monthProgress}% of the month elapsed.",
+      "dotGridLabel": "Days within daily rate",
+      "overspentDays": "{overspent} of {tracked} days overspent"
+    },
+    "composition": {
+      "title": "Budget breakdown",
+      "subtitle": "How your monthly budget is structured",
+      "totalBudgetLabel": "monthly budget",
+      "fixedLabel": "Fixed",
+      "variableLabel": "Variable",
+      "committedAnnotation": "{pct}% of your budget is committed before the month starts"
+    },
+    "rhythm": {
+      "title": "Spending rhythm",
+      "subtitle": "Variable spend per week vs. your daily rate target",
+      "weekLabel": "Wk {n}",
+      "targetLabel": "Target",
+      "insightHeavyStart": "You tend to spend most heavily at the start of the month.",
+      "insightHeavyEnd": "Spending picked up toward the end of the month.",
+      "insightConsistent": "Your spending was consistent this month.",
+      "insightOverTarget": "Several weeks ran over the weekly target — check the breakdown above."
+    },
+    "methods": {
+      "title": "Payment methods",
+      "subtitle": "Where money moved, by method and type",
+      "filterAll": "All",
+      "filterVariable": "Variable",
+      "filterFixed": "Fixed",
+      "filterMajor": "Major",
+      "totalLabel": "total spent",
+      "fixedNote": "Fixed includes recurring and installment payments. Manual fixed may span multiple methods."
+    },
+    "trends": {
+      "title": "Savings rate trend",
+      "savingsRateLabel": "Savings Rate",
+      "deltaPositive": "+{delta}% vs last month",
+      "deltaNegative": "{delta}% vs last month",
+      "deltaNeutral": "Same as last month",
+      "closeMonthPrompt": "Close {month} to unlock your first comparison.",
+      "closeMonthCta": "Close {month}"
+    },
     "upgrade": {
       "title": "Unlock Analytics",
       "description": "See your spending pace, monthly trends, and savings projections all in one place.",
@@ -677,15 +804,38 @@
   "Settings": {
     "title": "Settings",
     "subtitle": "Manage your profile, security, and budgeting defaults.",
+    "sections": {
+      "budget": "Budget",
+      "preferences": "Preferences",
+      "data": "Data",
+      "support": "Support"
+    },
+    "currency": {
+      "label": "Currency",
+      "value": "EGP"
+    },
+    "preferences": {
+      "startOfMonth": "Month Starts On",
+      "startOfMonthValue": "1st of each month",
+      "security": "Password & Security"
+    },
+    "data": {
+      "export": "Export Data"
+    },
     "profile": {
       "title": "Profile",
       "subtitle": "Username, email, and member info",
-      "edit": "Edit",
+      "edit": "Edit Profile",
       "username": "Username",
       "email": "Email",
-      "memberSince": "Member Since",
+      "memberSince": "Member since",
       "active": "Active",
-      "inactive": "Inactive"
+      "inactive": "Inactive",
+      "proTitle": "Stashy Pro",
+      "proActive": "Active ✓",
+      "upgradeTitle": "Upgrade to Stashy Pro",
+      "upgradeDescription": "Unlock analytics, spending trends, monthly projections, and data exports.",
+      "upgradeCta": "Go Pro"
     },
     "budget": {
       "title": "Monthly Budget",
@@ -694,16 +844,14 @@
       "amountLabel": "Monthly Budget"
     },
     "boosts": {
-      "title": "Budget Management",
-      "subtitle": "Temporarily increase your monthly budget",
+      "title": "Budget Injection",
+      "subtitle": "Add extra budget for this month",
       "add": "Add",
-      "empty": "No active boosts. Tap Add to create one.",
-      "expires": "Expires {date}",
+      "empty": "No injections this month.",
+      "thisMonth": "Active this month",
       "label": "Label",
       "amount": "Amount",
-      "expiresOn": "Expires On",
-      "placeholderDate": "May 31, 2026",
-      "addPrimary": "Add Boost"
+      "addPrimary": "Add Injection"
     },
     "methods": {
       "title": "Payment Methods",
@@ -733,9 +881,25 @@
       "dark": "Dark",
       "system": "System",
       "language": "Language",
+      "timezone": "Timezone",
+      "notifications": "Notifications",
+      "notificationsValue": "Coming Soon",
       "monthlyReports": "Monthly Reports",
       "monthlyReportsValue": "Coming Soon",
-      "logout": "Logout"
+      "logout": "Log Out"
+    },
+    "support": {
+      "contactTitle": "Contact Support",
+      "contactSubtitle": "Get help or report an issue",
+      "privacyPolicy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "rate": "Rate Stashy"
+    },
+    "danger": {
+      "sectionLabel": "Account",
+      "deleteTitle": "Delete Account",
+      "deleteDescription": "Permanently delete your account and all data. This cannot be undone.",
+      "deleteConfirm": "Delete My Account"
     },
     "about": {
       "pwa": "{app} PWA",
@@ -748,8 +912,8 @@
       "editProfileDescription": "Update the profile details that show across your account.",
       "changeBudgetTitle": "Change Monthly Budget",
       "changeBudgetDescription": "Adjust the monthly budget target used across the app.",
-      "addBoostTitle": "Add Budget Boost",
-      "addBoostDescription": "Create a temporary increase with a clear expiry date.",
+      "addBoostTitle": "Add Budget Injection",
+      "addBoostDescription": "Add extra budget to this month's variable allowance.",
       "addMethodTitle": "Add Payment Method",
       "editMethodTitle": "Edit Payment Method",
       "methodDescription": "Choose the label and icon that best match this payment method.",

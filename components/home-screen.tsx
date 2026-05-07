@@ -10,6 +10,7 @@ import { navItems } from "@/components/home/home-data"
 import { HomeDrawer } from "@/components/home/home-drawer"
 import { HomeHeader } from "@/components/home/home-header"
 import type { DailyRate, DailyScenario, DrawerKind } from "@/components/home/types"
+import { PLAN } from "@/components/settings/data"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { type Locale } from "@/i18n/routing"
 import { getDirectionForLocale } from "@/lib/i18n"
@@ -22,6 +23,18 @@ export function HomeScreen() {
   const [activeNav, setActiveNav] = React.useState("home")
   const [dailyScenario, setDailyScenario] = React.useState<DailyScenario>("track")
   const [majorScenario, setMajorScenario] = React.useState<"active" | "none">("active")
+  const [plan, setPlan] = React.useState<"free" | "pro">(() => {
+    if (typeof window !== "undefined") {
+      const stored = window.localStorage.getItem("stashy-mock-plan")
+      if (stored === "free" || stored === "pro") return stored
+    }
+    return PLAN
+  })
+
+  const handlePlanChange = React.useCallback((value: "free" | "pro") => {
+    window.localStorage.setItem("stashy-mock-plan", value)
+    setPlan(value)
+  }, [])
   const [introCardVisible, setIntroCardVisible] = React.useState(true)
   const dailyRate = getDailyRate(dailyScenario, t)
 
@@ -65,17 +78,19 @@ export function HomeScreen() {
         onDailyScenarioChange={setDailyScenario}
         onIntroCardVisibleChange={handleIntroCardVisibleChange}
         onMajorScenarioChange={setMajorScenario}
+        plan={plan}
+        onPlanChange={handlePlanChange}
         onPreviewAddAction={(action, amount) => {
-          if (action === "major") {
-            setMajorScenario("active")
-            return
-          }
-
-          if (action === "receive" || action === "injection") {
+          if (action === "refund") {
             setDailyScenario("track")
             return
           }
 
+          if (action === "budget") {
+            return
+          }
+
+          // variable
           setDailyScenario(amount > 615.38 ? "overspent" : "track")
         }}
         onOpenChange={(open) => {
@@ -102,8 +117,8 @@ function getDailyRate(
       spent: "200 EGP",
       spentAmount: 200,
       explanation: t("daily.explanationTrack"),
-      tomorrow: "812 EGP",
-      tomorrowAmount: 812,
+      tomorrow: "871.32 EGP",
+      tomorrowAmount: 871.32,
       status: t("daily.statusTrack"),
       statusTone: "fixed",
       overByAmount: null,

@@ -28,7 +28,7 @@ export function SubscriptionCard({ item, onTap }: SubscriptionCardProps) {
       type="button"
       className={cn(
         surfacePanelClass,
-        "flex w-full items-center justify-between gap-3 px-4 py-3 text-start",
+        "bg-card flex w-full items-center justify-between gap-3 px-4 py-3 text-start",
       )}
       onClick={() => onTap(item)}
     >

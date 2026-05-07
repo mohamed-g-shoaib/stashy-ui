@@ -1,5 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
-import { use } from "react";
+import { use, Suspense } from "react";
 
 import { HistoryScreen } from "@/components/history-screen";
 
@@ -11,5 +11,9 @@ export default function TransactionsPage({
   const { locale } = use(params);
   setRequestLocale(locale);
 
-  return <HistoryScreen />;
+  return (
+    <Suspense>
+      <HistoryScreen />
+    </Suspense>
+  );
 }

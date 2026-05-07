@@ -1,325 +1,214 @@
 "use client"
 
-import {
-  ArrowRight01Icon,
-  ArrowUpRight01Icon,
-  Calendar03Icon,
-  CreditCardIcon,
-  Invoice03Icon,
-  MoneyBag02Icon,
-  ShoppingBag02Icon,
-} from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
 import { useLocale, useTranslations } from "next-intl"
-
-import { FILL_WIDTH_CLASS, TICK_POSITION_CLASS } from "@/components/analytics/data"
 import {
-  formatAnalyticsCurrency,
-  formatAnalyticsMonthLabel,
-  formatAnalyticsPercent,
-  formatAnalyticsSignedPercent,
-} from "@/components/analytics/formatters"
-import type { AnalyticsMonth, ComparisonTone } from "@/components/analytics/types"
+  Area,
+  AreaChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts"
+
+import { formatAnalyticsCurrency } from "@/components/analytics/formatters"
+import type { AnalyticsMonth } from "@/components/analytics/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { heroSurfaceClass, statTileClass } from "@/lib/design-system-classes"
-import { semanticProgressClass, semanticSurfaceClass, semanticTextClass } from "@/lib/semantic-styles"
+import { semanticTextClass } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
-
-export function PacingCard({ month }: { month: AnalyticsMonth }) {
-  const t = useTranslations("Analytics")
-  const pacingLabel =
-    month.pacingDeltaPct < 0
-      ? t("pacing.underPace")
-      : month.pacingDeltaPct > 0
-        ? t("pacing.overPace")
-        : t("pacing.onPace")
-  const pacingToneClass =
-    month.pacingDeltaPct < 0
-      ? semanticTextClass.fixed
-      : month.pacingDeltaPct > 0
-        ? semanticTextClass.expense
-        : "text-foreground"
-
-  return (
-    <Card size="sm" className="py-4">
-      <CardContent className="flex flex-col gap-5 px-4">
-        <div className="space-y-3">
-          <p className="text-[0.9375rem] font-medium leading-[1.6] text-foreground text-pretty">
-            {getPacingNarrative(t, month)}
-          </p>
-          <div className="flex items-end gap-3">
-            <p
-              dir="ltr"
-              className={cn(
-                "text-[2.75rem] font-semibold leading-none tracking-[-0.03em] tabular-nums",
-                pacingToneClass,
-              )}
-            >
-              {formatAnalyticsSignedPercent(month.pacingDeltaPct)}
-            </p>
-            <p className="pb-1 text-sm font-semibold uppercase tracking-[0.12em] text-text-secondary">
-              {pacingLabel}
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <HeroStat
-            label={t("pacing.budgetUsed")}
-            value={formatAnalyticsPercent(month.budgetUsedPct)}
-          />
-          <HeroStat
-            label={t("pacing.monthProgress")}
-            value={formatAnalyticsPercent(month.monthProgressPct)}
-          />
-        </div>
-
-        <div className="space-y-3">
-          <ProgressTrack
-            ariaLabel={t("pacing.barLabel")}
-            fillClassName={cn(
-              month.pacingDeltaPct < 0
-                ? semanticProgressClass.fixed
-                : month.pacingDeltaPct > 0
-                  ? semanticProgressClass.expense
-                  : semanticProgressClass.brand,
-              FILL_WIDTH_CLASS[month.budgetUsedPct],
-            )}
-            tickClassName={TICK_POSITION_CLASS[month.monthProgressPct]}
-          />
-
-          {month.overspentDaysMtd > 0 ? (
-            <MutedPill label={t("pacing.overspentDays", { count: month.overspentDaysMtd })} />
-          ) : null}
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
 
 export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
-  const projectedSavingsTone =
-    month.projectedSavings > 0
-      ? semanticTextClass.income
-      : month.projectedSavings < 0
-        ? semanticTextClass.expense
-        : "text-foreground"
+
+  const confidence = getProjectionConfidence(month.projectionConfidenceDay)
+  const isEarly = confidence === "early"
+  const isOverBudget = month.projectedEndSpend > month.effectiveBudget
+
+  const actualSpent = month.totalVariableSpent + month.fixedTotalSpent + month.majorPurchasesTotal
+  const dailyBudget = Math.round(month.effectiveBudget / month.daysInMonth)
+  const isOverDailyRate = month.avgDailySpend > dailyBudget
+
+  // Build cumulative spend trajectory — day 0 = start of month (zero spending)
+  const daysTracked = month.projectionConfidenceDay
+  const dailyActualRate = daysTracked > 0 ? actualSpent / daysTracked : 0
+
+  const trajectoryData = Array.from({ length: month.daysInMonth + 1 }, (_, day) => ({
+    day,
+    actual: day <= daysTracked ? Math.round(dailyActualRate * day) : null,
+    // projected starts at the handoff point so both lines share that value
+    projected:
+      day >= daysTracked
+        ? Math.round(actualSpent + (day - daysTracked) * month.avgDailySpend)
+        : null,
+  }))
+
+  // Savings gauge via CSS conic-gradient
+  const savingsRate = Math.max(0, Math.min(100, month.projectedSavingsRate))
+  const gaugeDeg = Math.round(savingsRate * 3.6)
+  const gaugeColor = isOverBudget ? "var(--color-expense)" : "var(--color-income)"
 
   return (
     <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
-        <SectionHeader
-          icon={Invoice03Icon}
-          title={t("projection.title")}
-          subtitle={t("projection.subtitle")}
-        />
+        <h2 className="text-[1.0625rem] font-semibold text-foreground">{t("projection.title")}</h2>
 
-        <div className="grid grid-cols-3 gap-2">
-          <CompactStat
-            label={t("projection.avgDaily")}
-            value={formatAnalyticsCurrency(locale, month.avgDailySpend)}
-          />
-          <CompactStat
-            label={t("projection.projectedSpend")}
-            value={formatAnalyticsCurrency(locale, month.projectedEndSpend)}
-          />
-          <CompactStat
-            label={t("projection.projectedSavings")}
-            value={formatAnalyticsCurrency(locale, Math.abs(month.projectedSavings))}
-            valueClassName={projectedSavingsTone}
-          />
-        </div>
+        {/* Chart 1 — Spend trajectory */}
+        <div className="space-y-2">
+          <ResponsiveContainer width="100%" height={160}>
+            <AreaChart data={trajectoryData} margin={{ top: 16, right: 4, left: 0, bottom: 0 }}>
+              <XAxis
+                dataKey="day"
+                ticks={[1, daysTracked, month.daysInMonth]}
+                tick={{ fontSize: 10, fill: "var(--color-text-tertiary)" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis hide domain={[0, Math.max(month.effectiveBudget * 1.1, month.projectedEndSpend * 1.05)]} />
+              <Tooltip
+                formatter={(value, name) => [
+                  formatAnalyticsCurrency(locale, Number(value)),
+                  name === "actual" ? t("projection.forecastSpent") : t("projection.forecastProjected"),
+                ]}
+                contentStyle={{
+                  backgroundColor: "var(--color-card)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                }}
+              />
+              <ReferenceLine
+                y={month.effectiveBudget}
+                stroke="var(--color-text-tertiary)"
+                strokeDasharray="4 3"
+                label={{
+                  value: formatAnalyticsCurrency(locale, month.effectiveBudget),
+                  position: "insideTopRight",
+                  fill: "var(--color-text-tertiary)",
+                  fontSize: 10,
+                }}
+              />
+              {/* Actual spend — solid area up to today */}
+              <Area
+                type="monotone"
+                dataKey="actual"
+                stroke="var(--color-expense)"
+                strokeWidth={1.5}
+                fill="var(--color-expense-subtle)"
+                fillOpacity={0.5}
+                dot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+              />
+              {/* Projected spend — dashed extension from today to month end */}
+              <Area
+                type="monotone"
+                dataKey="projected"
+                stroke="var(--color-warning)"
+                strokeWidth={1.5}
+                strokeDasharray="5 3"
+                fill="var(--color-warning-subtle)"
+                fillOpacity={0.35}
+                dot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
 
-        <p className="text-[0.9375rem] leading-[1.6] text-text-secondary text-pretty">
-          {getProjectionNarrative(t, locale, month)}
-        </p>
-
-        <MutedPill label={t("projection.savingsRate", { rate: month.projectedSavingsRate })} />
-      </CardContent>
-    </Card>
-  )
-}
-
-export function ShapingCard({ month }: { month: AnalyticsMonth }) {
-  const locale = useLocale()
-  const t = useTranslations("Analytics")
-  const remaining =
-    month.effectiveBudget -
-    month.totalVariableSpent +
-    month.incomeReceived -
-    month.fixedOverspend -
-    month.majorPurchasesTotal
-  const fixedOverspendAmount = month.fixedTotalSpent - month.fixedTotalBudget
-  const fixedStatus =
-    fixedOverspendAmount > 0
-      ? t("shaping.fixedOverBudget", {
-          amount: formatAnalyticsCurrency(locale, fixedOverspendAmount),
-          manualCount: month.fixedManualOverBudgetCount,
-          paidCount: month.fixedAutoPaidCount,
-          totalCount: month.fixedAutoTotalCount,
-        })
-      : t("shaping.fixedWithinBudget", {
-          budget: formatAnalyticsCurrency(locale, month.fixedTotalBudget),
-          paidCount: month.fixedAutoPaidCount,
-          totalCount: month.fixedAutoTotalCount,
-        })
-  const majorStatus =
-    month.majorPurchaseCount > 0
-      ? t("shaping.majorDragging", {
-          count: month.majorPurchaseCount,
-          amount: formatAnalyticsCurrency(locale, month.majorPurchasesTotal),
-        })
-      : t("shaping.majorNone")
-  const grandTotalSpent =
-    month.totalVariableSpent + month.fixedTotalSpent + month.majorPurchasesTotal
-  const netAfterReceived = grandTotalSpent - month.incomeReceived
-
-  return (
-    <Card size="sm" className="py-4">
-      <CardContent className="flex flex-col gap-4 px-4">
-        <SectionHeader
-          icon={MoneyBag02Icon}
-          title={t("shaping.title")}
-          subtitle={t("shaping.subtitle")}
-        />
-
-        <div className="grid gap-3">
-          <InsightRow
-            icon={MoneyBag02Icon}
-            title={t("shaping.variableBudgetLeft")}
-            value={formatAnalyticsCurrency(locale, remaining)}
-            tone={remaining >= 0 ? "positive" : "negative"}
-            description={
-              remaining >= 0
-                ? t("shaping.leftToWorkWith", {
-                    amount: formatAnalyticsCurrency(locale, Math.abs(remaining)),
-                  })
-                : t("shaping.missingFromPlan", {
-                    amount: formatAnalyticsCurrency(locale, Math.abs(remaining)),
-                  })
-            }
-          />
-
-          <InsightRow
-            icon={Calendar03Icon}
-            title={t("shaping.fixedPressure")}
-            value={
-              fixedOverspendAmount > 0
-                ? formatAnalyticsCurrency(locale, fixedOverspendAmount)
-                : formatAnalyticsCurrency(locale, month.fixedTotalSpent)
-            }
-            tone={fixedOverspendAmount > 0 ? "negative" : "neutral"}
-            description={fixedStatus}
-          />
-
-          <InsightRow
-            icon={ShoppingBag02Icon}
-            title={t("shaping.majorPurchases")}
-            value={formatAnalyticsCurrency(locale, month.majorPurchasesTotal)}
-            tone={month.majorPurchasesTotal > 0 ? "warning" : "neutral"}
-            description={majorStatus}
-          />
-        </div>
-
-        <Separator className="bg-border-subtle" />
-
-        <div className="grid grid-cols-2 gap-3">
-          <SummaryItem
-            label={t("shaping.grandTotalSpent")}
-            value={formatAnalyticsCurrency(locale, grandTotalSpent)}
-          />
-          <SummaryItem
-            label={t("shaping.netAfterReceived")}
-            value={formatAnalyticsCurrency(locale, netAfterReceived)}
-          />
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
-export function MonthComparisonCard({
-  currentMonth,
-  previousMonth,
-}: {
-  currentMonth: AnalyticsMonth
-  previousMonth: AnalyticsMonth | null
-}) {
-  const locale = useLocale()
-  const t = useTranslations("Analytics")
-
-  if (!previousMonth) {
-    return (
-      <Card size="sm" className="py-4">
-        <CardContent className="flex flex-col gap-4 px-4">
-          <SectionHeader
-            icon={CreditCardIcon}
-            title={t("comparison.title")}
-            subtitle={t("comparison.emptyDescription", { month: t("month.previousPlaceholder") })}
-          />
-          <div className="flex flex-col items-center gap-4 pt-2 text-center">
-            <Button type="button" size="sm">
-              {t("comparison.closeMonth", { month: t("month.previousPlaceholder") })}
-            </Button>
+          {/* Chart legend */}
+          <div className="flex gap-4 text-[0.6875rem] text-text-tertiary">
+            <span className="flex items-center gap-1.5">
+              <span className="size-2 shrink-0 rounded-full bg-expense-subtle" />
+              {t("projection.forecastSpent")}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span
+                className="h-0.5 w-4 shrink-0 rounded-full"
+                style={{
+                  background:
+                    "repeating-linear-gradient(90deg,var(--color-warning) 0 5px,transparent 5px 8px)",
+                }}
+              />
+              {t("projection.forecastProjected")}
+            </span>
           </div>
-        </CardContent>
-      </Card>
-    )
-  }
-
-  const savingsDelta = currentMonth.savingsRate - previousMonth.savingsRate
-  const baseDelta = currentMonth.baseDailyRate - previousMonth.baseDailyRate
-  const largePurchasesDelta = currentMonth.largePurchasesPct - previousMonth.largePurchasesPct
-
-  return (
-    <Card size="sm" className="py-4">
-      <CardContent className="flex flex-col gap-4 px-4">
-        <SectionHeader
-          icon={CreditCardIcon}
-          title={t("comparison.title")}
-          subtitle={getComparisonVerdict(t, currentMonth, previousMonth)}
-        />
-
-        <div className="flex flex-col gap-4">
-          <ComparisonRow
-            label={t("comparison.savingsRate")}
-            values={`${formatAnalyticsPercent(previousMonth.savingsRate)} → ${formatAnalyticsPercent(currentMonth.savingsRate)}`}
-            delta={savingsDelta}
-            tone={savingsDelta > 0 ? "positive" : savingsDelta < 0 ? "negative" : "neutral"}
-            message={savingsDelta !== 0 ? t("comparison.savingsMore") : undefined}
-          />
-
-          <Separator className="bg-border-subtle" />
-
-          <ComparisonRow
-            label={t("comparison.baseDailyRate")}
-            values={`${formatAnalyticsCurrency(locale, previousMonth.baseDailyRate)} → ${formatAnalyticsCurrency(locale, currentMonth.baseDailyRate)}`}
-            delta={baseDelta}
-            tone="neutral"
-            reason={t("comparison.baseRateReason")}
-          />
-
-          <Separator className="bg-border-subtle" />
-
-          <ComparisonRow
-            label={t("comparison.largePurchases")}
-            values={`${formatAnalyticsPercent(previousMonth.largePurchasesPct)} → ${formatAnalyticsPercent(currentMonth.largePurchasesPct)}`}
-            delta={largePurchasesDelta}
-            tone={
-              largePurchasesDelta < 0
-                ? "positive"
-                : largePurchasesDelta > 0
-                  ? "negative"
-                  : "neutral"
-            }
-            message={largePurchasesDelta !== 0 ? t("comparison.largeLess") : undefined}
-          />
         </div>
+
+        {/* Two tiles: daily pace + savings gauge */}
+        <div className="grid grid-cols-2 gap-2">
+          {/* Daily pace */}
+          <div className={cn(statTileClass, "flex flex-col gap-1.5")}>
+            <p className="text-[0.6875rem] font-medium text-text-tertiary">
+              {t("projection.dailyPaceLabel")}
+            </p>
+            <p
+              dir="ltr"
+              className={cn(
+                "text-base font-bold tabular-nums",
+                isOverDailyRate ? semanticTextClass.expense : semanticTextClass.income,
+              )}
+            >
+              {formatAnalyticsCurrency(locale, month.avgDailySpend)}
+            </p>
+            <p dir="ltr" className="text-[0.6875rem] tabular-nums text-text-tertiary">
+              {t("projection.dailyBudgetLine", {
+                amount: formatAnalyticsCurrency(locale, dailyBudget),
+              })}
+            </p>
+            <p
+              className={cn(
+                "text-[0.6875rem] font-semibold",
+                isOverDailyRate ? semanticTextClass.expense : semanticTextClass.income,
+              )}
+            >
+              {isOverDailyRate ? t("projection.overTarget") : t("projection.underTarget")}
+            </p>
+          </div>
+
+          {/* Chart 2 — Savings rate gauge (CSS conic) */}
+          <div className={cn(statTileClass, "flex flex-col items-center justify-center gap-2")}>
+            <div
+              className="relative flex items-center justify-center rounded-full"
+              style={{
+                width: 64,
+                height: 64,
+                background: `conic-gradient(${gaugeColor} ${gaugeDeg}deg, var(--color-border) ${gaugeDeg}deg)`,
+              }}
+            >
+              <div
+                className="flex items-center justify-center rounded-full bg-surface-offset"
+                style={{ width: 46, height: 46 }}
+              >
+                <p
+                  dir="ltr"
+                  className={cn(
+                    "text-sm font-bold tabular-nums",
+                    isOverBudget ? semanticTextClass.expense : semanticTextClass.income,
+                  )}
+                >
+                  {savingsRate}%
+                </p>
+              </div>
+            </div>
+            <p className="text-center text-[0.6875rem] font-medium text-text-secondary">
+              {t("projection.projectedSavingsLabel")}
+            </p>
+          </div>
+        </div>
+
+        {/* Low confidence warning */}
+        {isEarly && (
+          <Badge
+            variant="warning"
+            className="h-auto w-fit rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
+          >
+            {t("projection.lowConfidenceBadge")}
+          </Badge>
+        )}
       </CardContent>
     </Card>
   )
@@ -365,219 +254,6 @@ export function AnalyticsUpgradeGate() {
   )
 }
 
-function ComparisonRow({
-  label,
-  values,
-  delta,
-  tone,
-  message,
-  reason,
-}: {
-  label: string
-  values: string
-  delta: number
-  tone: ComparisonTone
-  message?: string
-  reason?: string
-}) {
-  const badgeLabel = delta === 0 ? "—" : formatAnalyticsSignedPercent(delta)
-  const icon =
-    delta < 0 ? (
-      <HugeiconsIcon icon={ArrowRight01Icon} aria-hidden="true" size={12} className="rotate-90" />
-    ) : delta > 0 ? (
-      <HugeiconsIcon icon={ArrowUpRight01Icon} aria-hidden="true" size={12} />
-    ) : null
-
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-foreground">{label}</p>
-          <p dir="ltr" className="mt-1 text-sm text-text-secondary tabular-nums">
-            {values}
-          </p>
-        </div>
-
-        <Badge
-          variant={
-            tone === "positive" ? "income" : tone === "negative" ? "expense" : "quiet"
-          }
-          className="h-auto rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
-        >
-          {icon}
-          <span dir="ltr" className="tabular-nums">
-            {badgeLabel}
-          </span>
-        </Badge>
-      </div>
-
-      {message ? (
-        <p className="text-sm leading-[1.5] text-text-secondary text-pretty">{message}</p>
-      ) : null}
-      {reason ? (
-        <p className="text-sm leading-[1.5] text-text-tertiary text-pretty">{reason}</p>
-      ) : null}
-    </div>
-  )
-}
-
-function SectionHeader({
-  icon,
-  title,
-  subtitle,
-}: {
-  icon: Parameters<typeof HugeiconsIcon>[0]["icon"]
-  title: string
-  subtitle: string
-}) {
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <HugeiconsIcon icon={icon} aria-hidden="true" size={18} className="text-text-secondary" />
-        <h2 className="text-[1.0625rem] font-semibold text-foreground">{title}</h2>
-      </div>
-      <p className="text-sm leading-[1.6] text-text-secondary text-pretty">{subtitle}</p>
-    </div>
-  )
-}
-
-function HeroStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className={cn("flex flex-col gap-1", statTileClass)}>
-      <p className="text-xs font-medium text-text-secondary">{label}</p>
-      <p
-        dir="ltr"
-        className="text-[1.25rem] font-semibold leading-[1.1] text-foreground tabular-nums"
-      >
-        {value}
-      </p>
-    </div>
-  )
-}
-
-function CompactStat({
-  label,
-  value,
-  valueClassName,
-}: {
-  label: string
-  value: string
-  valueClassName?: string
-}) {
-  return (
-    <div className={cn("flex min-w-0 flex-col gap-1", statTileClass)}>
-      <p className="text-[0.6875rem] font-medium text-text-secondary">{label}</p>
-      <p
-        dir="ltr"
-        className={cn(
-          "text-[0.9375rem] font-semibold leading-[1.2] text-foreground tabular-nums",
-          valueClassName,
-        )}
-      >
-        {value}
-      </p>
-    </div>
-  )
-}
-
-function InsightRow({
-  icon,
-  title,
-  value,
-  tone,
-  description,
-}: {
-  icon: Parameters<typeof HugeiconsIcon>[0]["icon"]
-  title: string
-  value: string
-  tone: "positive" | "negative" | "warning" | "neutral"
-  description: string
-}) {
-  return (
-    <div className={cn("flex gap-3", statTileClass)}>
-      <span
-        className={cn(
-          "mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full shadow-ring",
-          tone === "positive" && semanticSurfaceClass.income,
-          tone === "negative" && semanticSurfaceClass.expense,
-          tone === "warning" && semanticSurfaceClass.warning,
-          tone === "neutral" && semanticSurfaceClass.quiet,
-        )}
-      >
-        <HugeiconsIcon icon={icon} aria-hidden="true" size={18} />
-      </span>
-
-      <div className="min-w-0 flex-1">
-        <div className="flex items-start justify-between gap-3">
-          <p className="text-sm font-semibold text-foreground">{title}</p>
-          <p
-            dir="ltr"
-            className={cn(
-              "shrink-0 text-sm font-semibold tabular-nums",
-              tone === "positive" && semanticTextClass.income,
-              tone === "negative" && semanticTextClass.expense,
-              tone === "warning" && semanticTextClass.warning,
-              tone === "neutral" && "text-foreground",
-            )}
-          >
-            {value}
-          </p>
-        </div>
-        <p className="mt-1 text-sm leading-[1.5] text-text-secondary text-pretty">{description}</p>
-      </div>
-    </div>
-  )
-}
-
-function SummaryItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className={statTileClass}>
-      <p className="text-xs font-medium text-text-secondary">{label}</p>
-      <p dir="ltr" className="mt-1 text-sm font-semibold text-foreground tabular-nums">
-        {value}
-      </p>
-    </div>
-  )
-}
-
-function MutedPill({ label }: { label: string }) {
-  return (
-    <Badge
-      variant="quiet"
-      className="h-auto w-fit rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
-    >
-      {label}
-    </Badge>
-  )
-}
-
-function ProgressTrack({
-  ariaLabel,
-  fillClassName,
-  tickClassName,
-}: {
-  ariaLabel: string
-  fillClassName: string
-  tickClassName?: string
-}) {
-  return (
-    <div
-      aria-label={ariaLabel}
-      className="relative h-3 overflow-hidden rounded-full bg-surface-offset shadow-ring"
-    >
-      <div className={cn("absolute inset-y-0 start-0 rounded-full", fillClassName)} />
-      {tickClassName ? (
-        <div
-          className={cn(
-            "absolute inset-y-[-2px] w-0.5 -translate-x-1/2 rounded-full bg-text-tertiary/75",
-            tickClassName,
-          )}
-        />
-      ) : null}
-    </div>
-  )
-}
-
 function LockIllustration() {
   return (
     <div className="relative flex size-24 items-center justify-center rounded-full bg-brand-subtle shadow-ring">
@@ -591,60 +267,8 @@ function LockIllustration() {
   )
 }
 
-function getPacingNarrative(
-  t: ReturnType<typeof useTranslations<"Analytics">>,
-  month: AnalyticsMonth,
-) {
-  return t("pacing.narrative", {
-    budgetUsed: month.budgetUsedPct,
-    monthProgress: month.monthProgressPct,
-    descriptor:
-      month.pacingDeltaPct < 0
-        ? t("pacing.underPace")
-        : month.pacingDeltaPct > 0
-          ? t("pacing.overPace")
-          : t("pacing.onPace"),
-  })
-}
-
-function getProjectionNarrative(
-  t: ReturnType<typeof useTranslations<"Analytics">>,
-  locale: string,
-  month: AnalyticsMonth,
-) {
-  if (month.projectedSavings >= 0) {
-    return t("projection.positiveNarrative", {
-      month: formatAnalyticsMonthLabel(locale, month.isoDate),
-      amount: formatAnalyticsCurrency(locale, month.projectedSavings),
-    })
-  }
-
-  return t("projection.negativeNarrative", {
-    amount: formatAnalyticsCurrency(locale, Math.abs(month.projectedSavings)),
-  })
-}
-
-function getComparisonVerdict(
-  t: ReturnType<typeof useTranslations<"Analytics">>,
-  currentMonth: AnalyticsMonth,
-  previousMonth: AnalyticsMonth,
-) {
-  const savingsImproved = currentMonth.savingsRate > previousMonth.savingsRate
-  const baseImproved = currentMonth.baseDailyRate <= previousMonth.baseDailyRate
-  const largePurchasesImproved = currentMonth.largePurchasesPct <= previousMonth.largePurchasesPct
-  const allImproved = savingsImproved && baseImproved && largePurchasesImproved
-  const allWorse =
-    currentMonth.savingsRate < previousMonth.savingsRate &&
-    currentMonth.baseDailyRate > previousMonth.baseDailyRate &&
-    currentMonth.largePurchasesPct > previousMonth.largePurchasesPct
-
-  if (allImproved) {
-    return t("comparison.verdictBetter")
-  }
-
-  if (allWorse) {
-    return t("comparison.verdictWorse")
-  }
-
-  return t("comparison.verdictMixed")
+function getProjectionConfidence(day: number): "early" | "sweet" | "late" {
+  if (day <= 5) return "early"
+  if (day >= 25) return "late"
+  return "sweet"
 }

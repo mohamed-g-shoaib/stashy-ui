@@ -2,7 +2,7 @@ import type { IconSvgElement } from "@hugeicons/react";
 
 export type DrawerKind = "add" | "filter" | "help" | "settings" | "fixed" | "history";
 export type DailyScenario = "track" | "overspent" | "emergency";
-export type AddActionKind = "spend" | "receive" | "injection" | "major";
+export type AddActionKind = "variable" | "budget" | "refund";
 export type PaymentUrgency = "today" | "tomorrow" | "soon";
 
 export type DailyRate = {

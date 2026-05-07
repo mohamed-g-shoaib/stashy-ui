@@ -42,8 +42,8 @@ export function BudgetCard({ item, onTap }: BudgetCardProps) {
       type="button"
       className={cn(
         surfacePanelClass,
+        "bg-card flex w-full flex-col gap-2.5 px-4 py-3 text-start",
         getCardTint(statusTintTone[item.status]),
-        "flex w-full flex-col gap-2.5 px-4 py-3 text-start",
       )}
       onClick={() => onTap(item)}
     >

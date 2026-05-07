@@ -165,9 +165,9 @@ export function HistoryRow({
         type="button"
         className={cn(
           "relative flex w-full appearance-none items-start gap-3 text-start outline-none active:scale-[0.98]",
-          isStandalone 
-            ? "rounded-[var(--radius-lg)] p-4 shadow-soft ring-1 ring-border-subtle/50" 
-            : "rounded-xl p-3",
+          isStandalone
+            ? "rounded-[var(--radius-lg)] p-4 shadow-soft ring-1 ring-border-subtle/50"
+            : "rounded-md p-3",
           semanticSurfaceClass[typeTone],
         )}
         style={{

@@ -1,5 +1,7 @@
 "use client"
 
+import { Exchange01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useLocale } from "next-intl"
 import { useTranslations } from "next-intl"
 import * as React from "react"
@@ -27,6 +29,8 @@ import { cn } from "@/lib/utils"
 type FixedDetailSheetProps = {
   item: FixedExpenseItem | null
   onClose: () => void
+  onEdit: (item: FixedExpenseItem) => void
+  onTransfer: (item: FixedExpenseItem) => void
 }
 
 const statusBudgetTone: Record<FixedExpenseStatus, "income" | "warning" | "expense"> = {
@@ -35,7 +39,7 @@ const statusBudgetTone: Record<FixedExpenseStatus, "income" | "warning" | "expen
   over_budget: "expense",
 }
 
-export function FixedDetailSheet({ item, onClose }: FixedDetailSheetProps) {
+export function FixedDetailSheet({ item, onClose, onEdit, onTransfer }: FixedDetailSheetProps) {
   const locale = useLocale() as Locale
   const direction = getDirectionForLocale(locale)
   const t = useTranslations("Tracker.fixed")
@@ -43,7 +47,7 @@ export function FixedDetailSheet({ item, onClose }: FixedDetailSheetProps) {
   return (
     <Drawer open={item !== null} onOpenChange={(open) => { if (!open) onClose() }}>
       <DrawerContent dir={direction} className="mx-auto max-w-sm">
-        {item && <SheetBody item={item} t={t} direction={direction} />}
+        {item && <SheetBody item={item} t={t} direction={direction} onEdit={onEdit} onTransfer={onTransfer} />}
       </DrawerContent>
     </Drawer>
   )
@@ -55,9 +59,11 @@ type SheetBodyProps = {
   item: FixedExpenseItem
   t: ReturnType<typeof useTranslations<"Tracker.fixed">>
   direction: "ltr" | "rtl"
+  onEdit: (item: FixedExpenseItem) => void
+  onTransfer: (item: FixedExpenseItem) => void
 }
 
-function SheetBody({ item, t, direction: _direction }: SheetBodyProps) {
+function SheetBody({ item, t, direction: _direction, onEdit, onTransfer }: SheetBodyProps) {
   const typeBadgeClass =
     item.type === "manual"
       ? semanticSurfaceClass.brand
@@ -111,7 +117,7 @@ function SheetBody({ item, t, direction: _direction }: SheetBodyProps) {
       </div>
 
       <DrawerFooter className="px-5 pb-6 pt-3">
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           {item.type !== "manual" && (
             <Button
               variant="default"
@@ -121,10 +127,19 @@ function SheetBody({ item, t, direction: _direction }: SheetBodyProps) {
               {t("payNow")}
             </Button>
           )}
+          {item.type === "manual" && (
+            <button
+              type="button"
+              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-[var(--radius-sm)] border border-transfer/25 bg-transfer-subtle px-3 py-2.5 text-sm font-semibold text-transfer shadow-ring transition-opacity active:opacity-70 hover:opacity-80"
+              onClick={() => onTransfer(item)}
+            >
+              <HugeiconsIcon icon={Exchange01Icon} size={15} aria-hidden="true" />
+              {t("transfer")}
+            </button>
+          )}
           <Button
             variant="outline"
-            className={item.type === "manual" ? "flex-1" : ""}
-            onClick={() => console.log("Edit — mock, no-op")}
+            onClick={() => onEdit(item)}
           >
             {t("edit")}
           </Button>
