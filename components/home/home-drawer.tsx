@@ -40,7 +40,7 @@ import {
 } from "@/lib/design-system-classes";
 import { semanticSurfaceClass, semanticTextClass } from "@/lib/semantic-styles";
 import { cn } from "@/lib/utils";
-import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { fixedItems } from "@/data/fixed-tracker-mock";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -177,6 +177,7 @@ export function HomeDrawer({
               }}
               onCategoryChange={setSelectedCategory}
               onRefundTargetChange={setRefundTarget}
+              onCloseDrawer={() => onOpenChange(false)}
             />
           ) : kind === "help" ? (
             <HelpContent dailyScenario={dailyScenario} />
@@ -241,6 +242,7 @@ function AddFlow({
   onSelectedActionChange,
   onCategoryChange,
   onRefundTargetChange,
+  onCloseDrawer,
 }: {
   amount: string;
   date: string;
@@ -260,8 +262,10 @@ function AddFlow({
   onSelectedActionChange: (v: AddActionKind) => void;
   onCategoryChange: (v: string) => void;
   onRefundTargetChange: (v: string) => void;
+  onCloseDrawer: () => void;
 }) {
   const t = useTranslations("Home.drawer.add");
+  const router = useRouter();
   const parsedAmount = Number(amount) || 0;
   const today = getTodayString();
   const methodOptions = (["cash", "card", "bank"] as const).map((v) => ({
@@ -301,9 +305,13 @@ function AddFlow({
 
       {/* Variable → budget hint */}
       {selectedAction === "variable" && (
-        <Link
-          href="/tracker"
-          className="flex items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-fixed/20 bg-fixed-subtle px-3 py-2.5 shadow-ring transition-opacity active:opacity-70"
+        <button
+          type="button"
+          className="flex items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-fixed/20 bg-fixed-subtle px-3 py-2.5 shadow-ring transition-opacity active:opacity-70 w-full text-start"
+          onClick={() => {
+            onCloseDrawer();
+            router.push("/tracker?add=budget");
+          }}
         >
           <p className="flex-1 text-xs leading-[1.4] text-fixed/80 text-pretty">
             {t("variable.budgetHint")}
@@ -311,7 +319,7 @@ function AddFlow({
           <span className="shrink-0 text-xs font-semibold text-fixed">
             {t("variable.budgetHintAction")} →
           </span>
-        </Link>
+        </button>
       )}
 
       {/* Variable → major toggle — row with sliding switch */}

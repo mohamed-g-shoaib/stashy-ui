@@ -46,6 +46,7 @@ type TrackerAddDrawerProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   editItem?: FixedExpenseItem | null
+  defaultAddType?: AddType
 }
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
@@ -79,13 +80,13 @@ function monthsBetween(startStr: string, endStr: string): number {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export function TrackerAddDrawer({ open, onOpenChange, editItem }: TrackerAddDrawerProps) {
+export function TrackerAddDrawer({ open, onOpenChange, editItem, defaultAddType = "budget" }: TrackerAddDrawerProps) {
   const t = useTranslations("Tracker.add")
   const locale = useLocale() as Locale
   const direction = getDirectionForLocale(locale)
   const isEdit = editItem != null
 
-  const [addType, setAddType] = React.useState<AddType>("budget")
+  const [addType, setAddType] = React.useState<AddType>(defaultAddType)
   const [name, setName] = React.useState("")
   const [amount, setAmount] = React.useState("")
   const [paymentMethod, setPaymentMethod] = React.useState<PaymentMethodValue>("cash")
@@ -95,7 +96,7 @@ export function TrackerAddDrawer({ open, onOpenChange, editItem }: TrackerAddDra
   const [lastInstField, setLastInstField] = React.useState<"endDate" | "count">("endDate")
 
   const reset = React.useCallback(() => {
-    setAddType("budget")
+    setAddType(defaultAddType)
     setName("")
     setAmount("")
     setPaymentMethod("cash")
@@ -103,7 +104,7 @@ export function TrackerAddDrawer({ open, onOpenChange, editItem }: TrackerAddDra
     setEndDate("")
     setTotalInstallments("")
     setLastInstField("endDate")
-  }, [])
+  }, [defaultAddType])
 
   // Pre-fill when opening in edit mode, reset when closing
   React.useEffect(() => {
@@ -116,10 +117,12 @@ export function TrackerAddDrawer({ open, onOpenChange, editItem }: TrackerAddDra
         const count = editItem.installmentsTotal ?? 0
         setTotalInstallments(count > 0 ? String(count) : "")
       }
+    } else if (open && !editItem) {
+      setAddType(defaultAddType)
     } else if (!open) {
       reset()
     }
-  }, [open, editItem, reset])
+  }, [open, editItem, defaultAddType, reset])
 
   function handleTotalInstallmentsChange(value: string) {
     setTotalInstallments(value)

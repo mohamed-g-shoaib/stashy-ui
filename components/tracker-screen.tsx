@@ -3,6 +3,7 @@
 import { AddSquareIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useTranslations } from "next-intl";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
 
 import { AppBottomNavigation } from "@/components/app-bottom-navigation";
@@ -16,7 +17,28 @@ import { cn } from "@/lib/utils";
 
 export function TrackerScreen() {
   const t = useTranslations("Tracker");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [addOpen, setAddOpen] = React.useState(false);
+
+  const addParam = searchParams.get("add");
+
+  React.useEffect(() => {
+    if (addParam) {
+      setAddOpen(true);
+    }
+  }, [addParam]);
+
+  const handleOpenChange = (open: boolean) => {
+    setAddOpen(open);
+    if (!open && addParam) {
+      const newParams = new URLSearchParams(searchParams.toString());
+      newParams.delete("add");
+      router.replace(`${pathname}?${newParams.toString()}`, { scroll: false });
+    }
+  };
 
   return (
     <div className="flex min-h-svh flex-col bg-background">
@@ -45,7 +67,11 @@ export function TrackerScreen() {
         <HugeiconsIcon icon={AddSquareIcon} aria-hidden="true" />
       </Button>
 
-      <TrackerAddDrawer open={addOpen} onOpenChange={setAddOpen} />
+      <TrackerAddDrawer 
+        open={addOpen} 
+        onOpenChange={handleOpenChange} 
+        defaultAddType={(addParam as any) || "budget"} 
+      />
 
       <AppBottomNavigation activeValue="tracker" items={navItems} />
     </div>
