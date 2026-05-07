@@ -779,7 +779,20 @@
     "sections": {
       "budget": "Budget",
       "preferences": "Preferences",
+      "data": "Data",
       "support": "Support"
+    },
+    "currency": {
+      "label": "Currency",
+      "value": "EGP"
+    },
+    "preferences": {
+      "startOfMonth": "Month Starts On",
+      "startOfMonthValue": "1st of each month",
+      "security": "Password & Security"
+    },
+    "data": {
+      "export": "Export Data"
     },
     "profile": {
       "title": "Profile",
@@ -844,7 +857,10 @@
     },
     "support": {
       "contactTitle": "Contact Support",
-      "contactSubtitle": "Get help or report an issue"
+      "contactSubtitle": "Get help or report an issue",
+      "privacyPolicy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "rate": "Rate Stashy"
     },
     "danger": {
       "sectionLabel": "Account",

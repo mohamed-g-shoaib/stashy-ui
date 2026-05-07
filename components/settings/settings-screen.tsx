@@ -20,6 +20,7 @@ import {
   AboutBlock,
   BudgetSection,
   DangerSection,
+  DataSection,
   LogoutButton,
   PreferencesGroupCard,
   ProfileHeroBlock,
@@ -154,6 +155,8 @@ export function SettingsScreen() {
               setLanguage((current) => (current === "English" ? "Arabic" : "English"))
             }
           />
+
+          <DataSection />
 
           <SupportGroupCard />
 

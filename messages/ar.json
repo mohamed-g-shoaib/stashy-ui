@@ -779,7 +779,20 @@
     "sections": {
       "budget": "الميزانية",
       "preferences": "التفضيلات",
+      "data": "البيانات",
       "support": "الدعم"
+    },
+    "currency": {
+      "label": "العملة",
+      "value": "EGP"
+    },
+    "preferences": {
+      "startOfMonth": "بداية الشهر",
+      "startOfMonthValue": "أول كل شهر",
+      "security": "كلمة المرور والأمان"
+    },
+    "data": {
+      "export": "تصدير البيانات"
     },
     "profile": {
       "title": "الملف الشخصي",
@@ -844,7 +857,10 @@
     },
     "support": {
       "contactTitle": "التواصل مع الدعم",
-      "contactSubtitle": "احصل على مساعدة أو أبلغ عن مشكلة"
+      "contactSubtitle": "احصل على مساعدة أو أبلغ عن مشكلة",
+      "privacyPolicy": "سياسة الخصوصية",
+      "terms": "شروط الخدمة",
+      "rate": "قيّم ستاشي"
     },
     "danger": {
       "sectionLabel": "الحساب",

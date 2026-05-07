@@ -5,17 +5,24 @@ import {
   ArrowRight01Icon,
   BankIcon,
   BookOpen01Icon,
+  Calendar01Icon,
   Calendar03Icon,
   Clock01Icon,
+  Coins01Icon,
   CreditCardIcon,
   Delete01Icon,
+  Download04Icon,
   Globe02Icon,
   Invoice03Icon,
+  LegalDocument01Icon,
   Logout01Icon,
   Mail01Icon,
   MoneyBag02Icon,
   Notification01Icon,
+  PolicyIcon,
+  SecurityLockIcon,
   StarIcon,
+  ThumbsUpIcon,
   UserCircleIcon,
   UserRemove01Icon,
 } from "@hugeicons/core-free-icons"
@@ -128,6 +135,15 @@ export function BudgetSection({
       <p className="px-1 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
         {t("sections.budget")}
       </p>
+
+      {/* Currency — informational, future-configurable */}
+      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 shadow-soft">
+        <SettingsRow
+          icon={Coins01Icon}
+          label={t("currency.label")}
+          value={t("currency.value")}
+        />
+      </div>
 
       {/* Monthly Budget — lone row */}
       <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 shadow-soft">
@@ -319,6 +335,31 @@ export function PreferencesGroupCard({
 
       <RowDivider />
 
+      {/* Start of month */}
+      <div className="flex min-h-[3.25rem] items-center gap-3 bg-card px-4 py-3">
+        <RowIconWell icon={Calendar01Icon} />
+        <span className="flex-1 text-sm font-medium text-foreground">
+          {t("preferences.startOfMonth")}
+        </span>
+        <span className="text-xs font-medium text-text-secondary">
+          {t("preferences.startOfMonthValue")}
+        </span>
+        <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" className="text-text-tertiary" />
+      </div>
+
+      <RowDivider />
+
+      {/* Security */}
+      <div className="flex min-h-[3.25rem] items-center gap-3 bg-card px-4 py-3">
+        <RowIconWell icon={SecurityLockIcon} />
+        <span className="flex-1 text-sm font-medium text-foreground">
+          {t("preferences.security")}
+        </span>
+        <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" className="text-text-tertiary" />
+      </div>
+
+      <RowDivider />
+
       {/* Notifications */}
       <div className="flex min-h-[3.25rem] items-center gap-3 bg-card px-4 py-3">
         <RowIconWell icon={Notification01Icon} />
@@ -358,6 +399,22 @@ export function SupportGroupCard() {
       <SettingsRow icon={BookOpen01Icon} label={t("guide.title")} />
       <RowDivider />
       <SettingsRow icon={Mail01Icon} label={t("support.contactTitle")} />
+      <RowDivider />
+      <SettingsRow icon={PolicyIcon} label={t("support.privacyPolicy")} />
+      <RowDivider />
+      <SettingsRow icon={LegalDocument01Icon} label={t("support.terms")} />
+      <RowDivider />
+      <SettingsRow icon={ThumbsUpIcon} label={t("support.rate")} />
+    </SettingsGroup>
+  )
+}
+
+export function DataSection() {
+  const t = useTranslations("Settings")
+
+  return (
+    <SettingsGroup label={t("sections.data")}>
+      <SettingsRow icon={Download04Icon} label={t("data.export")} />
     </SettingsGroup>
   )
 }
