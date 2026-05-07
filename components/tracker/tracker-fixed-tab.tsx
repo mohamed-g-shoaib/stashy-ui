@@ -8,6 +8,7 @@ import { BudgetsSection } from "@/components/tracker/sections/budgets-section"
 import { InstallmentsSection } from "@/components/tracker/sections/installments-section"
 import { SubscriptionsSection } from "@/components/tracker/sections/subscriptions-section"
 import { TrackerAddDrawer } from "@/components/tracker/tracker-add-drawer"
+import { TrackerTransferDrawer } from "@/components/tracker/tracker-transfer-drawer"
 import type { FixedExpenseItem } from "@/components/tracker/types"
 import {
   fixedItems,
@@ -19,6 +20,8 @@ export function TrackerFixedTab() {
   const [selectedItem, setSelectedItem] = React.useState<FixedExpenseItem | null>(null)
   const [editingItem, setEditingItem] = React.useState<FixedExpenseItem | null>(null)
   const [editOpen, setEditOpen] = React.useState(false)
+  const [transferItem, setTransferItem] = React.useState<FixedExpenseItem | null>(null)
+  const [transferOpen, setTransferOpen] = React.useState(false)
 
   const recurringItems = fixedItems.filter((item) => item.type === "recurring")
   const installmentItems = fixedItems.filter((item) => item.type === "installment")
@@ -28,6 +31,12 @@ export function TrackerFixedTab() {
     setSelectedItem(null)
     setEditingItem(item)
     setEditOpen(true)
+  }
+
+  function handleTransfer(item: FixedExpenseItem) {
+    setSelectedItem(null)
+    setTransferItem(item)
+    setTransferOpen(true)
   }
 
   return (
@@ -44,6 +53,7 @@ export function TrackerFixedTab() {
         item={selectedItem}
         onClose={() => setSelectedItem(null)}
         onEdit={handleEdit}
+        onTransfer={handleTransfer}
       />
       <TrackerAddDrawer
         open={editOpen}
@@ -52,6 +62,14 @@ export function TrackerFixedTab() {
           if (!open) setEditingItem(null)
         }}
         editItem={editingItem}
+      />
+      <TrackerTransferDrawer
+        open={transferOpen}
+        sourceItem={transferItem}
+        onOpenChange={(open) => {
+          setTransferOpen(open)
+          if (!open) setTransferItem(null)
+        }}
       />
     </div>
   )

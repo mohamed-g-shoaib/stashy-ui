@@ -317,6 +317,22 @@
   },
   "Tracker": {
     "title": "المتابعة",
+    "transfer": {
+      "title": "تحويل الميزانية",
+      "description": "انقل الرصيد المتبقي من {name} إلى مظروف آخر أو المساحة المتغيرة.",
+      "amountLabel": "المبلغ",
+      "availableHint": "{amount} متاح للتحويل",
+      "destinationLabel": "التحويل إلى",
+      "destinationVariable": "المساحة المتغيرة",
+      "destinationVariableSub": "يعود إلى مساحة الصرف الشهرية",
+      "destinationBudgetSub": "{amount} متبقي",
+      "destinationBudgetFull": "الميزانية ممتلئة",
+      "confirm": "تحويل",
+      "cancel": "إلغاء",
+      "impactVariableRate": "+{rate}/يوم لـ {days} أيام متبقية",
+      "impactVariablePool": "{amount} تعود إلى مساحتك المتغيرة الشهرية",
+      "impactBudget": "+{amount} تُضاف إلى مظروف {name}"
+    },
     "add": {
       "title": "إضافة مصروف ثابت",
       "editTitle": "تعديل المصروف الثابت",
@@ -400,6 +416,7 @@
       "over": "{amount} زيادة",
       "payNow": "ادفع الآن",
       "edit": "تعديل",
+      "transfer": "تحويل",
       "types": {
         "manual": "ميزانية",
         "recurring": "متكررة",

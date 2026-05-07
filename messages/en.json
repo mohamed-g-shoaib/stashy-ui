@@ -317,6 +317,22 @@
   },
   "Tracker": {
     "title": "Tracker",
+    "transfer": {
+      "title": "Transfer Budget",
+      "description": "Move remaining funds from {name} to another envelope or your variable pool.",
+      "amountLabel": "Amount",
+      "availableHint": "{amount} available to transfer",
+      "destinationLabel": "Transfer To",
+      "destinationVariable": "Variable Pool",
+      "destinationVariableSub": "Returns to your monthly spending room",
+      "destinationBudgetSub": "{amount} remaining",
+      "destinationBudgetFull": "Envelope full",
+      "confirm": "Transfer",
+      "cancel": "Cancel",
+      "impactVariableRate": "+{rate}/day for {days} remaining days",
+      "impactVariablePool": "{amount} returns to your monthly variable pool",
+      "impactBudget": "+{amount} added to {name}'s envelope"
+    },
     "add": {
       "title": "Add Fixed Expense",
       "editTitle": "Edit Fixed Expense",
@@ -400,6 +416,7 @@
       "over": "{amount} over",
       "payNow": "Pay Now",
       "edit": "Edit",
+      "transfer": "Transfer",
       "types": {
         "manual": "Budget",
         "recurring": "Recurring",
