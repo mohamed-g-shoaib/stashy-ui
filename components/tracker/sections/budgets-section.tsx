@@ -2,7 +2,9 @@ import { useTranslations } from "next-intl"
 
 import { BudgetCard } from "@/components/tracker/cards/budget-card"
 import type { FixedExpenseItem } from "@/components/tracker/types"
+import { heroSurfaceClass } from "@/lib/design-system-classes"
 import { semanticTextClass } from "@/lib/semantic-styles"
+import { cn } from "@/lib/utils"
 
 type BudgetsSectionProps = {
   items: FixedExpenseItem[]
@@ -15,23 +17,24 @@ export function BudgetsSection({ items, onCardTap }: BudgetsSectionProps) {
   if (items.length === 0) return null
 
   return (
-    <section className="flex flex-col gap-card-gap">
-      <SectionHeader label={t("sections.budgets")} />
-      <div className="flex flex-col gap-3">
-        {items.map((item) => (
-          <BudgetCard key={item.id} item={item} onTap={onCardTap} />
-        ))}
+    <section>
+      <div className={cn("overflow-hidden", heroSurfaceClass)}>
+        <div className="px-4 pb-2 pt-3">
+          <span
+            className={cn(
+              "text-[0.6875rem] font-semibold uppercase tracking-[0.08em]",
+              semanticTextClass.fixed,
+            )}
+          >
+            {t("sections.budgets")}
+          </span>
+        </div>
+        <div className="flex flex-col gap-1.5 p-1.5 pt-0">
+          {items.map((item) => (
+            <BudgetCard key={item.id} item={item} onTap={onCardTap} />
+          ))}
+        </div>
       </div>
     </section>
-  )
-}
-
-function SectionHeader({ label }: { label: string }) {
-  return (
-    <div
-      className={`flex min-h-10 items-center rounded-[var(--radius-sm)] bg-surface-offset px-3 py-2 ${semanticTextClass.fixed}`}
-    >
-      <span className="text-sm font-semibold">{label}</span>
-    </div>
   )
 }

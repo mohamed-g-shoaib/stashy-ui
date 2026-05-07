@@ -18,17 +18,13 @@ export function InstallmentsSection({ items, overview, onCardTap }: Installments
 
   if (items.length === 0) return null
 
-  // Overall lifecycle progress: how much of the total committed spend is done
   const total = overview.totalPaidAllTime + overview.totalRemainingAllTime
   const pct = total > 0 ? Math.round((overview.totalPaidAllTime / total) * 100) : 0
 
   return (
-    <section className="flex flex-col gap-card-gap">
-      <SectionHeader label={t("sections.installments")} />
-
-      {/* Overview card — mirrors FixedSummaryCard structure */}
+    <section className="flex flex-col gap-3">
+      {/* Overview summary — outside the item card */}
       <div className={cn(heroSurfaceClass, "flex flex-col gap-3 p-4")}>
-        {/* Stat tiles */}
         <div className="grid grid-cols-3 gap-2">
           <div className={cn(statTileClass, "col-span-1 text-start")}>
             <p className="text-[0.6875rem] font-medium uppercase tracking-[0.08em] text-text-tertiary">
@@ -47,7 +43,10 @@ export function InstallmentsSection({ items, overview, onCardTap }: Installments
             </p>
             <p
               dir="ltr"
-              className={cn("mt-0.5 truncate text-xs font-semibold tabular-nums", semanticTextClass.income)}
+              className={cn(
+                "mt-0.5 truncate text-xs font-semibold tabular-nums",
+                semanticTextClass.income,
+              )}
             >
               {formatAmount(overview.totalPaidAllTime)}
             </p>
@@ -64,27 +63,28 @@ export function InstallmentsSection({ items, overview, onCardTap }: Installments
             </p>
           </div>
         </div>
-
-        {/* Overall lifecycle progress bar */}
         <TrackerProgress value={pct} tone="fixed" showPercent />
       </div>
 
-      <div className="flex flex-col gap-3">
-        {items.map((item) => (
-          <InstallmentCard key={item.id} item={item} onTap={onCardTap} />
-        ))}
+      {/* Item list inside one big card */}
+      <div className={cn("overflow-hidden", heroSurfaceClass)}>
+        <div className="px-4 pb-2 pt-3">
+          <span
+            className={cn(
+              "text-[0.6875rem] font-semibold uppercase tracking-[0.08em]",
+              semanticTextClass.fixed,
+            )}
+          >
+            {t("sections.installments")}
+          </span>
+        </div>
+        <div className="flex flex-col gap-1.5 p-1.5 pt-0">
+          {items.map((item) => (
+            <InstallmentCard key={item.id} item={item} onTap={onCardTap} />
+          ))}
+        </div>
       </div>
     </section>
-  )
-}
-
-function SectionHeader({ label }: { label: string }) {
-  return (
-    <div
-      className={`flex min-h-10 items-center rounded-[var(--radius-sm)] bg-surface-offset px-3 py-2 ${semanticTextClass.fixed}`}
-    >
-      <span className="text-sm font-semibold">{label}</span>
-    </div>
   )
 }
 
