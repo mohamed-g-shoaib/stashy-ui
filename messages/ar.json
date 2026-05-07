@@ -723,9 +723,9 @@
     },
     "composition": {
       "title": "توزيع الميزانية",
-      "subtitle": "كيف وُزِّعت ميزانيتك الشهرية",
+      "subtitle": "كيف تتوزع ميزانيتك الشهرية",
+      "totalBudgetLabel": "الميزانية الشهرية",
       "fixedLabel": "ثابت",
-      "majorLabel": "رئيسي",
       "variableLabel": "متغير",
       "committedAnnotation": "{pct}% من ميزانيتك محجوزة قبل بداية الشهر"
     },

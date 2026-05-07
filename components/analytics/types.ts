@@ -69,5 +69,3 @@ export type PaymentMethodBreakdown = {
 }
 
 export type ComparisonTone = "positive" | "negative" | "neutral"
-
-export type PaymentMethodFilter = "all" | "variable" | "fixed" | "major"

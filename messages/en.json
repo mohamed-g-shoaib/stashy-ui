@@ -723,9 +723,9 @@
     },
     "composition": {
       "title": "Budget breakdown",
-      "subtitle": "Where your monthly budget was allocated",
+      "subtitle": "How your monthly budget is structured",
+      "totalBudgetLabel": "monthly budget",
       "fixedLabel": "Fixed",
-      "majorLabel": "Major",
       "variableLabel": "Variable",
       "committedAnnotation": "{pct}% of your budget is committed before the month starts"
     },
