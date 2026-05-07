@@ -3,17 +3,21 @@
 import {
   ArrowDown01Icon,
   ArrowRight01Icon,
-  Globe02Icon,
-  Invoice03Icon,
-  Logout01Icon,
   BankIcon,
   BookOpen01Icon,
   Calendar03Icon,
+  Clock01Icon,
   CreditCardIcon,
+  Delete01Icon,
+  Globe02Icon,
+  Invoice03Icon,
+  Logout01Icon,
+  Mail01Icon,
   MoneyBag02Icon,
-  PaintBrush02Icon,
+  Notification01Icon,
   StarIcon,
   UserCircleIcon,
+  UserRemove01Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useLocale, useTranslations } from "next-intl"
@@ -27,8 +31,6 @@ import type {
 } from "@/components/settings/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { statTileClass } from "@/lib/design-system-classes"
 import {
   semanticInteractiveTextClass,
@@ -37,147 +39,175 @@ import {
 } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
 
-export function ProfileCard({ profile, onEdit }: { profile: ProfileState; onEdit: () => void }) {
-  const t = useTranslations("Settings")
-  return (
-    <SettingsCard
-      actionLabel={t("profile.edit")}
-      icon={UserCircleIcon}
-      subtitle={t("profile.subtitle")}
-      title={t("profile.title")}
-      onAction={onEdit}
-    >
-      <Separator className="bg-border-subtle" />
-      <div className="space-y-4">
-        <DetailBlock label={t("profile.username")}>
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-[1.25rem] font-semibold leading-[1.15] text-foreground">
-              {profile.username}
-            </p>
-            <Badge
-              variant={profile.status === "Active" ? "fixed" : "quiet"}
-              className="rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
-            >
-              {profile.status === "Active" ? t("profile.active") : t("profile.inactive")}
-            </Badge>
-          </div>
-        </DetailBlock>
+// ─── Profile hero ─────────────────────────────────────────────────────────────
 
-        <DetailBlock label={t("profile.email")}>
-          <p className="text-sm leading-[1.6] text-foreground">{profile.email}</p>
-        </DetailBlock>
-
-        <DetailBlock icon={StarIcon} label={t("profile.memberSince")}>
-          <p className="text-sm leading-[1.6] text-foreground">{profile.memberSince}</p>
-        </DetailBlock>
-      </div>
-    </SettingsCard>
-  )
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/)
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
+  }
+  return name.slice(0, 2).toUpperCase()
 }
 
-export function MonthlyBudgetCard({ amount, onChange }: { amount: number; onChange: () => void }) {
-  const locale = useLocale()
-  const t = useTranslations("Settings")
-
-  return (
-    <SettingsCard
-      actionLabel={t("budget.change")}
-      icon={Calendar03Icon}
-      subtitle={t("budget.subtitle")}
-      title={t("budget.title")}
-      onAction={onChange}
-    >
-      <InfoRow icon={Calendar03Icon} label={`${formatCurrency(locale, amount)} ${CURRENCY}`} />
-    </SettingsCard>
-  )
-}
-
-export function BudgetManagementCard({
-  boosts,
-  onAdd,
+export function ProfileHeroBlock({
+  profile,
+  onEdit,
 }: {
-  boosts: BudgetBoost[]
-  onAdd: () => void
+  profile: ProfileState
+  onEdit: () => void
 }) {
-  const locale = useLocale()
   const t = useTranslations("Settings")
+  const initials = getInitials(profile.username)
 
   return (
-    <SettingsCard
-      actionLabel={t("boosts.add")}
-      icon={MoneyBag02Icon}
-      subtitle={t("boosts.subtitle")}
-      title={t("boosts.title")}
-      onAction={onAdd}
-    >
-      {boosts.length === 0 ? (
-        <p className={cn("px-4 py-5 text-center text-sm leading-[1.6] text-text-secondary", statTileClass)}>
-          {t("boosts.empty")}
-        </p>
-      ) : (
-        <div className="space-y-3">
-          {boosts.map((boost) => (
-            <div key={boost.id} className={statTileClass}>
-              <div className="flex items-start justify-between gap-3">
-                <p className="text-sm font-semibold text-foreground">{boost.label}</p>
-                <p dir="ltr" className="text-sm font-semibold text-foreground tabular-nums">
-                  {formatCurrency(locale, boost.amount)}
-                </p>
-              </div>
-              <p className="mt-1 text-sm leading-[1.5] text-text-secondary">
-                {t("boosts.expires", { date: boost.expiresOn })}
-              </p>
-            </div>
-          ))}
+    <div className="flex items-center gap-4 rounded-[var(--radius-lg)] border border-border-subtle bg-card p-4 shadow-soft">
+      <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-brand shadow-ring">
+        <span className="text-base font-bold tracking-wide text-primary-foreground">
+          {initials}
+        </span>
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="text-[1.0625rem] font-semibold leading-[1.2] text-foreground">
+            {profile.username}
+          </p>
+          {PLAN === "pro" && (
+            <Badge variant="brand" className="rounded-full px-2 py-0.5 text-[0.625rem] font-semibold">
+              Pro
+            </Badge>
+          )}
         </div>
-      )}
-    </SettingsCard>
+        <p className="mt-0.5 truncate text-sm text-text-secondary">{profile.email}</p>
+        <p className="mt-0.5 text-xs text-text-tertiary">
+          {t("profile.memberSince")} · {profile.memberSince}
+        </p>
+      </div>
+
+      <Button type="button" variant="outline" size="xs" className="shrink-0" onClick={onEdit}>
+        {t("profile.edit")}
+      </Button>
+    </div>
   )
 }
 
-export function PaymentMethodsCard({
+// ─── Budget section (three separate cards) ───────────────────────────────────
+
+export function BudgetSection({
+  monthlyBudget,
+  boosts,
   methods,
   deleteCandidateId,
-  onSetDefault,
-  onEdit,
+  onChangeBudget,
+  onAddBoost,
+  onAddMethod,
+  onEditMethod,
   onDeleteTap,
   onConfirmDelete,
   onCancelDelete,
-  onAdd,
+  onSetDefault,
 }: {
+  monthlyBudget: number
+  boosts: BudgetBoost[]
   methods: PaymentMethod[]
   deleteCandidateId: string | null
-  onSetDefault: (methodId: string) => void
-  onEdit: (methodId: string) => void
-  onDeleteTap: (methodId: string) => void
-  onConfirmDelete: (methodId: string) => void
+  onChangeBudget: () => void
+  onAddBoost: () => void
+  onAddMethod: () => void
+  onEditMethod: (id: string) => void
+  onDeleteTap: (id: string) => void
+  onConfirmDelete: (id: string) => void
   onCancelDelete: () => void
-  onAdd: () => void
+  onSetDefault: (id: string) => void
 }) {
+  const locale = useLocale()
   const t = useTranslations("Settings")
+
   return (
-    <SettingsCard icon={CreditCardIcon} subtitle={t("methods.subtitle")} title={t("methods.title")}>
-      <div className="space-y-3">
-        {methods.map((method) =>
-          deleteCandidateId === method.id ? (
-            <div
-              key={method.id}
-              className={cn(
-                "p-3 shadow-ring rounded-[var(--radius-sm)]",
-                semanticSurfaceClass.expense,
-              )}
-            >
-              <div className="flex flex-col gap-3">
+    <section className="flex flex-col gap-2">
+      <p className="px-1 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
+        {t("sections.budget")}
+      </p>
+
+      {/* Monthly Budget — lone row */}
+      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 shadow-soft">
+        <SettingsRow
+          icon={Calendar03Icon}
+          label={t("budget.title")}
+          value={`${formatCurrency(locale, monthlyBudget)} ${CURRENCY}`}
+          onTap={onChangeBudget}
+        />
+      </div>
+
+      {/* Budget Boosts */}
+      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 shadow-soft">
+        <div className="flex min-h-[3.25rem] items-center gap-3 bg-card px-4 py-3">
+          <RowIconWell icon={MoneyBag02Icon} />
+          <span className="flex-1 text-sm font-medium text-foreground">{t("boosts.title")}</span>
+          {boosts.length > 0 && (
+            <span className="rounded-full bg-surface-offset px-2 py-0.5 text-xs font-semibold tabular-nums text-text-secondary shadow-ring">
+              {boosts.length}
+            </span>
+          )}
+          <button
+            type="button"
+            className={cn("rounded-full px-2.5 py-1 text-xs font-semibold transition-colors", semanticInteractiveTextClass.brand)}
+            onClick={onAddBoost}
+          >
+            {t("boosts.add")}
+          </button>
+        </div>
+        {boosts.length > 0 && (
+          <>
+            <RowDivider />
+            <div className="flex flex-col gap-1.5 p-3">
+              {boosts.map((boost) => (
+                <div key={boost.id} className={statTileClass}>
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-foreground">{boost.label}</p>
+                    <p dir="ltr" className="text-sm font-semibold tabular-nums text-foreground">
+                      +{formatCurrency(locale, boost.amount)} {CURRENCY}
+                    </p>
+                  </div>
+                  <p className="mt-0.5 text-xs text-text-tertiary">{t("boosts.thisMonth")}</p>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Payment Methods */}
+      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 shadow-soft">
+        <div className="flex min-h-[3.25rem] items-center gap-3 bg-card px-4 py-3">
+          <RowIconWell icon={CreditCardIcon} />
+          <span className="flex-1 text-sm font-medium text-foreground">{t("methods.title")}</span>
+          {methods.length > 0 && (
+            <span className="rounded-full bg-surface-offset px-2 py-0.5 text-xs font-semibold tabular-nums text-text-secondary shadow-ring">
+              {methods.length}
+            </span>
+          )}
+          <button
+            type="button"
+            className={cn("rounded-full px-2.5 py-1 text-xs font-semibold transition-colors", semanticInteractiveTextClass.brand)}
+            onClick={onAddMethod}
+          >
+            {t("methods.add")}
+          </button>
+        </div>
+        <RowDivider />
+        <div className="flex flex-col gap-1.5 p-3">
+          {methods.map((method) =>
+            deleteCandidateId === method.id ? (
+              <div
+                key={method.id}
+                className={cn("rounded-[var(--radius-sm)] p-3 shadow-ring", semanticSurfaceClass.expense)}
+              >
                 <p className={cn("text-sm font-semibold", semanticTextClass.expense)}>
                   {t("methods.confirmDelete", { name: method.name })}
                 </p>
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="xs"
-                    onClick={() => onConfirmDelete(method.id)}
-                  >
+                <div className="mt-2 flex gap-2">
+                  <Button type="button" variant="destructive" size="xs" onClick={() => onConfirmDelete(method.id)}>
                     {t("methods.confirm")}
                   </Button>
                   <Button type="button" variant="ghost" size="xs" onClick={onCancelDelete}>
@@ -185,89 +215,68 @@ export function PaymentMethodsCard({
                   </Button>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div key={method.id} className={statTileClass}>
-              <div className="flex items-center gap-3">
+            ) : (
+              <div key={method.id} className={cn(statTileClass, "flex items-center gap-3")}>
                 <MethodIcon icon={method.icon} />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-sm font-semibold text-foreground">{method.name}</p>
-                    {method.isDefault ? (
-                      <Badge
-                        variant="brand"
-                        className="rounded-full px-2.5 py-1 text-[0.6875rem] font-medium"
-                      >
+                    {method.isDefault && (
+                      <Badge variant="brand" className="rounded-full px-2 py-0.5 text-[0.625rem] font-medium">
                         {t("methods.default")}
                       </Badge>
-                    ) : null}
+                    )}
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-3 flex items-center justify-between gap-3">
-                <button
-                  type="button"
-                  className="flex min-h-10 items-center gap-2 rounded-full px-2 text-sm font-medium text-text-secondary transition-colors hover:text-brand"
-                  onClick={() => onSetDefault(method.id)}
-                >
-                  <HugeiconsIcon
-                    icon={StarIcon}
-                    aria-hidden="true"
-                    size={18}
-                    className={cn(
-                      method.isDefault ? "fill-current text-brand" : "text-text-tertiary",
-                    )}
-                  />
-                </button>
-
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
                   <button
                     type="button"
-                    className={cn(
-                      "min-h-10 rounded-full px-2 text-sm font-medium",
-                      semanticInteractiveTextClass.brand,
-                    )}
-                    onClick={() => onEdit(method.id)}
+                    className="flex size-8 items-center justify-center rounded-full transition-colors hover:bg-surface-offset"
+                    onClick={() => onSetDefault(method.id)}
+                    aria-label="Set as default"
                   >
-                    {t("methods.edit")}
+                    <HugeiconsIcon
+                      icon={StarIcon}
+                      size={16}
+                      aria-hidden="true"
+                      className={cn(method.isDefault ? "fill-current text-brand" : "text-text-tertiary")}
+                    />
                   </button>
                   <button
                     type="button"
                     className={cn(
-                      "min-h-10 rounded-full px-2 text-sm font-medium",
-                      semanticInteractiveTextClass.expense,
+                      "flex size-8 items-center justify-center rounded-full transition-colors hover:bg-surface-offset",
+                      semanticTextClass.brand,
+                    )}
+                    onClick={() => onEditMethod(method.id)}
+                    aria-label="Edit method"
+                  >
+                    <HugeiconsIcon icon={UserCircleIcon} size={16} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className={cn(
+                      "flex size-8 items-center justify-center rounded-full transition-colors hover:bg-surface-offset",
+                      semanticTextClass.expense,
                     )}
                     onClick={() => onDeleteTap(method.id)}
+                    aria-label="Delete method"
                   >
-                    {t("methods.delete")}
+                    <HugeiconsIcon icon={Delete01Icon} size={16} aria-hidden="true" />
                   </button>
                 </div>
               </div>
-            </div>
-          ),
-        )}
-
-        <Button type="button" variant="outline" className="w-full" onClick={onAdd}>
-          {t("methods.add")}
-        </Button>
+            ),
+          )}
+        </div>
       </div>
-    </SettingsCard>
+    </section>
   )
 }
 
-export function GuideCard() {
-  const t = useTranslations("Settings")
-  return (
-    <SettingsCard icon={BookOpen01Icon} subtitle={t("guide.subtitle")} title={t("guide.title")}>
-      <Button type="button" variant="outline" className="w-full">
-        {t("guide.view")}
-      </Button>
-    </SettingsCard>
-  )
-}
+// ─── Preferences group ────────────────────────────────────────────────────────
 
-export function AppearanceCard({
+export function PreferencesGroupCard({
   language,
   onToggleLanguage,
 }: {
@@ -275,197 +284,247 @@ export function AppearanceCard({
   onToggleLanguage: () => void
 }) {
   const t = useTranslations("Settings")
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   return (
-    <SettingsCard
-      icon={PaintBrush02Icon}
-      subtitle={t("appearance.subtitle")}
-      title={t("appearance.title")}
-    >
-      <div className="space-y-3">
-        <div className={statTileClass}>
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <HugeiconsIcon
-                icon={Globe02Icon}
-                aria-hidden="true"
-                size={18}
-                className="text-text-secondary"
-              />
-              <p className="text-sm font-semibold text-foreground">{t("appearance.language")}</p>
-            </div>
-            <button
-              type="button"
-              className="flex min-h-10 items-center gap-2 rounded-full bg-card px-3 text-sm font-medium text-foreground shadow-ring"
-              onClick={onToggleLanguage}
-            >
-              <span>{language}</span>
-              <HugeiconsIcon
-                icon={ArrowDown01Icon}
-                aria-hidden="true"
-                size={16}
-                className="text-text-secondary"
-              />
-            </button>
-          </div>
-        </div>
-
-        <div className={statTileClass}>
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <HugeiconsIcon
-                icon={Invoice03Icon}
-                aria-hidden="true"
-                size={18}
-                className="text-text-secondary"
-              />
-              <div>
-                <p className="text-sm font-semibold text-foreground">
-                  {t("appearance.monthlyReports")}
-                </p>
-                <p className="mt-1 text-sm leading-[1.5] text-text-secondary">
-                  {t("appearance.monthlyReportsValue")}
-                </p>
-              </div>
-            </div>
-            <HugeiconsIcon
-              icon={ArrowRight01Icon}
-              aria-hidden="true"
-              size={18}
-              className="text-text-tertiary"
-            />
-          </div>
-        </div>
-
-        <Button type="button" variant="destructive" className="w-full">
-          <HugeiconsIcon icon={Logout01Icon} data-icon="inline-start" aria-hidden="true" />
-          {t("appearance.logout")}
-        </Button>
+    <SettingsGroup label={t("sections.preferences")}>
+      {/* Language */}
+      <div className="flex min-h-[3.25rem] items-center gap-3 bg-card px-4 py-3">
+        <RowIconWell icon={Globe02Icon} />
+        <span className="flex-1 text-sm font-medium text-foreground">
+          {t("appearance.language")}
+        </span>
+        <button
+          type="button"
+          className="flex items-center gap-1.5 rounded-full bg-surface-offset px-3 py-1.5 text-sm font-medium text-foreground shadow-ring"
+          onClick={onToggleLanguage}
+        >
+          <span>{language}</span>
+          <HugeiconsIcon icon={ArrowDown01Icon} size={14} aria-hidden="true" className="text-text-tertiary" />
+        </button>
       </div>
-    </SettingsCard>
+
+      <RowDivider />
+
+      {/* Timezone */}
+      <div className="flex min-h-[3.25rem] items-center gap-3 bg-card px-4 py-3">
+        <RowIconWell icon={Clock01Icon} />
+        <span className="flex-1 text-sm font-medium text-foreground">
+          {t("appearance.timezone")}
+        </span>
+        <span className="max-w-[14ch] truncate text-end text-xs font-medium text-text-secondary">
+          {timezone}
+        </span>
+      </div>
+
+      <RowDivider />
+
+      {/* Notifications */}
+      <div className="flex min-h-[3.25rem] items-center gap-3 bg-card px-4 py-3">
+        <RowIconWell icon={Notification01Icon} />
+        <span className="flex-1 text-sm font-medium text-foreground">
+          {t("appearance.notifications")}
+        </span>
+        <span className="text-xs font-medium text-text-tertiary">
+          {t("appearance.notificationsValue")}
+        </span>
+        <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" className="text-text-tertiary" />
+      </div>
+
+      <RowDivider />
+
+      {/* Monthly Reports */}
+      <div className="flex min-h-[3.25rem] items-center gap-3 bg-card px-4 py-3">
+        <RowIconWell icon={Invoice03Icon} />
+        <span className="flex-1 text-sm font-medium text-foreground">
+          {t("appearance.monthlyReports")}
+        </span>
+        <span className="text-xs font-medium text-text-tertiary">
+          {t("appearance.monthlyReportsValue")}
+        </span>
+        <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" className="text-text-tertiary" />
+      </div>
+    </SettingsGroup>
   )
 }
+
+// ─── Support group ────────────────────────────────────────────────────────────
+
+export function SupportGroupCard() {
+  const t = useTranslations("Settings")
+
+  return (
+    <SettingsGroup label={t("sections.support")}>
+      <SettingsRow icon={BookOpen01Icon} label={t("guide.title")} />
+      <RowDivider />
+      <SettingsRow icon={Mail01Icon} label={t("support.contactTitle")} />
+    </SettingsGroup>
+  )
+}
+
+export function DangerSection() {
+  const t = useTranslations("Settings")
+
+  return (
+    <SettingsGroup label={t("danger.sectionLabel")}>
+      <div className="bg-card px-4 py-4">
+        <p className="text-sm leading-[1.5] text-text-secondary text-pretty">
+          {t("danger.deleteDescription")}
+        </p>
+        <Button
+          type="button"
+          variant="destructive"
+          size="sm"
+          className="mt-3 w-full"
+        >
+          <HugeiconsIcon icon={UserRemove01Icon} data-icon="inline-start" aria-hidden="true" />
+          {t("danger.deleteTitle")}
+        </Button>
+      </div>
+    </SettingsGroup>
+  )
+}
+
+// ─── About block ──────────────────────────────────────────────────────────────
 
 export function AboutBlock() {
   const t = useTranslations("Settings")
   return (
-    <div className="px-1 py-2 text-center">
-      <p className="text-xs font-medium tracking-[0.1em] text-text-tertiary uppercase">
-        {t("about.pwa", { app: APP_NAME })}
-      </p>
-      <p className="mt-2 text-sm font-medium text-text-secondary">
-        {t("about.version", { version: APP_VERSION })}
+    <div className="px-1 py-1 text-center">
+      <p className="text-xs font-medium uppercase tracking-[0.1em] text-text-tertiary">
+        {t("about.pwa", { app: APP_NAME })} · {t("about.version", { version: APP_VERSION })}
       </p>
       <p className="mt-2 text-sm leading-[1.6] text-text-secondary text-pretty">
         {t("about.description")}
       </p>
-      {PLAN === "pro" ? (
-        <p className="mt-3 text-[0.6875rem] font-medium text-brand">{t("about.pro")}</p>
-      ) : null}
     </div>
   )
 }
 
-function SettingsCard({
-  icon,
-  title,
-  subtitle,
-  actionLabel,
-  onAction,
-  children,
-}: {
-  icon: Parameters<typeof HugeiconsIcon>[0]["icon"]
-  title: string
-  subtitle: string
-  actionLabel?: string
-  onAction?: () => void
-  children: React.ReactNode
-}) {
+// ─── Logout button ────────────────────────────────────────────────────────────
+
+export function LogoutButton() {
+  const t = useTranslations("Settings")
   return (
-    <Card size="sm" className="py-4 shadow-soft">
-      <CardContent className="flex flex-col gap-4 px-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <HugeiconsIcon
-                icon={icon}
-                aria-hidden="true"
-                size={18}
-                className="text-text-secondary"
-              />
-              <h2 className="text-[1.0625rem] font-semibold text-foreground">{title}</h2>
-            </div>
-            <p className="mt-2 text-sm leading-[1.5] text-text-secondary text-pretty">{subtitle}</p>
-          </div>
-
-          {actionLabel ? (
-            <Button type="button" variant="outline" size="xs" onClick={onAction}>
-              {actionLabel}
-            </Button>
-          ) : null}
-        </div>
-
-        {children}
-      </CardContent>
-    </Card>
+    <Button type="button" variant="destructive" className="w-full">
+      <HugeiconsIcon icon={Logout01Icon} data-icon="inline-start" aria-hidden="true" />
+      {t("appearance.logout")}
+    </Button>
   )
 }
 
-function DetailBlock({
+// ─── Shared primitives ────────────────────────────────────────────────────────
+
+function SettingsGroup({
   label,
-  icon,
   children,
 }: {
   label: string
-  icon?: Parameters<typeof HugeiconsIcon>[0]["icon"]
   children: React.ReactNode
 }) {
   return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        {icon ? (
-          <HugeiconsIcon icon={icon} aria-hidden="true" size={14} className="text-text-tertiary" />
-        ) : null}
-        <p className="text-[0.6875rem] font-semibold tracking-[0.14em] text-text-tertiary uppercase">
-          {label}
-        </p>
-      </div>
-      {children}
-    </div>
-  )
-}
-
-function InfoRow({
-  icon,
-  label,
-}: {
-  icon: Parameters<typeof HugeiconsIcon>[0]["icon"]
-  label: string
-}) {
-  return (
-    <div className={cn("flex items-center gap-3", statTileClass)}>
-      <span className="flex size-10 items-center justify-center rounded-full bg-card text-text-secondary shadow-ring">
-        <HugeiconsIcon icon={icon} aria-hidden="true" size={18} />
-      </span>
-      <p dir="ltr" className="text-sm font-medium text-foreground tabular-nums">
+    <section className="flex flex-col gap-2">
+      <p className="px-1 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-text-tertiary">
         {label}
       </p>
+      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border-subtle bg-surface-2 shadow-soft">
+        {children}
+      </div>
+    </section>
+  )
+}
+
+function SettingsRow({
+  icon,
+  label,
+  value,
+  onTap,
+}: {
+  icon: Parameters<typeof HugeiconsIcon>[0]["icon"]
+  label: string
+  value?: string
+  onTap?: () => void
+}) {
+  const inner = (
+    <div className="flex min-h-[3.25rem] items-center gap-3 px-4 py-3">
+      <RowIconWell icon={icon} />
+      <span className="flex-1 text-sm font-medium text-foreground">{label}</span>
+      {value && (
+        <span dir="ltr" className="text-sm tabular-nums text-text-secondary">
+          {value}
+        </span>
+      )}
+      <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" className="text-text-tertiary" />
+    </div>
+  )
+
+  if (onTap) {
+    return (
+      <button type="button" className="w-full bg-card text-start transition-colors active:bg-surface-offset" onClick={onTap}>
+        {inner}
+      </button>
+    )
+  }
+
+  return <div className="bg-card">{inner}</div>
+}
+
+function SubSectionHeader({
+  icon,
+  label,
+  count,
+  actionLabel,
+  onAction,
+}: {
+  icon: Parameters<typeof HugeiconsIcon>[0]["icon"]
+  label: string
+  count: number
+  actionLabel: string
+  onAction: () => void
+}) {
+  return (
+    <div className="flex min-h-[3.25rem] items-center gap-3 bg-card px-4 py-3">
+      <RowIconWell icon={icon} />
+      <span className="flex-1 text-sm font-medium text-foreground">{label}</span>
+      {count > 0 && (
+        <span className="rounded-full bg-surface-offset px-2 py-0.5 text-xs font-semibold tabular-nums text-text-secondary shadow-ring">
+          {count}
+        </span>
+      )}
+      <button
+        type="button"
+        className={cn("rounded-full px-2.5 py-1 text-xs font-semibold transition-colors", semanticInteractiveTextClass.brand)}
+        onClick={onAction}
+      >
+        {actionLabel}
+      </button>
     </div>
   )
 }
 
-function MethodIcon({ icon }: { icon: PaymentMethod["icon"] }) {
+function RowIconWell({
+  icon,
+}: {
+  icon: Parameters<typeof HugeiconsIcon>[0]["icon"]
+}) {
   return (
-    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-card text-text-secondary shadow-ring">
-      <MethodGlyph icon={icon} />
+    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-offset text-text-secondary shadow-ring">
+      <HugeiconsIcon icon={icon} size={16} aria-hidden="true" />
     </span>
   )
 }
 
-function MethodGlyph({ icon }: { icon: PaymentMethod["icon"] }) {
-  const glyphIcon = icon === "cash" ? MoneyBag02Icon : icon === "card" ? CreditCardIcon : BankIcon
+function RowDivider() {
+  return <div className="h-px bg-border-subtle" />
+}
 
-  return <HugeiconsIcon icon={glyphIcon} aria-hidden="true" size={18} />
+function MethodIcon({ icon }: { icon: PaymentMethod["icon"] }) {
+  const glyphIcon = icon === "cash" ? MoneyBag02Icon : icon === "card" ? CreditCardIcon : BankIcon
+  return (
+    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-card text-text-secondary shadow-ring">
+      <HugeiconsIcon icon={glyphIcon} size={17} aria-hidden="true" />
+    </span>
+  )
 }
 
 function formatCurrency(locale: string, value: number) {

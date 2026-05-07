@@ -18,12 +18,12 @@ import {
 import { SettingsDrawer } from "@/components/settings/settings-drawer"
 import {
   AboutBlock,
-  AppearanceCard,
-  BudgetManagementCard,
-  GuideCard,
-  MonthlyBudgetCard,
-  PaymentMethodsCard,
-  ProfileCard,
+  BudgetSection,
+  DangerSection,
+  LogoutButton,
+  PreferencesGroupCard,
+  ProfileHeroBlock,
+  SupportGroupCard,
 } from "@/components/settings/settings-sections"
 import type { DrawerKind, LanguageValue, PaymentMethod } from "@/components/settings/types"
 import { type Locale } from "@/i18n/routing"
@@ -53,7 +53,6 @@ export function SettingsScreen() {
   const [boostDraft, setBoostDraft] = React.useState({
     label: "",
     amount: "",
-    expiresOn: "2026-05-31",
   })
   const [methodDraft, setMethodDraft] = React.useState<{
     id: string | null
@@ -77,7 +76,7 @@ export function SettingsScreen() {
     }
 
     if (drawer === "boost") {
-      setBoostDraft({ label: "", amount: "", expiresOn: "2026-05-31" })
+      setBoostDraft({ label: "", amount: "" })
       return
     }
 
@@ -114,29 +113,30 @@ export function SettingsScreen() {
       </header>
 
       <main className="flex-1 px-screen pb-32 pt-5">
-        <div className="flex flex-col gap-3">
-          <ProfileCard profile={profile} onEdit={() => setDrawer("profile")} />
-          <MonthlyBudgetCard amount={monthlyBudget} onChange={() => setDrawer("budget")} />
-          <BudgetManagementCard boosts={budgetBoosts} onAdd={() => setDrawer("boost")} />
-          <PaymentMethodsCard
-            deleteCandidateId={deleteCandidateId}
+        <div className="flex flex-col gap-6">
+          <ProfileHeroBlock profile={profile} onEdit={() => setDrawer("profile")} />
+
+          <BudgetSection
+            monthlyBudget={monthlyBudget}
+            boosts={budgetBoosts}
             methods={paymentMethods}
-            onAdd={() => setDrawer("methodAdd")}
-            onCancelDelete={() => setDeleteCandidateId(null)}
+            deleteCandidateId={deleteCandidateId}
+            onChangeBudget={() => setDrawer("budget")}
+            onAddBoost={() => setDrawer("boost")}
+            onAddMethod={() => setDrawer("methodAdd")}
+            onEditMethod={(methodId) => setDrawer({ kind: "methodEdit", methodId })}
+            onDeleteTap={setDeleteCandidateId}
             onConfirmDelete={(methodId) => {
               setDeleteCandidateId(null)
               setPaymentMethods((current) => {
                 const next = current.filter((method) => method.id !== methodId)
-
                 if (!next.some((method) => method.isDefault) && next[0]) {
                   next[0] = { ...next[0], isDefault: true }
                 }
-
                 return next
               })
             }}
-            onDeleteTap={setDeleteCandidateId}
-            onEdit={(methodId) => setDrawer({ kind: "methodEdit", methodId })}
+            onCancelDelete={() => setDeleteCandidateId(null)}
             onSetDefault={(methodId) => {
               setDeleteCandidateId(null)
               setPaymentMethods((current) =>
@@ -147,14 +147,21 @@ export function SettingsScreen() {
               )
             }}
           />
-          <GuideCard />
-          <AppearanceCard
+
+          <PreferencesGroupCard
             language={language}
             onToggleLanguage={() =>
               setLanguage((current) => (current === "English" ? "Arabic" : "English"))
             }
           />
+
+          <SupportGroupCard />
+
+          <DangerSection />
+
           <AboutBlock />
+
+          <LogoutButton />
         </div>
       </main>
 
@@ -193,7 +200,6 @@ export function SettingsScreen() {
                   id: `boost-${current.length + 1}`,
                   label: boostDraft.label,
                   amount: nextAmount,
-                  expiresOn: formatDraftDate(boostDraft.expiresOn, locale),
                 },
                 ...current,
               ])
@@ -234,14 +240,3 @@ export function SettingsScreen() {
   )
 }
 
-function formatDraftDate(value: string, locale: string) {
-  if (!value) {
-    return ""
-  }
-
-  return new Intl.DateTimeFormat(locale, {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(`${value}T00:00:00`))
-}

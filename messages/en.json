@@ -770,6 +770,11 @@
   "Settings": {
     "title": "Settings",
     "subtitle": "Manage your profile, security, and budgeting defaults.",
+    "sections": {
+      "budget": "Budget",
+      "preferences": "Preferences",
+      "support": "Support"
+    },
     "profile": {
       "title": "Profile",
       "subtitle": "Username, email, and member info",
@@ -787,16 +792,14 @@
       "amountLabel": "Monthly Budget"
     },
     "boosts": {
-      "title": "Budget Management",
-      "subtitle": "Temporarily increase your monthly budget",
+      "title": "Budget Injection",
+      "subtitle": "Add extra budget for this month",
       "add": "Add",
-      "empty": "No active boosts. Tap Add to create one.",
-      "expires": "Expires {date}",
+      "empty": "No injections this month.",
+      "thisMonth": "Active this month",
       "label": "Label",
       "amount": "Amount",
-      "expiresOn": "Expires On",
-      "placeholderDate": "May 31, 2026",
-      "addPrimary": "Add Boost"
+      "addPrimary": "Add Injection"
     },
     "methods": {
       "title": "Payment Methods",
@@ -826,9 +829,22 @@
       "dark": "Dark",
       "system": "System",
       "language": "Language",
+      "timezone": "Timezone",
+      "notifications": "Notifications",
+      "notificationsValue": "Coming Soon",
       "monthlyReports": "Monthly Reports",
       "monthlyReportsValue": "Coming Soon",
-      "logout": "Logout"
+      "logout": "Log Out"
+    },
+    "support": {
+      "contactTitle": "Contact Support",
+      "contactSubtitle": "Get help or report an issue"
+    },
+    "danger": {
+      "sectionLabel": "Account",
+      "deleteTitle": "Delete Account",
+      "deleteDescription": "Permanently delete your account and all data. This cannot be undone.",
+      "deleteConfirm": "Delete My Account"
     },
     "about": {
       "pwa": "{app} PWA",
@@ -841,8 +857,8 @@
       "editProfileDescription": "Update the profile details that show across your account.",
       "changeBudgetTitle": "Change Monthly Budget",
       "changeBudgetDescription": "Adjust the monthly budget target used across the app.",
-      "addBoostTitle": "Add Budget Boost",
-      "addBoostDescription": "Create a temporary increase with a clear expiry date.",
+      "addBoostTitle": "Add Budget Injection",
+      "addBoostDescription": "Add extra budget to this month's variable allowance.",
       "addMethodTitle": "Add Payment Method",
       "editMethodTitle": "Edit Payment Method",
       "methodDescription": "Choose the label and icon that best match this payment method.",

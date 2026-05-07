@@ -770,6 +770,11 @@
   "Settings": {
     "title": "الإعدادات",
     "subtitle": "أدر ملفك الشخصي وأمانك وإعدادات الميزانية الافتراضية.",
+    "sections": {
+      "budget": "الميزانية",
+      "preferences": "التفضيلات",
+      "support": "الدعم"
+    },
     "profile": {
       "title": "الملف الشخصي",
       "subtitle": "اسم المستخدم والبريد ومعلومات العضوية",
@@ -787,16 +792,14 @@
       "amountLabel": "ميزانية الشهر"
     },
     "boosts": {
-      "title": "إدارة الميزانية",
-      "subtitle": "زد ميزانية الشهر بشكل مؤقت",
+      "title": "دعم الميزانية",
+      "subtitle": "أضف ميزانية إضافية لهذا الشهر",
       "add": "إضافة",
-      "empty": "لا توجد زيادات نشطة. اضغط إضافة لإنشاء واحدة.",
-      "expires": "ينتهي في {date}",
+      "empty": "لا يوجد دعم هذا الشهر.",
+      "thisMonth": "نشط هذا الشهر",
       "label": "الاسم",
       "amount": "المبلغ",
-      "expiresOn": "ينتهي في",
-      "placeholderDate": "31 مايو 2026",
-      "addPrimary": "إضافة زيادة"
+      "addPrimary": "إضافة دعم"
     },
     "methods": {
       "title": "طرق الدفع",
@@ -826,9 +829,22 @@
       "dark": "داكن",
       "system": "النظام",
       "language": "اللغة",
+      "timezone": "المنطقة الزمنية",
+      "notifications": "الإشعارات",
+      "notificationsValue": "قريبا",
       "monthlyReports": "التقارير الشهرية",
       "monthlyReportsValue": "قريبا",
       "logout": "تسجيل الخروج"
+    },
+    "support": {
+      "contactTitle": "التواصل مع الدعم",
+      "contactSubtitle": "احصل على مساعدة أو أبلغ عن مشكلة"
+    },
+    "danger": {
+      "sectionLabel": "الحساب",
+      "deleteTitle": "حذف الحساب",
+      "deleteDescription": "حذف حسابك وجميع بياناتك بشكل دائم. لا يمكن التراجع عن هذا.",
+      "deleteConfirm": "حذف حسابي"
     },
     "about": {
       "pwa": "{app} PWA",
@@ -841,8 +857,8 @@
       "editProfileDescription": "حدّث تفاصيل الملف التي تظهر عبر حسابك.",
       "changeBudgetTitle": "تغيير ميزانية الشهر",
       "changeBudgetDescription": "عدّل هدف ميزانية الشهر المستخدم في التطبيق.",
-      "addBoostTitle": "إضافة زيادة للميزانية",
-      "addBoostDescription": "أنشئ زيادة مؤقتة مع تاريخ انتهاء واضح.",
+      "addBoostTitle": "إضافة دعم للميزانية",
+      "addBoostDescription": "أضف ميزانية إضافية لمساحة الشهر المتغيرة.",
       "addMethodTitle": "إضافة طريقة دفع",
       "editMethodTitle": "تعديل طريقة الدفع",
       "methodDescription": "اختر الاسم والأيقونة الأنسب لطريقة الدفع هذه.",

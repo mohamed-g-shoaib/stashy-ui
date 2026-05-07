@@ -11,7 +11,6 @@ export type BudgetBoost = {
   id: string
   label: string
   amount: number
-  expiresOn: string
 }
 
 export type DrawerKind =
