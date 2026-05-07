@@ -1,41 +1,65 @@
 "use client";
 
+import { ArrowRight01Icon, Package01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useTranslations } from "next-intl";
 
 import type { MajorExpensesRow } from "@/components/home/types";
+import { Link } from "@/i18n/navigation";
+import { semanticSurfaceClass, semanticTextClass } from "@/lib/semantic-styles";
+import { cn } from "@/lib/utils";
 
 type MajorExpensesRowProps = {
   data: MajorExpensesRow;
-  onView: () => void;
 };
+
+export function MajorExpensesRowCard({ data }: MajorExpensesRowProps) {
+  const t = useTranslations("Home");
+
+  if (data === null) return null;
+
+  return (
+    <Link
+      href="/transactions?filter=major"
+      className={cn(
+        "flex w-full items-center gap-3 rounded-[var(--radius-md)] border border-major/25 px-3 py-3 text-start transition-opacity active:opacity-70",
+        semanticSurfaceClass.major,
+      )}
+    >
+      {/* Icon well */}
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-major/15 shadow-ring">
+        <HugeiconsIcon
+          icon={Package01Icon}
+          size={17}
+          aria-hidden="true"
+          className={semanticTextClass.major}
+        />
+      </span>
+
+      {/* Text stack */}
+      <div className="min-w-0 flex-1">
+        <p className={cn("text-[0.6875rem] font-semibold uppercase tracking-[0.08em]", semanticTextClass.major)}>
+          {t("major.rowLabel")}
+        </p>
+        <p className="mt-0.5 text-sm font-semibold tabular-nums text-foreground" dir="ltr">
+          {formatCurrency(data.totalAmount)}{" "}
+          <span className="text-xs font-medium text-text-secondary">
+            · {t("major.ofVariableRow", { percent: data.percentOfVariable })}
+          </span>
+        </p>
+      </div>
+
+      {/* Chevron */}
+      <HugeiconsIcon
+        icon={ArrowRight01Icon}
+        size={16}
+        aria-hidden="true"
+        className={cn("shrink-0", semanticTextClass.major)}
+      />
+    </Link>
+  );
+}
 
 function formatCurrency(amount: number): string {
   return `${amount.toLocaleString("en")} EGP`;
-}
-
-export function MajorExpensesRowCard({ data, onView }: MajorExpensesRowProps) {
-  const t = useTranslations("Home");
-
-  if (data === null) {
-    return null;
-  }
-
-  return (
-    <div className="flex items-center justify-between rounded-lg border border-warning bg-warning-subtle px-4 py-3">
-      <p className="text-sm text-foreground truncate">
-        <span className="font-medium">{t("major.rowLabel")}:</span>{" "}
-        <span dir="ltr">{formatCurrency(data.totalAmount)}</span>{" "}
-        <span className="text-text-secondary">
-          · {t("major.ofVariableRow", { percent: data.percentOfVariable })}
-        </span>
-      </p>
-      <button
-        type="button"
-        onClick={onView}
-        className="ms-3 min-h-11 min-w-11 text-sm font-medium text-warning-hover shrink-0"
-      >
-        {t("major.viewAction")} →
-      </button>
-    </div>
-  );
 }

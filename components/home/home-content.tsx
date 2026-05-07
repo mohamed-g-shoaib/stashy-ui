@@ -55,13 +55,7 @@ export function HomeContent({
 
       {/* Major expenses row — conditional */}
       {majorScenario === "active" ? (
-        <MajorExpensesRowCard
-          data={mockMajorExpensesRow}
-          onView={() => {
-            // TODO: navigate to history with major filter pre-applied
-            console.log("View major expenses — history tab not yet wired");
-          }}
-        />
+        <MajorExpensesRowCard data={mockMajorExpensesRow} />
       ) : null}
 
       {/* Upcoming payments */}
