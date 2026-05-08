@@ -17,6 +17,10 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
   const [selectedMethodId, setSelectedMethodId] = React.useState<string>("all")
+  const [expandedRows, setExpandedRows] = React.useState<Record<"fixed" | "variable", boolean>>({
+    fixed: false,
+    variable: false,
+  })
 
   const selectedMethod =
     selectedMethodId === "all"
@@ -59,6 +63,11 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
 
   const values = [fixed, variableWithMajor]
   const totalForPct = values.reduce((a, b) => a + b, 0)
+  const shouldShowRow = (key: "fixed" | "variable") => (key === "fixed" ? fixed > 0 : variableWithMajor > 0)
+
+  const toggleExpandedRow = (key: "fixed" | "variable") => {
+    setExpandedRows((prev) => ({ ...prev, [key]: !prev[key] }))
+  }
 
   return (
     <Card size="sm" className="py-4">
@@ -106,11 +115,19 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
           ))}
         </div>
 
-        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3">
           {typeRows.map(({ key, barClass, labelKey }, i) => {
             const val = values[i] ?? 0
+              if (!shouldShowRow(key)) {
+                return null
+              }
+
             const pct = totalForPct > 0 ? Math.round((val / totalForPct) * 100) : 0
             const barWidthPct = totalForPct > 0 ? Math.round((val / totalForPct) * 100) : 0
+              const detailRows = key === "fixed" ? fixedTypeRows : variableTypeRows
+              const canToggleDetails = detailRows.length > 1
+              const isExpanded = expandedRows[key]
+
             return (
               <div key={key} className="space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
@@ -129,7 +146,7 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
                   ) : null}
                 </div>
 
-                {key === "fixed" ? (
+                  {key === "fixed" ? (
                   <div className="space-y-1.5">
                     <div className="relative h-6 overflow-hidden rounded-[var(--radius-sm)] bg-surface-offset shadow-ring">
                       {val > 0 ? (
@@ -142,7 +159,7 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
                         />
                       ) : null}
                     </div>
-                    {fixedTypeRows.length > 0 ? (
+                      {isExpanded && fixedTypeRows.length > 0 ? (
                       <div className="space-y-1">
                         {fixedTypeRows.map((row) => (
                           <div key={row.key} className="space-y-0.5">
@@ -156,7 +173,7 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
                               <div
                                 className={cn("h-full rounded-full", row.barClass)}
                                 style={{
-                                  width: `${Math.round((row.amount / Math.max(1, fixed)) * barWidthPct)}%`,
+                                    width: `${Math.round((row.amount / Math.max(1, fixed)) * 100)}%`,
                                 }}
                               />
                             </div>
@@ -175,7 +192,7 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
                         />
                       ) : null}
                     </div>
-                    {variableTypeRows.length > 0 ? (
+                      {isExpanded && variableTypeRows.length > 0 ? (
                       <div className="space-y-1">
                         {variableTypeRows.map((row) => (
                           <div key={row.key} className="space-y-0.5">
@@ -189,7 +206,7 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
                               <div
                                 className={cn("h-full rounded-full", row.barClass)}
                                 style={{
-                                  width: `${Math.round((row.amount / Math.max(1, val)) * barWidthPct)}%`,
+                                    width: `${Math.round((row.amount / Math.max(1, val)) * 100)}%`,
                                 }}
                               />
                             </div>
@@ -201,19 +218,24 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
                 )}
 
                 <div className="flex items-center justify-between gap-2 text-xs text-text-tertiary">
-                  {key === "fixed" ? (
-                    <p>
-                      {fixedTypeRows
-                        .map(
-                          (row) =>
-                            `${row.label}: ${formatAnalyticsCurrency(locale, row.amount)}`,
-                        )
-                        .join(" · ")}
-                    </p>
-                  ) : (
-                    <span />
-                  )}
-                  <p dir="ltr" className="tabular-nums">
+                  <div className="flex items-center gap-2">
+                    {canToggleDetails ? (
+                      <button
+                        type="button"
+                        onClick={() => toggleExpandedRow(key)}
+                        aria-expanded={isExpanded}
+                        className={cn(
+                          "rounded-full px-2.5 py-1 text-[0.6875rem] font-medium transition-colors",
+                          isExpanded
+                            ? "border border-brand/30 bg-brand-subtle text-brand"
+                            : "bg-surface-offset text-text-secondary",
+                        )}
+                      >
+                        {isExpanded ? t("methods.hideDetails") : t("methods.showDetails")}
+                      </button>
+                    ) : null}
+                  </div>
+                  <p dir="ltr" className="tabular-nums text-foreground">
                     {pct}%
                   </p>
                 </div>

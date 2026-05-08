@@ -766,6 +766,8 @@
       "filterAll": "All",
       "fixedLabel": "Fixed",
       "variableLabel": "Variable",
+      "showDetails": "Show breakdown",
+      "hideDetails": "Hide breakdown",
       "totalLabel": "total spent",
       "footerNote": "Variable includes Major reclassifications. See Major Spending for behaviour breakdown."
     },

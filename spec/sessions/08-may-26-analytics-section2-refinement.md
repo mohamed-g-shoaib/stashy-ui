@@ -124,6 +124,13 @@ The user proposed a cleaner ownership split: payment-method analysis should live
   - major mini-bar is hidden when major spend is `0` for the active method/filter
   - fixed subtype mini-bars (`recurring/installment/manual`) are hidden when their spend is `0`
   - fixed support summary now lists only non-zero fixed subtype entries.
+- Redesigned `PaymentMethodCard` read path for mobile clarity:
+  - default card now stays compact with only top-level category bars visible
+  - added per-row `Show breakdown / Hide breakdown` toggles for optional detail expansion
+  - removed always-on dense fixed summary sentence from collapsed state
+  - top-level rows are now hidden when their total is `0` for the active filter
+  - subtype bars now scale to their own row context (`0-100%`) instead of being multiplied by parent-share width.
+- Added EN/AR localization strings for breakdown toggles under `Analytics.methods`.
 - Updated EN/AR analytics copy for transfer labels.
 - Verification:
   - `pnpm typecheck` passed.
