@@ -8,9 +8,7 @@ Stack-agnostic reference for core calculations, transaction rules, and data flow
 ## 1. Core Logic: Daily Rate System
 
 ### Problem Statement
-
 Users need a dynamic daily spending limit that:
-
 - Preserves a stable monthly baseline target
 - Immediately shows consequences when overspending
 - Adapts daily as spending patterns change
@@ -48,7 +46,6 @@ EMERGENCY MODE
 ```
 
 ### Example Flow with Received Income
-
 ```
 Month: December (31 days), Today: Dec 7 (25 days remaining)
 Monthly Budget: 10,000 EGP
@@ -70,9 +67,7 @@ SCENARIO 2: Overspending (spent 1,800 by Dec 7 noon)
         → Remaining Today drops immediately as you spend more variable expenses today
     → Tomorrow's Impact updates to show the next-day consequence
 ```
-
 Variable received income is **added to your total monthly budget**, not just used to offset that day's spending:
-
 - This 500 EGP is distributed across all remaining days via the daily rate calculation
 - If received on Jan 5 with 26 days remaining: adds ~19 EGP to daily rate for those 26 days
 - Result: Higher daily spending limit, better budget flexibility
@@ -83,13 +78,13 @@ Variable received income is **added to your total monthly budget**, not just use
 
 ### Type × Direction Matrix
 
-| Type                       | Expense                                                                                                        | Received                                                                    |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| **Variable**               | Reduces total variable spending, affects daily rate negatively                                                 | **Increases adjusted monthly budget**, affects daily rate positively        |
-| **Budget Injection**       | Not used                                                                                                       | Increases adjusted monthly budget separately from variable income           |
-| **Fixed**                  | Tracked separately in fixed budget progress                                                                    | Offsets fixed budget progress (netted against fixed expenses)               |
-| **Transfer (paired legs)** | Source leg: `fixed + expense` reduces source remaining                                                         | Target leg: `variable/fixed + received` increases destination pool/category |
-| **Major**                  | Immediately reduces effective variable budget (like Fixed overspend), lowers daily rate for all remaining days | Not allowed - Major is expense-only                                         |
+| Type | Expense | Received |
+|------|---------|----------|
+| **Variable** | Reduces total variable spending, affects daily rate negatively | **Increases adjusted monthly budget**, affects daily rate positively |
+| **Budget Injection** | Not used | Increases adjusted monthly budget separately from variable income |
+| **Fixed** | Tracked separately in fixed budget progress | Offsets fixed budget progress (netted against fixed expenses) |
+| **Transfer (paired legs)** | Source leg: `fixed + expense` reduces source remaining | Target leg: `variable/fixed + received` increases destination pool/category |
+| **Major** | Immediately reduces effective variable budget (like Fixed overspend), lowers daily rate for all remaining days | Not allowed - Major is expense-only |
 
 **Important**: Variable received income is **added to your total monthly variable budget**, not just subtracted from today's spending. This increases your daily rate for all remaining days of the month.
 
@@ -131,19 +126,16 @@ Refresh client-side state / data caches
 ```
 
 **Date Handling**:
-
 - Transfer `date` uses local `YYYY-MM-DD` (e.g., `getLocalDateString`) to avoid timezone-shift issues near midnight.
 
 ### Fixed Expense Dual Tracking
 
 **Auto-Payments (Subscriptions)**
-
 - Fixed date each month (e.g., Spotify on 5th)
 - Auto-inserted if missed
 - Toggle: "Paid" or "Pending" checklist on Tracking page
 
 **Manual Buckets (Coffee, Gas)**
-
 - Variable spending within fixed budget
 - Multiple transactions per month (e.g., 10 coffee purchases)
 - Progress bar: Actual vs Budgeted
@@ -166,7 +158,6 @@ Progress: 96% (yellow status)
 ### Major Expense: Large, Infrequent Purchases
 
 **When to Use Major vs Variable vs Fixed**
-
 - **Variable**: Daily recurring expenses (groceries, coffee, gas) - tracked against daily rate
 - **Fixed**: Predictable monthly commitments (rent, subscriptions) - tracked against category budgets
 - **Major**: Large, infrequent purchases (laptop, furniture, medical bills) - immediately reduces daily rate
@@ -188,7 +179,6 @@ Result: No overspend stress - you've acknowledged this large purchase
 ```
 
 **Important Characteristics**:
-
 - **Expense-only**: Major expenses cannot be recorded as income (direction is always 'expense')
 - **Not in "Spent Today"**: Major expenses don't count toward your daily variable spending
 - **Affects rate indirectly**: Reduces effective budget → lowers daily rate → reduces "Remaining Today"
@@ -198,7 +188,6 @@ Result: No overspend stress - you've acknowledged this large purchase
 - **Past-month warning bypass**: For past-month entries, major confirmation and fixed over-budget alerts are skipped because they don't affect today's rate
 
 **Example Flow**:
-
 ```
 Month: January (31 days), Today: Jan 7 (25 days remaining)
 Monthly Budget: 20,000 EGP
@@ -228,13 +217,11 @@ No overspend alert - you can spend up to 323 EGP today without penalty
 ```
 
 **Major Expense Warning System**:
-
 - When major expenses exceed **25% of monthly budget**, an inline warning appears in the Major Expenses card
 - Warning text: "⚠️ Major expenses are high this month"
 - Purpose: Prevents over-reliance on major expense categorization
 
 **Dashboard Display**:
-
 ```
 Major Expenses Card (shown when majorExpensesTotal > 0)
 ├─ Title: "Major Expenses"
@@ -247,7 +234,6 @@ Major Expenses Card (shown when majorExpensesTotal > 0)
 ```
 
 **Calculation Formula**:
-
 ```javascript
 // Major Expenses Total: Sum all major expense transactions
 majorExpensesTotal = SUM(transactions WHERE expense_type='major' AND direction='expense')
@@ -484,7 +470,6 @@ Analysis
 **Purpose**: Automatically create current-month transactions for eligible recurring/installment fixed expenses based on `start_date` when the month is not already satisfied.
 
 **Important Constraints**:
-
 - `type` is immutable after creation (`manual`, `recurring`, `installment`).
 - Catch-up runs only for `recurring` and non-completed `installment` expenses.
 - Installments are considered completed when evaluated month is after `end_date`.
@@ -551,7 +536,6 @@ Dashboard Mount (Mobile)
 ### Edge Case Handling
 
 **Scenario 1: Adding Recurring Expense with Past Due Date**
-
 ```
 User adds expense: Spotify, 100 EGP, recurring, start_date = 2026-02-01
 Today: Feb 3
@@ -568,7 +552,6 @@ Dashboard shows transaction in history, marked "Paid" in tracker
 ```
 
 **Scenario 2: Editing Start Date Before First Linked Payment**
-
 ```
 Existing: Netflix, recurring, start_date day = 1, no linked transactions yet
 User edits: Change start_date day from 1 → 25
@@ -586,7 +569,6 @@ Tracker shows "Pending", history stays clean
 ```
 
 **Scenario 3: Installment Completion Handling**
-
 ```
 Existing installment: 300 EGP, start_date=2026-01-05, end_date=2026-03-05
 Evaluated month: April 2026
@@ -617,10 +599,10 @@ Client-Side State
 ├─ Form inputs (amount, description, etc.)
 ├─ Modal visibility (settings)
 ├─ Loading states (during API calls)
-└─ Controlled local view state (filters, drawers, and non-destructive UI preferences)
+└─ Theme selection (Light/Dark/System)
 
 Server-Side State (Database)
-├─ User settings (monthly budget, language and profile preferences)
+├─ User settings (monthly budget, theme preference)
 ├─ Payment methods
 ├─ Fixed expenses (manual/recurring/installment lifecycle)
 ├─ Transactions (categorized, dated)
@@ -664,13 +646,13 @@ All DELETES check: WHERE user_id = ...
 
 ## 12. Performance Considerations
 
-| Aspect             | Strategy                                                  |
-| ------------------ | --------------------------------------------------------- |
-| **DB Queries**     | RLS filters + indexed user_id columns reduce dataset      |
-| **Calculations**   | Client-side aggregation OK for <100 transactions/month    |
-| **Dashboard Load** | Parallel queries + caching                                |
-| **Fixed Budgets**  | Uses transaction aggregation (no separate tracking table) |
-| **Current Month**  | Filter queries by date to reduce dataset                  |
+| Aspect | Strategy |
+|--------|----------|
+| **DB Queries** | RLS filters + indexed user_id columns reduce dataset |
+| **Calculations** | Client-side aggregation OK for <100 transactions/month |
+| **Dashboard Load** | Parallel queries + caching |
+| **Fixed Budgets** | Uses transaction aggregation (no separate tracking table) |
+| **Current Month** | Filter queries by date to reduce dataset |
 
 ---
 
@@ -713,7 +695,6 @@ Page reload resets to default "Spent Only"
 ```
 
 **Implementation Details**:
-
 - Client-side filtering for performance
 - URL parameter validation: `validFilters.includes(param) ? param : 'spent'` (includes `transfer`)
 - Filter algorithmic state manages merging paired transfer legs before filtering
@@ -721,41 +702,27 @@ Page reload resets to default "Spent Only"
 - Empty states show filter-specific messages
 
 **Filter Logic Flow** (Stack-Agnostic Pseudocode):
-
 ```javascript
-const regularTransactions = transactions.filter((txn) => !txn.is_transfer);
-const mergedTransfers = buildMergedTransfers(transactions);
+const regularTransactions = transactions.filter(txn => !txn.is_transfer)
+const mergedTransfers = buildMergedTransfers(transactions)
 
 function computeFilteredTransactions(selectedFilter) {
-  if (selectedFilter === "transfer") return mergedTransfers;
-  if (selectedFilter === "all")
-    return [...regularTransactions, ...mergedTransfers];
+    if (selectedFilter === 'transfer') return mergedTransfers
+    if (selectedFilter === 'all') return [...regularTransactions, ...mergedTransfers]
 
-  return regularTransactions.filter((txn) => {
-    switch (selectedFilter) {
-      case "spent":
-        return (
-          txn.direction === "expense" &&
-          (txn.expense_type === "variable" || txn.expense_type === "major")
-        );
-      case "variable":
-        return txn.expense_type === "variable";
-      case "fixed":
-        return txn.expense_type === "fixed";
-      case "major":
-        return txn.direction === "expense" && txn.expense_type === "major";
-      default:
-        return (
-          txn.direction === "expense" &&
-          (txn.expense_type === "variable" || txn.expense_type === "major")
-        );
-    }
-  });
+    return regularTransactions.filter(txn => {
+        switch (selectedFilter) {
+            case 'spent': return txn.direction === 'expense' && (txn.expense_type === 'variable' || txn.expense_type === 'major')
+            case 'variable': return txn.expense_type === 'variable'
+            case 'fixed': return txn.expense_type === 'fixed'
+            case 'major': return txn.direction === 'expense' && txn.expense_type === 'major'
+            default: return txn.direction === 'expense' && (txn.expense_type === 'variable' || txn.expense_type === 'major')
+        }
+    })
 }
 ```
 
 **Dashboard Integration**:
-
 - Major Expenses card wrapped in `<Link href="/transactions?filter=major">`
 - Hover effects: border highlight, shadow, cursor pointer
 - CardDescription shows "View history" with ChevronRight icon

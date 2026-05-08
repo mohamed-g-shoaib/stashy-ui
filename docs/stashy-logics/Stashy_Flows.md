@@ -43,10 +43,10 @@ DAILY TRACKING (Example: Jan 7 morning, 25 days remaining)
 └─────────────────────────────────────┘
 
     Today's Rate (Jan 7) = (Effective Variable Budget - 1,500) ÷ 25 = 276 EGP/day
-
+    
     Status: 🟢 ON TRACK
     Target for Jan 7: 276 EGP (reality-based)
-
+    
     ✓ Variable spending today lowers Remaining Today
     ✓ Budget-state changes (income/major/fixed overspend) can recalculate Today's Rate
     ✓ Day boundary updates also recalculate rates
@@ -62,10 +62,10 @@ DAILY TRACKING (Example: Jan 7 morning, 25 days remaining)
     Today's Rate (Jan 7) = 276 EGP/day (UNCHANGED by variable spending today)
     Spent Today = 300 EGP
     Overspent = 24 EGP
-
+    
     Status: 🔴 OVER BUDGET
     Remaining for Jan 7: -24 EGP (negative)
-
+    
     ✓ Today's rate stays 276 EGP (your target)
     ✓ "Tomorrow's Rate Impact" card appears (if not in emergency mode)
     ✓ Shows tomorrow's rate: (8,400 - 1,800) ÷ 24 = 275 EGP/day
@@ -97,7 +97,7 @@ SCENARIO B: Received 500 EGP on Jan 5 (with 26 days left)
 
 ## Diagram 2: Fixed vs Variable Expense Flow
 
-````
+```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                    TRANSACTION TYPE ROUTING                                 │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -220,7 +220,7 @@ Fixed Transactions
         ├─ Tracking Page (detailed)
         ├─ Fixed Expenses Page (inline)
         └─ Dashboard Mini-Card (quick view)
-````
+```
 
 ---
 
@@ -486,7 +486,7 @@ User A adds transaction: 50 EGP coffee
 Frontend:
     // Get current user from auth state
     const user = getCurrentUser()
-
+    
     // Insert via API
     await api.post('/transactions', {
         amount: 50,
@@ -796,7 +796,7 @@ User
     ├─→ View Tracking → Fixed Expenses Query (+user_id) → Aggregate data
     │                   └─ Show progress bars, status
     │
-    ├─→ Change Language / Preferences → Persist user choice → Instant localized update
+    ├─→ Change Theme → Local storage + style variables → Instant update
     │
     └─→ Logout → Clear session → Redirect to login
 
