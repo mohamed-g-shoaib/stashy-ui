@@ -12,7 +12,7 @@ import {
 } from "recharts"
 
 import { formatAnalyticsCurrency } from "@/components/analytics/formatters"
-import type { AnalyticsMonth } from "@/components/analytics/types"
+import type { LiveMonthAnalysis } from "@/components/analytics/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -20,33 +20,30 @@ import { heroSurfaceClass, statTileClass } from "@/lib/design-system-classes"
 import { semanticTextClass } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
 
-export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
+export function ProjectionCard({ month }: { month: LiveMonthAnalysis }) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
 
   const confidence = getProjectionConfidence(month.projectionConfidenceDay)
   const isEarly = confidence === "early"
-  const isOverBudget = month.projectedEndSpend > month.effectiveBudget
+  const isOverBudget = month.projectedEndSpend > month.effectiveVariableBudget
 
-  const actualSpent = month.totalVariableSpent + month.fixedTotalSpent + month.majorPurchasesTotal
-  const dailyBudget = Math.round(month.effectiveBudget / month.daysInMonth)
+  const actualSpent = month.totalVariableSpent + month.fixedTotalSpent + month.majorTotal
+  const dailyBudget = Math.round(month.effectiveVariableBudget / month.daysInMonth)
   const isOverDailyRate = month.avgDailySpend > dailyBudget
 
-  // Build cumulative spend trajectory — day 0 = start of month (zero spending)
   const daysTracked = month.projectionConfidenceDay
   const dailyActualRate = daysTracked > 0 ? actualSpent / daysTracked : 0
 
   const trajectoryData = Array.from({ length: month.daysInMonth + 1 }, (_, day) => ({
     day,
     actual: day <= daysTracked ? Math.round(dailyActualRate * day) : null,
-    // projected starts at the handoff point so both lines share that value
     projected:
       day >= daysTracked
         ? Math.round(actualSpent + (day - daysTracked) * month.avgDailySpend)
         : null,
   }))
 
-  // Savings gauge via CSS conic-gradient
   const savingsRate = Math.max(0, Math.min(100, month.projectedSavingsRate))
   const gaugeDeg = Math.round(savingsRate * 3.6)
   const gaugeColor = isOverBudget ? "var(--color-expense)" : "var(--color-income)"
@@ -67,11 +64,19 @@ export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
                 axisLine={false}
                 tickLine={false}
               />
-              <YAxis hide domain={[0, Math.max(month.effectiveBudget * 1.1, month.projectedEndSpend * 1.05)]} />
+              <YAxis
+                hide
+                domain={[
+                  0,
+                  Math.max(month.effectiveVariableBudget * 1.1, month.projectedEndSpend * 1.05),
+                ]}
+              />
               <Tooltip
                 formatter={(value, name) => [
                   formatAnalyticsCurrency(locale, Number(value)),
-                  name === "actual" ? t("projection.forecastSpent") : t("projection.forecastProjected"),
+                  name === "actual"
+                    ? t("projection.forecastSpent")
+                    : t("projection.forecastProjected"),
                 ]}
                 contentStyle={{
                   backgroundColor: "var(--color-card)",
@@ -81,11 +86,11 @@ export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
                 }}
               />
               <ReferenceLine
-                y={month.effectiveBudget}
+                y={month.effectiveVariableBudget}
                 stroke="var(--color-text-tertiary)"
                 strokeDasharray="4 3"
                 label={{
-                  value: formatAnalyticsCurrency(locale, month.effectiveBudget),
+                  value: formatAnalyticsCurrency(locale, month.effectiveVariableBudget),
                   position: "insideTopRight",
                   fill: "var(--color-text-tertiary)",
                   fontSize: 10,
@@ -118,24 +123,6 @@ export function ProjectionCard({ month }: { month: AnalyticsMonth }) {
               />
             </AreaChart>
           </ResponsiveContainer>
-
-          {/* Chart legend */}
-          <div className="flex gap-4 text-[0.6875rem] text-text-tertiary">
-            <span className="flex items-center gap-1.5">
-              <span className="size-2 shrink-0 rounded-full bg-expense-subtle" />
-              {t("projection.forecastSpent")}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span
-                className="h-0.5 w-4 shrink-0 rounded-full"
-                style={{
-                  background:
-                    "repeating-linear-gradient(90deg,var(--color-warning) 0 5px,transparent 5px 8px)",
-                }}
-              />
-              {t("projection.forecastProjected")}
-            </span>
-          </div>
         </div>
 
         {/* Two tiles: daily pace + savings gauge */}

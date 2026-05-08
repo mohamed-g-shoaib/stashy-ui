@@ -1,22 +1,23 @@
 "use client"
 
+import { useLocale, useTranslations } from "next-intl"
 import * as React from "react"
 
-import { useLocale, useTranslations } from "next-intl"
-
-import type { AnalyticsMonth } from "@/components/analytics/types"
+import { formatAnalyticsCurrency } from "@/components/analytics/formatters"
+import type { LiveMonthAnalysis } from "@/components/analytics/types"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
-import { formatAnalyticsCurrency } from "./formatters"
-
 const typeRows = [
-  { key: "variable" as const, barClass: "bg-variable", labelKey: "methods.filterVariable" },
-  { key: "fixed" as const, barClass: "bg-fixed", labelKey: "methods.filterFixed" },
-  { key: "major" as const, barClass: "bg-major", labelKey: "methods.filterMajor" },
+  {
+    key: "discretionary" as const,
+    barClass: "bg-variable",
+    labelKey: "methods.discretionaryLabel",
+  },
+  { key: "committed" as const, barClass: "bg-fixed", labelKey: "methods.committedLabel" },
 ] as const
 
-export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
+export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
   const [selectedMethodId, setSelectedMethodId] = React.useState<string>("all")
@@ -26,22 +27,20 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
       ? null
       : (month.paymentMethods.find((m) => m.id === selectedMethodId) ?? null)
 
-  const displayTotal = selectedMethod
-    ? selectedMethod.total
-    : month.paymentMethods.reduce((sum, m) => sum + m.total, 0)
+  const aggregate = (key: "variable" | "fixed" | "major") =>
+    selectedMethod ? selectedMethod[key] : month.paymentMethods.reduce((sum, m) => sum + m[key], 0)
 
-  const typeValues = typeRows.map(({ key }) =>
-    selectedMethod
-      ? selectedMethod[key]
-      : month.paymentMethods.reduce((sum, m) => sum + m[key], 0),
-  )
-  const maxValue = Math.max(...typeValues, 1)
-  const totalForPct = typeValues.reduce((a, b) => a + b, 0)
+  const discretionary = aggregate("variable") + aggregate("major")
+  const committed = aggregate("fixed")
+  const displayTotal = discretionary + committed
+
+  const values = [discretionary, committed]
+  const maxValue = Math.max(...values, 1)
+  const totalForPct = values.reduce((a, b) => a + b, 0)
 
   return (
     <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
-        {/* Header — total updates with selected method */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <h2 className="text-[1.0625rem] font-semibold text-foreground">{t("methods.title")}</h2>
@@ -55,7 +54,6 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
           </div>
         </div>
 
-        {/* Method filter chips — horizontally swipeable */}
         <div className="no-scrollbar flex gap-2 overflow-x-auto pb-0.5">
           <button
             type="button"
@@ -86,10 +84,9 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
           ))}
         </div>
 
-        {/* Type bar rows — always Variable / Fixed / Major with their semantic colors */}
         <div className="flex flex-col gap-3">
           {typeRows.map(({ key, barClass, labelKey }, i) => {
-            const val = typeValues[i]
+            const val = values[i] ?? 0
             const pct = totalForPct > 0 ? Math.round((val / totalForPct) * 100) : 0
             const barWidthPct = Math.round((val / maxValue) * 100)
             const pctInside = barWidthPct >= 28 && val > 0
@@ -105,15 +102,15 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
                   >
                     {t(labelKey)}
                   </p>
-                  {val > 0 && (
+                  {val > 0 ? (
                     <p dir="ltr" className="text-xs text-text-tertiary tabular-nums">
                       {formatAnalyticsCurrency(locale, val)}
                     </p>
-                  )}
+                  ) : null}
                 </div>
 
                 <div className="relative h-9 overflow-hidden rounded-[var(--radius-sm)] bg-surface-offset shadow-ring">
-                  {val > 0 && (
+                  {val > 0 ? (
                     <div
                       className={cn(
                         "flex h-full items-center justify-end rounded-[var(--radius-sm)] pe-3 transition-all duration-300",
@@ -121,7 +118,7 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
                       )}
                       style={{ width: `${barWidthPct}%` }}
                     >
-                      {pctInside && (
+                      {pctInside ? (
                         <p
                           dir="ltr"
                           className="text-xs font-medium tabular-nums"
@@ -129,16 +126,18 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
                         >
                           {pct}%
                         </p>
-                      )}
+                      ) : null}
                     </div>
-                  )}
+                  ) : null}
                 </div>
               </div>
             )
           })}
         </div>
 
-        <p className="text-xs leading-[1.5] text-text-tertiary">{t("methods.fixedNote")}</p>
+        <p className="text-xs leading-[1.5] text-text-tertiary text-pretty">
+          {t("methods.footerNote")}
+        </p>
       </CardContent>
     </Card>
   )

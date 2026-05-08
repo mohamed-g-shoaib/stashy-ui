@@ -1,62 +1,14 @@
-export type AnalyticsMonth = {
+export type FixedBucketPlan = {
   id: string
-  isoDate: string
-  daysTracked: number
-  daysRemaining: number
-  daysInMonth: number
-  status: "closed" | "inProgress"
+  name: string
+  budget: number
+  type: "manual" | "recurring" | "installment"
+}
 
-  // Q1 — Days within rate (dot grid drives from overspentDaysMtd + daysTracked)
-  overspentDaysMtd: number
-
-  // Q2 — Rollover cushion (hero)
-  rolloverEgp: number
-
-  // Pacing (supports Q2 context)
-  pacingDeltaPct: number
-  budgetUsedPct: number
-  monthProgressPct: number
-
-  // Q3 + Q4 — Budget composition
-  budgetComposition: {
-    fixedEgp: number
-    majorEgp: number
-    variableEgp: number
-    totalBudget: number
-  }
-
-  // Q5 — Spending rhythm
-  weeklySpend: number[]
-  weeklyBudgetTarget: number
-
-  // Q6 — Payment method breakdown
-  paymentMethods: PaymentMethodBreakdown[]
-
-  // Q7 — Projection
-  projectionConfidenceDay: number
-  avgDailySpend: number
-  projectedEndSpend: number
-  projectedSavings: number
-  projectedSavingsRate: number
-
-  // Internal fields
-  effectiveBudget: number
-  totalVariableSpent: number
-  incomeReceived: number
-  fixedOverspend: number
-  majorPurchasesTotal: number
-  fixedTotalBudget: number
-  fixedTotalSpent: number
-  fixedManualOverBudgetCount: number
-  fixedAutoPaidCount: number
-  fixedAutoTotalCount: number
-  majorPurchaseCount: number
-
-  // Q8 + Q9 — Progress over time
-  savingsRate: number
-  baseDailyRate: number
-  largePurchasesPct: number
-  baseRateChangeReason: string
+export type FixedBucketActual = {
+  id: string
+  spent: number
+  transactionCount: number
 }
 
 export type PaymentMethodBreakdown = {
@@ -68,4 +20,104 @@ export type PaymentMethodBreakdown = {
   total: number
 }
 
+export type LargestDay = { date: string; amount: number }
+export type LargestTxn = { id: string; amount: number; description: string }
+
+export type MonthSnapshot = {
+  month: string
+  isoDate: string
+  closedAt: string
+  closedBy: "user" | "auto"
+
+  monthlyBudget: number
+  daysInMonth: number
+  fixedTotalBudget: number
+  fixedBuckets: FixedBucketPlan[]
+
+  totalVariableSpent: number
+  fixedTotalSpent: number
+  fixedOverspend: number
+  fixedBucketsActual: FixedBucketActual[]
+  majorTotal: number
+  majorCount: number
+  injectionTotal: number
+  injectionCount: number
+  variableReceivedTotal: number
+
+  effectiveVariableBudgetFinal: number
+  baseDailyRate: number
+  variableSavingsRate: number
+  rolloverEgpFinal: number
+  overspentDays: number
+  weeklySpend: number[]
+  weeklyBudgetTarget: number
+  dayOfWeekSpend: number[]
+  largestVariableDay: LargestDay | null
+  largestVariableTxn: LargestTxn | null
+  fixedManualOverBudgetCount: number
+  majorPctOfBudget: number
+
+  paymentMethods: PaymentMethodBreakdown[]
+}
+
+export type LiveMonthAnalysis = {
+  month: string
+  isoDate: string
+  daysTracked: number
+  daysRemaining: number
+  daysInMonth: number
+  status: "inProgress" | "closed"
+  closedBy: "user" | "auto" | null
+
+  monthlyBudget: number
+  fixedTotalBudget: number
+  fixedBuckets: FixedBucketPlan[]
+
+  totalVariableSpent: number
+  fixedTotalSpent: number
+  fixedOverspend: number
+  fixedBucketsActual: FixedBucketActual[]
+  majorTotal: number
+  majorCount: number
+  injectionTotal: number
+  injectionCount: number
+  variableReceivedTotal: number
+
+  effectiveVariableBudget: number
+  baseDailyRate: number
+  todaysRate: number
+  variableSavingsRateMtd: number
+  rolloverEgp: number
+  pacingDeltaPct: number
+  budgetUsedPct: number
+  monthProgressPct: number
+  overspentDaysMtd: number
+  weeklySpend: number[]
+  weeklyBudgetTarget: number
+  dayOfWeekSpend: number[]
+  largestVariableDay: LargestDay | null
+  largestVariableTxn: LargestTxn | null
+  fixedManualOverBudgetCount: number
+  majorPctOfBudget: number
+
+  projectionConfidenceDay: number
+  avgDailySpend: number
+  projectedEndSpend: number
+  projectedSavings: number
+  projectedSavingsRate: number
+
+  paymentMethods: PaymentMethodBreakdown[]
+}
+
+export type AnalyticsData = {
+  current: LiveMonthAnalysis
+  snapshots: MonthSnapshot[]
+}
+
 export type ComparisonTone = "positive" | "negative" | "neutral"
+
+export type AnalyticsMonthOption = {
+  id: string
+  isoDate: string
+  status: "inProgress" | "closed"
+}
