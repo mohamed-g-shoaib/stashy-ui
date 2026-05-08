@@ -34,6 +34,10 @@ export type FixedTransferSummary = {
     bucketId: string
     name: string
     amount: number
+    target: {
+      type: "variable" | "manual"
+      name?: string
+    }
   }>
 }
 

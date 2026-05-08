@@ -142,6 +142,14 @@ The user proposed a cleaner ownership split: payment-method analysis should live
   - changed variable mode label from `Day of week` to one-word `Day` (`يوم`) for stable badge fit
   - constrained fixed transfer insight to manual-only context to match Stashy transfer behavior
   - revised transfer copy to reflect movement from manual budgets without incorrect destination wording.
+- Reworked fixed transfer insight from docs-backed transfer behavior:
+  - aligned with transfer flow semantics: source manual budget -> destination (variable pool or manual budget)
+  - extended analytics transfer mock/type shape with destination target metadata per source movement
+  - redesigned transfer panel to show meaningful impact split (`to variable pool` vs `to manual budgets`)
+  - redesigned route rows to show explicit destination direction and outflow amounts from source budgets.
+- Refined manual overspend helper message in Fixed analysis:
+  - replaced awkward `0 of N` phrasing with a dedicated zero-state copy path
+  - now shows concise no-overspend message when zero, and count summary only when overrun exists.
 - Updated EN/AR analytics copy for transfer labels.
 - Verification:
   - `pnpm typecheck` passed.

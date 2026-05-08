@@ -78,6 +78,14 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
     selectedType === "manual"
       ? month.fixedTransfers?.find((transfer) => transfer.type === "manual" && transfer.total > 0) ?? null
       : null
+  const transferToVariable =
+    transferSummary?.sources
+      .filter((source) => source.target.type === "variable")
+      .reduce((sum, source) => sum + source.amount, 0) ?? 0
+  const transferToManual =
+    transferSummary?.sources
+      .filter((source) => source.target.type === "manual")
+      .reduce((sum, source) => sum + source.amount, 0) ?? 0
 
   const manualBuckets = month.fixedBuckets
     .filter((bucket) => bucket.type === "manual")
@@ -248,6 +256,24 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
                 <p className="mt-1 text-xs text-text-secondary">{t("fixed.transferCaption")}</p>
               </div>
             </div>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <div className="rounded-[var(--radius-sm)] bg-card px-3 py-2 shadow-ring">
+                <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
+                  {t("fixed.transferImpactVariableLabel")}
+                </p>
+                <p dir="ltr" className="mt-1 text-xs font-semibold tabular-nums text-transfer">
+                  {formatAnalyticsCurrency(locale, transferToVariable)}
+                </p>
+              </div>
+              <div className="rounded-[var(--radius-sm)] bg-card px-3 py-2 shadow-ring">
+                <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
+                  {t("fixed.transferImpactManualLabel")}
+                </p>
+                <p dir="ltr" className="mt-1 text-xs font-semibold tabular-nums text-transfer">
+                  {formatAnalyticsCurrency(locale, transferToManual)}
+                </p>
+              </div>
+            </div>
             <div className="mt-3 flex flex-col gap-2">
               {transferSummary.sources.map((source) => (
                 <div
@@ -257,11 +283,15 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
                   <div className="min-w-0">
                     <p className="text-sm text-foreground">{source.name}</p>
                     <p className="mt-0.5 text-xs text-text-tertiary">
-                      {t("fixed.transferRouteCaption")}
+                      {source.target.type === "variable"
+                        ? t("fixed.transferRouteToVariable")
+                        : t("fixed.transferRouteToManual", {
+                            name: source.target.name ?? t("fixed.type.manual"),
+                          })}
                     </p>
                   </div>
                   <p dir="ltr" className="text-xs tabular-nums text-transfer">
-                    {formatAnalyticsCurrency(locale, source.amount)}
+                    -{formatAnalyticsCurrency(locale, source.amount)}
                   </p>
                 </div>
               ))}
@@ -272,10 +302,12 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
         {selectedType === "manual" ? (
           <div className="rounded-[var(--radius-md)] bg-card px-3 py-2.5 shadow-ring">
             <p className="text-sm text-text-secondary">
-              {t("fixed.manualOverSummary", {
-                over: manualOver,
-                total: manualBuckets.length,
-              })}
+              {manualOver > 0
+                ? t("fixed.manualOverSome", {
+                    over: manualOver,
+                    total: manualBuckets.length,
+                  })
+                : t("fixed.manualOverNone")}
             </p>
           </div>
         ) : null}

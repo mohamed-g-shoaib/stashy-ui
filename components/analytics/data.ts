@@ -95,7 +95,20 @@ const snapshot_2026_04: MonthSnapshot = {
     {
       type: "manual",
       total: 180,
-      sources: [{ bucketId: "fb-coffee", name: "Coffee", amount: 180 }],
+      sources: [
+        {
+          bucketId: "fb-coffee",
+          name: "Coffee",
+          amount: 120,
+          target: { type: "variable" },
+        },
+        {
+          bucketId: "fb-groceries",
+          name: "Groceries",
+          amount: 60,
+          target: { type: "manual", name: "Coffee" },
+        },
+      ],
     },
   ],
 }
@@ -255,7 +268,14 @@ const snapshot_2026_02: MonthSnapshot = {
     {
       type: "manual",
       total: 120,
-      sources: [{ bucketId: "fb-coffee", name: "Coffee", amount: 120 }],
+      sources: [
+        {
+          bucketId: "fb-coffee",
+          name: "Coffee",
+          amount: 120,
+          target: { type: "variable" },
+        },
+      ],
     },
   ],
 }
@@ -356,7 +376,20 @@ const liveMonth_2026_05: LiveMonthAnalysis = {
     {
       type: "manual",
       total: 95,
-      sources: [{ bucketId: "fb-coffee", name: "Coffee", amount: 95 }],
+      sources: [
+        {
+          bucketId: "fb-coffee",
+          name: "Coffee",
+          amount: 55,
+          target: { type: "variable" },
+        },
+        {
+          bucketId: "fb-groceries",
+          name: "Groceries",
+          amount: 40,
+          target: { type: "manual", name: "Coffee" },
+        },
+      ],
     },
   ],
 }
