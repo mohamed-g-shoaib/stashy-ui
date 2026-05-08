@@ -12,8 +12,9 @@ export const ANALYTICS_PLAN: "free" | "pro" = "pro"
 const FIXED_PLAN: FixedBucketPlan[] = [
   { id: "fb-rent", name: "Rent", budget: 800, type: "recurring" },
   { id: "fb-spotify", name: "Spotify", budget: 100, type: "recurring" },
+  { id: "fb-phone-installment", name: "Phone installment", budget: 300, type: "installment" },
   { id: "fb-coffee", name: "Coffee", budget: 200, type: "manual" },
-  { id: "fb-groceries", name: "Groceries", budget: 540, type: "manual" },
+  { id: "fb-groceries", name: "Groceries", budget: 240, type: "manual" },
 ]
 
 const snapshot_2026_04: MonthSnapshot = {
@@ -31,8 +32,9 @@ const snapshot_2026_04: MonthSnapshot = {
   fixedBucketsActual: [
     { id: "fb-rent", spent: 800, transactionCount: 1 },
     { id: "fb-spotify", spent: 100, transactionCount: 1 },
+    { id: "fb-phone-installment", spent: 280, transactionCount: 1 },
     { id: "fb-coffee", spent: 220, transactionCount: 9 },
-    { id: "fb-groceries", spent: 780, transactionCount: 7 },
+    { id: "fb-groceries", spent: 500, transactionCount: 7 },
   ],
   majorTotal: 480,
   majorCount: 1,
@@ -52,10 +54,42 @@ const snapshot_2026_04: MonthSnapshot = {
   fixedManualOverBudgetCount: 1,
   majorPctOfBudget: 8,
   paymentMethods: [
-    { id: "pm1", name: "Cash", variable: 1320, fixed: 0, major: 0, total: 1320 },
-    { id: "pm2", name: "Instapay", variable: 980, fixed: 800, major: 480, total: 2260 },
-    { id: "pm3", name: "Vodafone Cash", variable: 880, fixed: 1000, major: 0, total: 1880 },
-    { id: "pm4", name: "Bank Card", variable: 460, fixed: 100, major: 0, total: 560 },
+    {
+      id: "pm1",
+      name: "Cash",
+      variable: 1320,
+      fixed: 0,
+      major: 0,
+      total: 1320,
+      fixedByType: { manual: 0, recurring: 0, installment: 0 },
+    },
+    {
+      id: "pm2",
+      name: "Instapay",
+      variable: 980,
+      fixed: 800,
+      major: 480,
+      total: 2260,
+      fixedByType: { manual: 0, recurring: 800, installment: 0 },
+    },
+    {
+      id: "pm3",
+      name: "Vodafone Cash",
+      variable: 880,
+      fixed: 900,
+      major: 0,
+      total: 1780,
+      fixedByType: { manual: 620, recurring: 0, installment: 280 },
+    },
+    {
+      id: "pm4",
+      name: "Bank Card",
+      variable: 460,
+      fixed: 200,
+      major: 0,
+      total: 660,
+      fixedByType: { manual: 100, recurring: 100, installment: 0 },
+    },
   ],
 }
 
@@ -74,8 +108,9 @@ const snapshot_2026_03: MonthSnapshot = {
   fixedBucketsActual: [
     { id: "fb-rent", spent: 800, transactionCount: 1 },
     { id: "fb-spotify", spent: 100, transactionCount: 1 },
+    { id: "fb-phone-installment", spent: 300, transactionCount: 1 },
     { id: "fb-coffee", spent: 180, transactionCount: 8 },
-    { id: "fb-groceries", spent: 460, transactionCount: 5 },
+    { id: "fb-groceries", spent: 160, transactionCount: 5 },
   ],
   majorTotal: 720,
   majorCount: 2,
@@ -95,10 +130,42 @@ const snapshot_2026_03: MonthSnapshot = {
   fixedManualOverBudgetCount: 0,
   majorPctOfBudget: 12,
   paymentMethods: [
-    { id: "pm1", name: "Cash", variable: 980, fixed: 0, major: 0, total: 980 },
-    { id: "pm2", name: "Instapay", variable: 1220, fixed: 540, major: 720, total: 2480 },
-    { id: "pm3", name: "Vodafone Cash", variable: 880, fixed: 900, major: 0, total: 1780 },
-    { id: "pm4", name: "Bank Card", variable: 220, fixed: 100, major: 0, total: 320 },
+    {
+      id: "pm1",
+      name: "Cash",
+      variable: 980,
+      fixed: 0,
+      major: 0,
+      total: 980,
+      fixedByType: { manual: 0, recurring: 0, installment: 0 },
+    },
+    {
+      id: "pm2",
+      name: "Instapay",
+      variable: 1220,
+      fixed: 540,
+      major: 720,
+      total: 2480,
+      fixedByType: { manual: 0, recurring: 540, installment: 0 },
+    },
+    {
+      id: "pm3",
+      name: "Vodafone Cash",
+      variable: 880,
+      fixed: 800,
+      major: 0,
+      total: 1680,
+      fixedByType: { manual: 500, recurring: 0, installment: 300 },
+    },
+    {
+      id: "pm4",
+      name: "Bank Card",
+      variable: 220,
+      fixed: 200,
+      major: 0,
+      total: 420,
+      fixedByType: { manual: 140, recurring: 60, installment: 0 },
+    },
   ],
 }
 
@@ -117,8 +184,9 @@ const snapshot_2026_02: MonthSnapshot = {
   fixedBucketsActual: [
     { id: "fb-rent", spent: 800, transactionCount: 1 },
     { id: "fb-spotify", spent: 100, transactionCount: 1 },
+    { id: "fb-phone-installment", spent: 300, transactionCount: 1 },
     { id: "fb-coffee", spent: 240, transactionCount: 11 },
-    { id: "fb-groceries", spent: 640, transactionCount: 6 },
+    { id: "fb-groceries", spent: 340, transactionCount: 6 },
   ],
   majorTotal: 1500,
   majorCount: 2,
@@ -138,18 +206,51 @@ const snapshot_2026_02: MonthSnapshot = {
   fixedManualOverBudgetCount: 2,
   majorPctOfBudget: 25,
   paymentMethods: [
-    { id: "pm1", name: "Cash", variable: 1420, fixed: 0, major: 600, total: 2020 },
-    { id: "pm2", name: "Instapay", variable: 1240, fixed: 700, major: 900, total: 2840 },
-    { id: "pm3", name: "Vodafone Cash", variable: 1020, fixed: 980, major: 0, total: 2000 },
-    { id: "pm4", name: "Bank Card", variable: 140, fixed: 100, major: 0, total: 240 },
+    {
+      id: "pm1",
+      name: "Cash",
+      variable: 1420,
+      fixed: 0,
+      major: 600,
+      total: 2020,
+      fixedByType: { manual: 0, recurring: 0, installment: 0 },
+    },
+    {
+      id: "pm2",
+      name: "Instapay",
+      variable: 1240,
+      fixed: 700,
+      major: 900,
+      total: 2840,
+      fixedByType: { manual: 0, recurring: 700, installment: 0 },
+    },
+    {
+      id: "pm3",
+      name: "Vodafone Cash",
+      variable: 1020,
+      fixed: 840,
+      major: 0,
+      total: 1860,
+      fixedByType: { manual: 540, recurring: 0, installment: 300 },
+    },
+    {
+      id: "pm4",
+      name: "Bank Card",
+      variable: 140,
+      fixed: 240,
+      major: 0,
+      total: 380,
+      fixedByType: { manual: 40, recurring: 200, installment: 0 },
+    },
   ],
 }
 
 const liveFixedBucketsActual: FixedBucketActual[] = [
   { id: "fb-rent", spent: 800, transactionCount: 1 },
   { id: "fb-spotify", spent: 100, transactionCount: 1 },
+  { id: "fb-phone-installment", spent: 300, transactionCount: 1 },
   { id: "fb-coffee", spent: 195, transactionCount: 8 },
-  { id: "fb-groceries", spent: 410, transactionCount: 4 },
+  { id: "fb-groceries", spent: 110, transactionCount: 4 },
 ]
 
 const liveMonth_2026_05: LiveMonthAnalysis = {
@@ -199,10 +300,42 @@ const liveMonth_2026_05: LiveMonthAnalysis = {
   projectedSavingsRate: 17,
 
   paymentMethods: [
-    { id: "pm1", name: "Cash", variable: 540, fixed: 0, major: 0, total: 540 },
-    { id: "pm2", name: "Instapay", variable: 620, fixed: 700, major: 900, total: 2220 },
-    { id: "pm3", name: "Vodafone Cash", variable: 480, fixed: 705, major: 0, total: 1185 },
-    { id: "pm4", name: "Bank Card", variable: 180, fixed: 100, major: 0, total: 280 },
+    {
+      id: "pm1",
+      name: "Cash",
+      variable: 540,
+      fixed: 0,
+      major: 0,
+      total: 540,
+      fixedByType: { manual: 0, recurring: 0, installment: 0 },
+    },
+    {
+      id: "pm2",
+      name: "Instapay",
+      variable: 620,
+      fixed: 700,
+      major: 900,
+      total: 2220,
+      fixedByType: { manual: 0, recurring: 700, installment: 0 },
+    },
+    {
+      id: "pm3",
+      name: "Vodafone Cash",
+      variable: 480,
+      fixed: 605,
+      major: 0,
+      total: 1085,
+      fixedByType: { manual: 305, recurring: 0, installment: 300 },
+    },
+    {
+      id: "pm4",
+      name: "Bank Card",
+      variable: 180,
+      fixed: 200,
+      major: 0,
+      total: 380,
+      fixedByType: { manual: 0, recurring: 200, installment: 0 },
+    },
   ],
 }
 

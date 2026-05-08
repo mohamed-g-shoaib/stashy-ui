@@ -1,18 +1,10 @@
 "use client"
 
-import { ArrowDown01Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
 import { useLocale, useTranslations } from "next-intl"
 import * as React from "react"
 
 import { formatAnalyticsCurrency } from "@/components/analytics/formatters"
-import type {
-  AnalyticsData,
-  FixedBucketActual,
-  FixedBucketPlan,
-  LiveMonthAnalysis,
-  MonthSnapshot,
-} from "@/components/analytics/types"
+import type { AnalyticsData, LiveMonthAnalysis } from "@/components/analytics/types"
 import { Card, CardContent } from "@/components/ui/card"
 import { semanticProgressClass, semanticTextClass } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
@@ -22,124 +14,278 @@ interface FixedAnalysisCardProps {
   data: AnalyticsData
 }
 
-type BucketRow = {
-  plan: FixedBucketPlan
-  actual: FixedBucketActual | null
-  pct: number
+type FixedTypeKey = "manual" | "recurring" | "installment"
+
+const typeKeys: FixedTypeKey[] = ["manual", "recurring", "installment"]
+
+function getTypeSpent(month: LiveMonthAnalysis, type: FixedTypeKey): number {
+  return month.fixedBuckets
+    .filter((bucket) => bucket.type === type)
+    .reduce((sum, bucket) => {
+      const actual = month.fixedBucketsActual.find((item) => item.id === bucket.id)
+      return sum + (actual?.spent ?? 0)
+    }, 0)
 }
 
-function getBucketStatus(pct: number): "ok" | "warning" | "over" {
-  if (pct > 100) return "over"
-  if (pct >= 90) return "warning"
-  return "ok"
-}
-
-function getBucketTrend(snapshots: MonthSnapshot[], bucketId: string): number[] {
-  return snapshots
-    .map((s) => {
-      const plan = s.fixedBuckets.find((b) => b.id === bucketId)
-      const actual = s.fixedBucketsActual.find((a) => a.id === bucketId)
-      if (!plan || !actual) return null
-      return Math.round((actual.spent / Math.max(1, plan.budget)) * 100)
-    })
-    .filter((x): x is number => x !== null)
-    .reverse()
+function getTypeBudget(month: LiveMonthAnalysis, type: FixedTypeKey): number {
+  return month.fixedBuckets
+    .filter((bucket) => bucket.type === type)
+    .reduce((sum, bucket) => sum + bucket.budget, 0)
 }
 
 export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
-  const [expandedId, setExpandedId] = React.useState<string | null>(null)
+  const [selectedType, setSelectedType] = React.useState<FixedTypeKey>("manual")
+  const [selectedMethodId, setSelectedMethodId] = React.useState<string>("all")
 
-  const manualRows: BucketRow[] = month.fixedBuckets
-    .filter((b) => b.type === "manual")
-    .map((plan) => {
-      const actual = month.fixedBucketsActual.find((a) => a.id === plan.id) ?? null
-      const spent = actual?.spent ?? 0
-      const pct = Math.round((spent / Math.max(1, plan.budget)) * 100)
-      return { plan, actual, pct }
+  const totalFixed = month.fixedTotalSpent
+  const selectedTypeSpent = getTypeSpent(month, selectedType)
+  const selectedTypeBudget = getTypeBudget(month, selectedType)
+  const selectedTypeShare = Math.round((selectedTypeSpent / Math.max(1, totalFixed)) * 100)
+  const selectedTypeUsage = Math.round((selectedTypeSpent / Math.max(1, selectedTypeBudget)) * 100)
+
+  const methodRows = month.paymentMethods
+    .map((method) => ({
+      id: method.id,
+      name: method.name,
+      amount: method.fixedByType?.[selectedType] ?? 0,
+    }))
+    .filter((method) => method.amount > 0)
+
+  const visibleMethodRows =
+    selectedMethodId === "all"
+      ? methodRows
+      : methodRows.filter((method) => method.id === selectedMethodId)
+
+  const selectedMethodTotal =
+    selectedMethodId === "all"
+      ? selectedTypeSpent
+      : (methodRows.find((method) => method.id === selectedMethodId)?.amount ?? 0)
+
+  const manualBuckets = month.fixedBuckets
+    .filter((bucket) => bucket.type === "manual")
+    .map((bucket) => {
+      const actual = month.fixedBucketsActual.find((item) => item.id === bucket.id)
+      return {
+        id: bucket.id,
+        spent: actual?.spent ?? 0,
+        budget: bucket.budget,
+      }
     })
 
-  const autoBuckets = month.fixedBuckets.filter((b) => b.type !== "manual")
-  const autoSpent = autoBuckets.reduce((sum, b) => {
-    const actual = month.fixedBucketsActual.find((a) => a.id === b.id)
-    return sum + (actual?.spent ?? 0)
-  }, 0)
-  const autoCount = autoBuckets.length
-  const manualCount = manualRows.length
-  const overCount = manualRows.filter((r) => r.pct > 100).length
+  const manualOver = manualBuckets.filter((bucket) => bucket.spent > bucket.budget).length
+  const manualHistorySpent = data.snapshots.slice(0, 3).map((snapshot) =>
+    snapshot.fixedBuckets
+      .filter((bucket) => bucket.type === "manual")
+      .reduce((sum, bucket) => {
+        const actual = snapshot.fixedBucketsActual.find((item) => item.id === bucket.id)
+        return sum + (actual?.spent ?? 0)
+      }, 0),
+  )
+  const manualAvg =
+    manualHistorySpent.length > 0
+      ? Math.round(manualHistorySpent.reduce((sum, value) => sum + value, 0) / manualHistorySpent.length)
+      : null
+  const manualCurrent = getTypeSpent(month, "manual")
+  const manualDelta = manualAvg === null ? 0 : manualCurrent - manualAvg
 
   return (
     <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
         <div className="space-y-1">
           <h2 className="text-[1.0625rem] font-semibold text-foreground">{t("fixed.title")}</h2>
-          <p className="text-sm leading-[1.55] text-text-secondary text-pretty">
-            {t("fixed.subtitle")}
-          </p>
+          <p className="text-sm leading-[1.5] text-text-secondary">{t("fixed.subtitle")}</p>
         </div>
 
-        <p className="text-xs leading-[1.5] text-text-tertiary">
-          {t("fixed.manualOverSummary", { over: overCount, total: manualCount })}
-        </p>
+        <div className="rounded-[var(--radius-md)] bg-surface-offset p-3 shadow-ring">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-tertiary">
+                {t("fixed.totalLabel")}
+              </p>
+              <p dir="ltr" className="mt-1 text-[1.4rem] font-semibold leading-none tabular-nums text-foreground">
+                {formatAnalyticsCurrency(locale, totalFixed)}
+              </p>
+            </div>
+            <div className="text-end">
+              <p dir="ltr" className="text-sm font-medium tabular-nums text-foreground">
+                {formatAnalyticsCurrency(locale, selectedTypeSpent)}
+              </p>
+              <p className="text-xs text-text-tertiary">
+                {t("fixed.selectedShare", {
+                  type: t(`fixed.type.${selectedType}`),
+                  share: selectedTypeShare,
+                })}
+              </p>
+            </div>
+          </div>
+        </div>
 
-        <div className="flex flex-col gap-2">
-          {manualRows.map((row) => {
-            const status = getBucketStatus(row.pct)
-            const dotClass =
-              status === "over"
-                ? "bg-expense"
-                : status === "warning"
-                  ? "bg-warning"
-                  : "bg-text-tertiary/60"
-            const barClass =
-              status === "over"
-                ? semanticProgressClass.expense
-                : status === "warning"
-                  ? semanticProgressClass.warning
-                  : semanticProgressClass.fixed
-            const expanded = expandedId === row.plan.id
-            const trend = expanded ? getBucketTrend(data.snapshots, row.plan.id) : []
-
+        <div className="grid grid-cols-3 gap-2">
+          {typeKeys.map((typeKey) => {
+            const active = selectedType === typeKey
             return (
               <button
-                key={row.plan.id}
+                key={typeKey}
                 type="button"
-                onClick={() => setExpandedId(expanded ? null : row.plan.id)}
-                className="flex min-h-12 flex-col gap-1.5 rounded-[var(--radius-sm)] bg-surface-offset px-3 py-2.5 text-start shadow-ring"
+                onClick={() => {
+                  setSelectedType(typeKey)
+                  setSelectedMethodId("all")
+                }}
+                className={cn(
+                  "min-h-12 rounded-[var(--radius-sm)] px-3 py-2.5 text-start shadow-ring transition-colors active:scale-[0.96]",
+                  active
+                    ? "bg-card text-foreground shadow-[var(--shadow-soft)]"
+                    : "bg-surface-offset text-text-secondary",
+                )}
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="flex items-center gap-2">
-                    <span className={cn("size-2 rounded-full", dotClass)} aria-hidden="true" />
-                    <span className="text-sm font-semibold text-foreground">{row.plan.name}</span>
-                  </span>
-                  <span dir="ltr" className="text-xs tabular-nums text-text-secondary">
-                    {formatAnalyticsCurrency(locale, row.actual?.spent ?? 0)} /{" "}
-                    {formatAnalyticsCurrency(locale, row.plan.budget)}
-                  </span>
-                </div>
-                <div className="relative h-1.5 overflow-hidden rounded-full bg-card">
-                  <div
-                    className={cn("absolute inset-y-0 start-0 rounded-full", barClass)}
-                    style={{ width: `${Math.min(100, row.pct)}%` }}
-                  />
-                </div>
-                {expanded && trend.length > 0 ? (
-                  <p
-                    dir="ltr"
-                    className="text-[0.6875rem] tabular-nums text-text-tertiary text-pretty"
-                  >
-                    {t("fixed.bucketTrendLabel")}: {trend.map((p) => `${p}%`).join(" → ")} →{" "}
-                    <span className="font-semibold text-foreground">{row.pct}%</span>
-                  </p>
-                ) : null}
+                <p
+                  className={cn(
+                    "text-sm font-medium",
+                    active ? "text-brand" : "text-text-secondary",
+                  )}
+                >
+                  {t(`fixed.type.${typeKey}`)}
+                </p>
               </button>
             )
           })}
         </div>
 
-        {month.fixedOverspend > 0 ? (
-          <div className="rounded-[var(--radius-sm)] bg-warning-subtle px-3 py-2 shadow-ring">
+        <div className="rounded-[var(--radius-md)] bg-card p-3 shadow-[var(--shadow-soft)]">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-tertiary">
+                {t("fixed.focusLabel", { type: t(`fixed.type.${selectedType}`) })}
+              </p>
+              <p dir="ltr" className="mt-1 text-lg font-semibold tabular-nums text-foreground">
+                {formatAnalyticsCurrency(locale, selectedTypeSpent)}
+              </p>
+            </div>
+            <div className="text-end">
+              <p dir="ltr" className="text-sm tabular-nums text-text-secondary">
+                {formatAnalyticsCurrency(locale, selectedTypeBudget)}
+              </p>
+              <p className="text-xs text-text-tertiary">{t("fixed.budgetLabel")}</p>
+            </div>
+          </div>
+
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-offset">
+            <div
+              className={cn("h-full rounded-full", semanticProgressClass.fixed)}
+              style={{ width: `${Math.min(selectedTypeUsage, 100)}%` }}
+            />
+          </div>
+
+          <div className="mt-2 flex items-center justify-between gap-2 text-xs text-text-tertiary">
+            <p>{t("fixed.usageSummary", { usage: selectedTypeUsage })}</p>
+            <p dir="ltr" className="tabular-nums">
+              {selectedTypeShare}%
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <div className="no-scrollbar flex gap-2 overflow-x-auto pb-0.5">
+            <button
+              type="button"
+              onClick={() => setSelectedMethodId("all")}
+              className={cn(
+                "min-h-12 shrink-0 rounded-full px-4 text-sm font-medium transition-colors active:scale-[0.96]",
+                selectedMethodId === "all"
+                  ? "border border-brand/30 bg-brand-subtle text-brand"
+                  : "bg-surface-offset text-text-secondary",
+              )}
+            >
+              {t("methods.filterAll")}
+            </button>
+            {methodRows.map((method) => (
+              <button
+                key={method.id}
+                type="button"
+                onClick={() => setSelectedMethodId(method.id)}
+                className={cn(
+                  "min-h-12 shrink-0 rounded-full px-4 text-sm font-medium transition-colors active:scale-[0.96]",
+                  selectedMethodId === method.id
+                    ? "border border-brand/30 bg-brand-subtle text-brand"
+                    : "bg-surface-offset text-text-secondary",
+                )}
+              >
+                {method.name}
+              </button>
+            ))}
+          </div>
+
+          <div className="rounded-[var(--radius-md)] bg-surface-offset p-3 shadow-ring">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-sm font-medium text-foreground">
+                {selectedMethodId === "all"
+                  ? t("fixed.methodPanelTitle", { type: t(`fixed.type.${selectedType}`) })
+                  : t("fixed.methodPanelFilteredTitle", {
+                      method: methodRows.find((method) => method.id === selectedMethodId)?.name ?? "",
+                    })}
+              </p>
+              <p dir="ltr" className="text-xs tabular-nums text-text-tertiary">
+                {formatAnalyticsCurrency(locale, selectedMethodTotal)}
+              </p>
+            </div>
+
+            <div className="mt-3 flex flex-col gap-2">
+              {visibleMethodRows.map((method) => {
+                const share = Math.round((method.amount / Math.max(1, selectedTypeSpent)) * 100)
+                return (
+                  <div key={method.id} className="space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm text-foreground">{method.name}</p>
+                      <p dir="ltr" className="text-xs tabular-nums text-text-tertiary">
+                        {formatAnalyticsCurrency(locale, method.amount)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-card">
+                        <div
+                          className="h-full rounded-full bg-fixed"
+                          style={{ width: `${share}%` }}
+                        />
+                      </div>
+                      <p dir="ltr" className="w-9 text-end text-xs tabular-nums text-text-tertiary">
+                        {share}%
+                      </p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {selectedType === "manual" ? (
+          <div className="rounded-[var(--radius-md)] bg-card px-3 py-2.5 shadow-ring">
+            <p className="text-sm text-text-secondary">
+              {t("fixed.manualOverSummary", {
+                over: manualOver,
+                total: manualBuckets.length,
+              })}
+            </p>
+            {manualAvg !== null ? (
+              <p dir="ltr" className="mt-1 text-xs tabular-nums text-text-tertiary">
+                {t("fixed.manualTrendVsHistory", {
+                  delta: formatAnalyticsCurrency(locale, Math.abs(manualDelta)),
+                  direction:
+                    manualDelta > 0
+                      ? t("fixed.trendDirection.up")
+                      : manualDelta < 0
+                        ? t("fixed.trendDirection.down")
+                        : t("fixed.trendDirection.flat"),
+                })}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
+        {month.fixedOverspend > 0 && selectedType === "manual" ? (
+          <div className="rounded-[var(--radius-md)] bg-warning-subtle px-3 py-2 shadow-ring">
             <p className={cn("text-sm leading-[1.5]", semanticTextClass.warning)}>
               {t("fixed.leakageCallout", {
                 amount: formatAnalyticsCurrency(locale, month.fixedOverspend),
@@ -147,16 +293,6 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
             </p>
           </div>
         ) : null}
-
-        <div className="flex items-center justify-between gap-2 border-t border-border-subtle pt-3">
-          <span className="flex items-center gap-2 text-xs text-text-tertiary">
-            <HugeiconsIcon icon={ArrowDown01Icon} aria-hidden="true" size={14} />
-            {t("fixed.autoRecap", {
-              count: autoCount,
-              amount: formatAnalyticsCurrency(locale, autoSpent),
-            })}
-          </span>
-        </div>
       </CardContent>
     </Card>
   )

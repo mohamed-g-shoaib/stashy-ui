@@ -9,12 +9,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 const typeRows = [
-  {
-    key: "discretionary" as const,
-    barClass: "bg-variable",
-    labelKey: "methods.discretionaryLabel",
-  },
-  { key: "committed" as const, barClass: "bg-fixed", labelKey: "methods.committedLabel" },
+  { key: "fixed" as const, barClass: "bg-fixed", labelKey: "methods.fixedLabel" },
+  { key: "variable" as const, barClass: "bg-variable", labelKey: "methods.variableLabel" },
 ] as const
 
 export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
@@ -30,12 +26,13 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
   const aggregate = (key: "variable" | "fixed" | "major") =>
     selectedMethod ? selectedMethod[key] : month.paymentMethods.reduce((sum, m) => sum + m[key], 0)
 
-  const discretionary = aggregate("variable") + aggregate("major")
-  const committed = aggregate("fixed")
-  const displayTotal = discretionary + committed
+  const variable = aggregate("variable")
+  const major = aggregate("major")
+  const variableWithMajor = variable + major
+  const fixed = aggregate("fixed")
+  const displayTotal = variableWithMajor + fixed
 
-  const values = [discretionary, committed]
-  const maxValue = Math.max(...values, 1)
+  const values = [fixed, variableWithMajor]
   const totalForPct = values.reduce((a, b) => a + b, 0)
 
   return (
@@ -88,8 +85,16 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
           {typeRows.map(({ key, barClass, labelKey }, i) => {
             const val = values[i] ?? 0
             const pct = totalForPct > 0 ? Math.round((val / totalForPct) * 100) : 0
-            const barWidthPct = Math.round((val / maxValue) * 100)
-            const pctInside = barWidthPct >= 28 && val > 0
+            const barWidthPct = totalForPct > 0 ? Math.round((val / totalForPct) * 100) : 0
+            const pctInside = barWidthPct >= 22 && val > 0
+            const variableCorePct =
+              key === "variable" && val > 0
+                ? Math.round((variable / Math.max(1, val)) * 100)
+                : 0
+            const majorPct =
+              key === "variable" && val > 0
+                ? Math.max(0, 100 - variableCorePct)
+                : 0
 
             return (
               <div key={key} className="space-y-1.5">
@@ -111,17 +116,27 @@ export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
 
                 <div className="relative h-9 overflow-hidden rounded-[var(--radius-sm)] bg-surface-offset shadow-ring">
                   {val > 0 ? (
-                    <div
-                      className={cn(
-                        "flex h-full items-center justify-end rounded-[var(--radius-sm)] pe-3 transition-all duration-300",
-                        barClass,
+                    <div className="relative h-full" style={{ width: `${barWidthPct}%` }}>
+                      {key === "variable" ? (
+                        <div className="flex h-full overflow-hidden rounded-[var(--radius-sm)]">
+                          <span
+                            className="h-full bg-variable"
+                            style={{ width: `${variableCorePct}%` }}
+                          />
+                          <span className="h-full bg-major" style={{ width: `${majorPct}%` }} />
+                        </div>
+                      ) : (
+                        <div
+                          className={cn(
+                            "h-full overflow-hidden rounded-[var(--radius-sm)] transition-all duration-300",
+                            barClass,
+                          )}
+                        />
                       )}
-                      style={{ width: `${barWidthPct}%` }}
-                    >
                       {pctInside ? (
                         <p
                           dir="ltr"
-                          className="text-xs font-medium tabular-nums"
+                          className="absolute inset-y-0 end-3 z-10 flex items-center text-xs font-medium tabular-nums"
                           style={{ color: "var(--color-text-on-brand)" }}
                         >
                           {pct}%

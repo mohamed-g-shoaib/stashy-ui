@@ -20,6 +20,22 @@ import { cn } from "@/lib/utils"
 
 type Mode = "weekly" | "dayOfWeek"
 
+function AxisTick({
+  x = 0,
+  y = 0,
+  payload,
+}: {
+  x?: number
+  y?: number
+  payload?: { value?: string }
+}) {
+  return (
+    <text x={x} y={y + 12} textAnchor="middle" fontSize={11} fill="var(--color-text-tertiary)">
+      {payload?.value ?? ""}
+    </text>
+  )
+}
+
 function getDotClass(index: number, daysTracked: number, overspentDaysMtd: number): string {
   const withinRateCount = daysTracked - overspentDaysMtd
   if (index < withinRateCount) return "bg-income/70"
@@ -53,6 +69,7 @@ export function VariableAnalysisCard({ month }: { month: LiveMonthAnalysis }) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
   const [mode, setMode] = React.useState<Mode>("weekly")
+  const isArabic = locale.startsWith("ar")
 
   const weeklyData = month.weeklySpend.map((spend, i) => ({
     label: `${i * 7 + 1}–${Math.min((i + 1) * 7, month.daysInMonth)}`,
@@ -60,9 +77,10 @@ export function VariableAnalysisCard({ month }: { month: LiveMonthAnalysis }) {
   }))
 
   const dowKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const
-  const dowData = month.dayOfWeekSpend.map((spend, i) => ({
-    label: t(`variable.dow.${dowKeys[i] ?? "sun"}`),
-    spend,
+  const dowOrder = isArabic ? [6, 0, 1, 2, 3, 4, 5] : [0, 1, 2, 3, 4, 5, 6]
+  const dowData = dowOrder.map((dayIndex) => ({
+    label: t(`variable.dow.${dowKeys[dayIndex] ?? "sun"}`),
+    spend: month.dayOfWeekSpend[dayIndex] ?? 0,
   }))
 
   const dailyTargetForDow = month.baseDailyRate
@@ -124,36 +142,42 @@ export function VariableAnalysisCard({ month }: { month: LiveMonthAnalysis }) {
           </div>
         </div>
 
-        <ResponsiveContainer width="100%" height={180}>
-          <BarChart
-            data={mode === "weekly" ? weeklyData : dowData}
-            margin={{ top: 12, right: 8, left: 0, bottom: 0 }}
-          >
+        <div dir="ltr">
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart
+              data={mode === "weekly" ? weeklyData : dowData}
+              margin={{ top: 12, right: 8, left: 8, bottom: 0 }}
+            >
             <CartesianGrid vertical={false} stroke="var(--color-border-subtle)" />
-            <XAxis
-              dataKey="label"
-              tick={{ fontSize: 11, fill: "var(--color-text-tertiary)" }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <YAxis hide />
-            <Tooltip
-              formatter={(value) => [formatAnalyticsCurrency(locale, Number(value)), ""]}
-              contentStyle={{
-                backgroundColor: "var(--color-card)",
-                border: "1px solid var(--color-border)",
-                borderRadius: "8px",
-                fontSize: "12px",
-              }}
-            />
-            <ReferenceLine
-              y={mode === "weekly" ? month.weeklyBudgetTarget : dailyTargetForDow}
-              stroke="var(--color-text-tertiary)"
-              strokeDasharray="4 3"
-            />
-            <Bar dataKey="spend" fill="var(--color-variable)" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+              <XAxis
+                dataKey="label"
+                interval={0}
+                minTickGap={0}
+                height={30}
+                tickMargin={6}
+                tick={<AxisTick />}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis hide />
+              <Tooltip
+                formatter={(value) => [formatAnalyticsCurrency(locale, Number(value)), ""]}
+                contentStyle={{
+                  backgroundColor: "var(--color-card)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                }}
+              />
+              <ReferenceLine
+                y={mode === "weekly" ? month.weeklyBudgetTarget : dailyTargetForDow}
+                stroke="var(--color-text-tertiary)"
+                strokeDasharray="4 3"
+              />
+              <Bar dataKey="spend" fill="var(--color-variable)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
         <p className="text-sm leading-[1.5] text-text-tertiary text-pretty">
           {mode === "weekly" ? weeklyInsight : dowInsight}

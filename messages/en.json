@@ -667,7 +667,6 @@
       "projectedSavingsLabel": "Projected saved"
     },
     "section": {
-      "eyebrow": "Section",
       "onPace": {
         "title": "Are you on pace?",
         "subtitle": "Where you stand right now and where you'll likely land."
@@ -690,17 +689,34 @@
     },
     "composition": {
       "title": "Budget breakdown",
-      "subtitle": "How your monthly budget is structured",
+      "subtitle": "Monthly plan split",
       "totalBudgetLabel": "monthly budget",
       "fixedLabel": "Fixed",
       "variableLabel": "Variable"
     },
     "fixed": {
       "title": "Fixed analysis",
-      "subtitle": "Your manual budget buckets and committed bills.",
+      "subtitle": "Total fixed first, then inspect one type at a time.",
+      "type": {
+        "manual": "Manual",
+        "recurring": "Recurring",
+        "installment": "Installment"
+      },
+      "totalLabel": "Total fixed",
+      "selectedShare": "{type} is {share}% of fixed",
+      "focusLabel": "{type} detail",
+      "budgetLabel": "planned",
+      "usageSummary": "{usage}% of this type budget used",
+      "methodPanelTitle": "{type} by payment method",
+      "methodPanelFilteredTitle": "{method} contribution",
       "manualOverSummary": "{over} of {total} manual buckets went over this month.",
+      "manualTrendVsHistory": "Manual is {direction} {delta} vs last 3 closed months average.",
+      "trendDirection": {
+        "up": "up",
+        "down": "down",
+        "flat": "flat"
+      },
       "leakageCallout": "{amount} came out of your variable budget this month.",
-      "autoRecap": "{count} auto-payments totalling {amount} processed this month.",
       "bucketTrendLabel": "Trend"
     },
     "variable": {
@@ -740,10 +756,10 @@
       "title": "Payment methods",
       "subtitle": "Where money moved, by method.",
       "filterAll": "All",
-      "discretionaryLabel": "Discretionary",
-      "committedLabel": "Committed",
+      "fixedLabel": "Fixed",
+      "variableLabel": "Variable",
       "totalLabel": "total spent",
-      "footerNote": "Discretionary includes Major reclassifications. See Major Spending for behaviour breakdown."
+      "footerNote": "Variable includes Major reclassifications. See Major Spending for behaviour breakdown."
     },
     "trends": {
       "title": "Savings rate trend",

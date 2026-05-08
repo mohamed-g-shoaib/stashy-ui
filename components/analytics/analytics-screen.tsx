@@ -76,17 +76,14 @@ export function AnalyticsScreen() {
         ) : (
           <div className="flex flex-col gap-3 px-screen pt-2">
             <SectionHeader
-              index={1}
-              eyebrow={t("section.eyebrow")}
               title={t("section.onPace.title")}
               subtitle={t("section.onPace.subtitle")}
+              showDivider={false}
             />
             <PacingCard month={selectedMonth} />
             <ProjectionCard month={selectedMonth} />
 
             <SectionHeader
-              index={2}
-              eyebrow={t("section.eyebrow")}
               title={t("section.where.title")}
               subtitle={t("section.where.subtitle")}
             />
@@ -97,8 +94,6 @@ export function AnalyticsScreen() {
             <PaymentMethodCard month={selectedMonth} />
 
             <SectionHeader
-              index={3}
-              eyebrow={t("section.eyebrow")}
               title={t("section.improving.title")}
               subtitle={t("section.improving.subtitle")}
             />

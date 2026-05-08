@@ -18,6 +18,11 @@ export type PaymentMethodBreakdown = {
   fixed: number
   major: number
   total: number
+  fixedByType?: {
+    manual: number
+    recurring: number
+    installment: number
+  }
 }
 
 export type LargestDay = { date: string; amount: number }

@@ -667,7 +667,6 @@
       "projectedSavingsLabel": "توفير متوقع"
     },
     "section": {
-      "eyebrow": "قسم",
       "onPace": {
         "title": "هل أنت ضمن الإيقاع؟",
         "subtitle": "أين تقف الآن وأين ستنتهي على الأرجح."
@@ -690,17 +689,34 @@
     },
     "composition": {
       "title": "توزيع الميزانية",
-      "subtitle": "كيف تتوزع ميزانيتك الشهرية",
+      "subtitle": "تقسيم الخطة الشهرية",
       "totalBudgetLabel": "الميزانية الشهرية",
       "fixedLabel": "ثابت",
       "variableLabel": "متغير"
     },
     "fixed": {
       "title": "تحليل الثابت",
-      "subtitle": "بنود الميزانية اليدوية والفواتير المُجدولة.",
+      "subtitle": "ابدأ بإجمالي الثابت ثم افحص نوعاً واحداً في كل مرة.",
+      "type": {
+        "manual": "يدوي",
+        "recurring": "متكرر",
+        "installment": "تقسيط"
+      },
+      "totalLabel": "إجمالي الثابت",
+      "selectedShare": "{type} يشكّل {share}% من الثابت",
+      "focusLabel": "تفصيل {type}",
+      "budgetLabel": "المخطط",
+      "usageSummary": "تم استخدام {usage}% من ميزانية هذا النوع",
+      "methodPanelTitle": "{type} حسب طريقة الدفع",
+      "methodPanelFilteredTitle": "مساهمة {method}",
       "manualOverSummary": "{over} من {total} بنود يدوية تجاوزت الحد هذا الشهر.",
+      "manualTrendVsHistory": "اليدوي {direction} بمقدار {delta} مقارنة بمتوسط آخر 3 أشهر مغلقة.",
+      "trendDirection": {
+        "up": "أعلى",
+        "down": "أقل",
+        "flat": "مستقر"
+      },
       "leakageCallout": "{amount} خرجت من ميزانيتك المتغيرة هذا الشهر.",
-      "autoRecap": "تمت معالجة {count} دفعات تلقائية بإجمالي {amount} هذا الشهر.",
       "bucketTrendLabel": "الاتجاه"
     },
     "variable": {
@@ -717,13 +733,13 @@
       "insightOverTarget": "عدة أسابيع تجاوزت الهدف الأسبوعي.",
       "dowInsight": "أعلى يوم لديك هو {day}، بمتوسط {amount}.",
       "dow": {
-        "sun": "الأحد",
-        "mon": "الإثنين",
-        "tue": "الثلاثاء",
-        "wed": "الأربعاء",
-        "thu": "الخميس",
-        "fri": "الجمعة",
-        "sat": "السبت"
+        "sun": "أحد",
+        "mon": "إثن",
+        "tue": "ثلا",
+        "wed": "أرب",
+        "thu": "خمي",
+        "fri": "جمع",
+        "sat": "سبت"
       }
     },
     "major": {
@@ -740,10 +756,10 @@
       "title": "طرق الدفع",
       "subtitle": "حركة الأموال حسب طريقة الدفع.",
       "filterAll": "الكل",
-      "discretionaryLabel": "اختياري",
-      "committedLabel": "مُلزَم",
+      "fixedLabel": "ثابت",
+      "variableLabel": "متغير",
       "totalLabel": "إجمالي المصروف",
-      "footerNote": "الاختياري يشمل المشتريات المُعاد تصنيفها كرئيسية. راجع تحليل الإنفاق الكبير للتفاصيل."
+      "footerNote": "المتغير يشمل المشتريات المُعاد تصنيفها كرئيسية. راجع تحليل الإنفاق الكبير للتفاصيل."
     },
     "trends": {
       "title": "اتجاه معدل التوفير",
