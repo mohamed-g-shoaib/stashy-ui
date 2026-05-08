@@ -3,8 +3,16 @@
 import { useLocale, useTranslations } from "next-intl"
 import * as React from "react"
 
-import { formatAnalyticsCurrency } from "@/components/analytics/formatters"
-import type { AnalyticsData, LiveMonthAnalysis } from "@/components/analytics/types"
+import {
+  formatAnalyticsCurrency,
+  formatAnalyticsSignedCurrency,
+} from "@/components/analytics/formatters"
+import type {
+  AnalyticsData,
+  FixedBucketType,
+  LiveMonthAnalysis,
+  MonthSnapshot,
+} from "@/components/analytics/types"
 import { Card, CardContent } from "@/components/ui/card"
 import { semanticProgressClass, semanticTextClass } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
@@ -14,11 +22,12 @@ interface FixedAnalysisCardProps {
   data: AnalyticsData
 }
 
-type FixedTypeKey = "manual" | "recurring" | "installment"
+const typeKeys: FixedBucketType[] = ["manual", "recurring", "installment"]
 
-const typeKeys: FixedTypeKey[] = ["manual", "recurring", "installment"]
-
-function getTypeSpent(month: LiveMonthAnalysis, type: FixedTypeKey): number {
+function getTypeSpent(
+  month: Pick<LiveMonthAnalysis, "fixedBuckets" | "fixedBucketsActual">,
+  type: FixedBucketType,
+) {
   return month.fixedBuckets
     .filter((bucket) => bucket.type === type)
     .reduce((sum, bucket) => {
@@ -27,68 +36,70 @@ function getTypeSpent(month: LiveMonthAnalysis, type: FixedTypeKey): number {
     }, 0)
 }
 
-function getTypeBudget(month: LiveMonthAnalysis, type: FixedTypeKey): number {
+function getTypeBudget(month: Pick<LiveMonthAnalysis, "fixedBuckets">, type: FixedBucketType) {
   return month.fixedBuckets
     .filter((bucket) => bucket.type === type)
     .reduce((sum, bucket) => sum + bucket.budget, 0)
 }
 
+function getTypeHistory(snapshot: MonthSnapshot, type: FixedBucketType) {
+  return {
+    spent: getTypeSpent(snapshot, type),
+    budget: getTypeBudget(snapshot, type),
+  }
+}
+
 export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
-  const [selectedType, setSelectedType] = React.useState<FixedTypeKey>("manual")
-  const [selectedMethodId, setSelectedMethodId] = React.useState<string>("all")
+  const [selectedType, setSelectedType] = React.useState<FixedBucketType>("manual")
 
-  const totalFixed = month.fixedTotalSpent
-  const selectedTypeSpent = getTypeSpent(month, selectedType)
   const selectedTypeBudget = getTypeBudget(month, selectedType)
-  const selectedTypeShare = Math.round((selectedTypeSpent / Math.max(1, totalFixed)) * 100)
+  const selectedTypeSpent = getTypeSpent(month, selectedType)
   const selectedTypeUsage = Math.round((selectedTypeSpent / Math.max(1, selectedTypeBudget)) * 100)
+  const selectedTypeShare = Math.round(
+    (selectedTypeSpent / Math.max(1, month.fixedTotalSpent)) * 100,
+  )
 
-  const methodRows = month.paymentMethods
-    .map((method) => ({
-      id: method.id,
-      name: method.name,
-      amount: method.fixedByType?.[selectedType] ?? 0,
-    }))
-    .filter((method) => method.amount > 0)
+  const selectedTypePrevious = data.snapshots[0] ? getTypeHistory(data.snapshots[0], selectedType) : null
+  const previousDelta = selectedTypePrevious === null ? 0 : selectedTypeSpent - selectedTypePrevious.spent
 
-  const visibleMethodRows =
-    selectedMethodId === "all"
-      ? methodRows
-      : methodRows.filter((method) => method.id === selectedMethodId)
+  const selectedTypeHistory = data.snapshots.slice(0, 3).map((snapshot) => getTypeHistory(snapshot, selectedType))
+  const selectedTypeAvg =
+    selectedTypeHistory.length > 0
+      ? Math.round(
+          selectedTypeHistory.reduce((sum, item) => sum + item.spent, 0) /
+            selectedTypeHistory.length,
+        )
+      : null
+  const averageDelta = selectedTypeAvg === null ? 0 : selectedTypeSpent - selectedTypeAvg
 
-  const selectedMethodTotal =
-    selectedMethodId === "all"
-      ? selectedTypeSpent
-      : (methodRows.find((method) => method.id === selectedMethodId)?.amount ?? 0)
+  const transferSummary =
+    month.fixedTransfers?.find((transfer) => transfer.type === selectedType && transfer.total > 0) ?? null
 
   const manualBuckets = month.fixedBuckets
     .filter((bucket) => bucket.type === "manual")
     .map((bucket) => {
       const actual = month.fixedBucketsActual.find((item) => item.id === bucket.id)
       return {
-        id: bucket.id,
         spent: actual?.spent ?? 0,
         budget: bucket.budget,
       }
     })
-
   const manualOver = manualBuckets.filter((bucket) => bucket.spent > bucket.budget).length
-  const manualHistorySpent = data.snapshots.slice(0, 3).map((snapshot) =>
-    snapshot.fixedBuckets
-      .filter((bucket) => bucket.type === "manual")
-      .reduce((sum, bucket) => {
-        const actual = snapshot.fixedBucketsActual.find((item) => item.id === bucket.id)
-        return sum + (actual?.spent ?? 0)
-      }, 0),
-  )
-  const manualAvg =
-    manualHistorySpent.length > 0
-      ? Math.round(manualHistorySpent.reduce((sum, value) => sum + value, 0) / manualHistorySpent.length)
-      : null
-  const manualCurrent = getTypeSpent(month, "manual")
-  const manualDelta = manualAvg === null ? 0 : manualCurrent - manualAvg
+
+  const usageToneClass =
+    selectedTypeUsage > 100
+      ? semanticTextClass.expense
+      : selectedTypeUsage >= 85
+        ? semanticTextClass.warning
+        : semanticTextClass.fixed
+  const usageBarClass =
+    selectedTypeUsage > 100
+      ? semanticProgressClass.expense
+      : selectedTypeUsage >= 85
+        ? semanticProgressClass.warning
+        : semanticProgressClass.fixed
 
   return (
     <Card size="sm" className="py-4">
@@ -98,46 +109,17 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
           <p className="text-sm leading-[1.5] text-text-secondary">{t("fixed.subtitle")}</p>
         </div>
 
-        <div className="rounded-[var(--radius-md)] bg-surface-offset p-3 shadow-ring">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-tertiary">
-                {t("fixed.totalLabel")}
-              </p>
-              <p dir="ltr" className="mt-1 text-[1.4rem] font-semibold leading-none tabular-nums text-foreground">
-                {formatAnalyticsCurrency(locale, totalFixed)}
-              </p>
-            </div>
-            <div className="text-end">
-              <p dir="ltr" className="text-sm font-medium tabular-nums text-foreground">
-                {formatAnalyticsCurrency(locale, selectedTypeSpent)}
-              </p>
-              <p className="text-xs text-text-tertiary">
-                {t("fixed.selectedShare", {
-                  type: t(`fixed.type.${selectedType}`),
-                  share: selectedTypeShare,
-                })}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-2 rounded-[var(--radius-md)] bg-surface-offset p-1 shadow-ring">
           {typeKeys.map((typeKey) => {
             const active = selectedType === typeKey
             return (
               <button
                 key={typeKey}
                 type="button"
-                onClick={() => {
-                  setSelectedType(typeKey)
-                  setSelectedMethodId("all")
-                }}
+                onClick={() => setSelectedType(typeKey)}
                 className={cn(
-                  "min-h-12 rounded-[var(--radius-sm)] px-3 py-2.5 text-start shadow-ring transition-colors active:scale-[0.96]",
-                  active
-                    ? "bg-card text-foreground shadow-[var(--shadow-soft)]"
-                    : "bg-surface-offset text-text-secondary",
+                  "min-h-12 rounded-[calc(var(--radius-md)-4px)] px-3 py-2.5 text-center transition-colors active:scale-[0.96]",
+                  active ? "bg-card shadow-[var(--shadow-soft)]" : "bg-transparent",
                 )}
               >
                 <p
@@ -153,112 +135,138 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
           })}
         </div>
 
-        <div className="rounded-[var(--radius-md)] bg-card p-3 shadow-[var(--shadow-soft)]">
-          <div className="flex items-end justify-between gap-3">
-            <div>
+        <div className="rounded-[var(--radius-md)] bg-card p-4 shadow-[var(--shadow-soft)]">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-tertiary">
                 {t("fixed.focusLabel", { type: t(`fixed.type.${selectedType}`) })}
               </p>
-              <p dir="ltr" className="mt-1 text-lg font-semibold tabular-nums text-foreground">
+              <p
+                dir="ltr"
+                className="mt-1 text-[1.7rem] font-semibold leading-none tabular-nums text-foreground"
+              >
+                {formatAnalyticsCurrency(locale, selectedTypeBudget)}
+              </p>
+              <p className="mt-1 text-xs text-text-tertiary">{t("fixed.heroCaption")}</p>
+            </div>
+            <div className="rounded-full bg-surface-offset px-3 py-1.5 shadow-ring">
+              <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
+                {t("fixed.spentLabel")}
+              </p>
+              <p
+                dir="ltr"
+                className={cn("mt-0.5 text-sm font-semibold tabular-nums", usageToneClass)}
+              >
                 {formatAnalyticsCurrency(locale, selectedTypeSpent)}
               </p>
             </div>
-            <div className="text-end">
-              <p dir="ltr" className="text-sm tabular-nums text-text-secondary">
-                {formatAnalyticsCurrency(locale, selectedTypeBudget)}
-              </p>
-              <p className="text-xs text-text-tertiary">{t("fixed.budgetLabel")}</p>
-            </div>
           </div>
 
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-offset">
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-surface-offset">
             <div
-              className={cn("h-full rounded-full", semanticProgressClass.fixed)}
+              className={cn("h-full rounded-full", usageBarClass)}
               style={{ width: `${Math.min(selectedTypeUsage, 100)}%` }}
             />
           </div>
 
-          <div className="mt-2 flex items-center justify-between gap-2 text-xs text-text-tertiary">
-            <p>{t("fixed.usageSummary", { usage: selectedTypeUsage })}</p>
-            <p dir="ltr" className="tabular-nums">
-              {selectedTypeShare}%
-            </p>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <div className="rounded-[var(--radius-sm)] bg-surface-offset px-3 py-2">
+              <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
+                {t("fixed.usageLabel")}
+              </p>
+              <p dir="ltr" className="mt-1 text-sm font-semibold tabular-nums text-foreground">
+                {selectedTypeUsage}%
+              </p>
+            </div>
+            <div className="rounded-[var(--radius-sm)] bg-surface-offset px-3 py-2">
+              <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
+                {t("fixed.shareLabel")}
+              </p>
+              <p dir="ltr" className="mt-1 text-sm font-semibold tabular-nums text-foreground">
+                {selectedTypeShare}%
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <div className="no-scrollbar flex gap-2 overflow-x-auto pb-0.5">
-            <button
-              type="button"
-              onClick={() => setSelectedMethodId("all")}
-              className={cn(
-                "min-h-12 shrink-0 rounded-full px-4 text-sm font-medium transition-colors active:scale-[0.96]",
-                selectedMethodId === "all"
-                  ? "border border-brand/30 bg-brand-subtle text-brand"
-                  : "bg-surface-offset text-text-secondary",
-              )}
-            >
-              {t("methods.filterAll")}
-            </button>
-            {methodRows.map((method) => (
-              <button
-                key={method.id}
-                type="button"
-                onClick={() => setSelectedMethodId(method.id)}
-                className={cn(
-                  "min-h-12 shrink-0 rounded-full px-4 text-sm font-medium transition-colors active:scale-[0.96]",
-                  selectedMethodId === method.id
-                    ? "border border-brand/30 bg-brand-subtle text-brand"
-                    : "bg-surface-offset text-text-secondary",
-                )}
-              >
-                {method.name}
-              </button>
-            ))}
-          </div>
-
+        {selectedTypeAvg !== null ? (
           <div className="rounded-[var(--radius-md)] bg-surface-offset p-3 shadow-ring">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-sm font-medium text-foreground">
-                {selectedMethodId === "all"
-                  ? t("fixed.methodPanelTitle", { type: t(`fixed.type.${selectedType}`) })
-                  : t("fixed.methodPanelFilteredTitle", {
-                      method: methodRows.find((method) => method.id === selectedMethodId)?.name ?? "",
-                    })}
-              </p>
-              <p dir="ltr" className="text-xs tabular-nums text-text-tertiary">
-                {formatAnalyticsCurrency(locale, selectedMethodTotal)}
-              </p>
-            </div>
-
-            <div className="mt-3 flex flex-col gap-2">
-              {visibleMethodRows.map((method) => {
-                const share = Math.round((method.amount / Math.max(1, selectedTypeSpent)) * 100)
-                return (
-                  <div key={method.id} className="space-y-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm text-foreground">{method.name}</p>
-                      <p dir="ltr" className="text-xs tabular-nums text-text-tertiary">
-                        {formatAnalyticsCurrency(locale, method.amount)}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-card">
-                        <div
-                          className="h-full rounded-full bg-fixed"
-                          style={{ width: `${share}%` }}
-                        />
-                      </div>
-                      <p dir="ltr" className="w-9 text-end text-xs tabular-nums text-text-tertiary">
-                        {share}%
-                      </p>
-                    </div>
-                  </div>
-                )
-              })}
+            <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
+              {t("fixed.comparisonLabel")}
+            </p>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {selectedTypePrevious !== null ? (
+                <div className="rounded-[var(--radius-sm)] bg-card px-3 py-2.5 shadow-ring">
+                  <p className="text-xs text-text-tertiary">{t("fixed.previousMonthLabel")}</p>
+                  <p
+                    dir="ltr"
+                    className={cn(
+                      "mt-1 text-sm font-semibold tabular-nums",
+                      previousDelta > 0
+                        ? semanticTextClass.expense
+                        : previousDelta < 0
+                          ? semanticTextClass.income
+                          : "text-foreground",
+                    )}
+                  >
+                    {formatAnalyticsSignedCurrency(locale, previousDelta)}
+                  </p>
+                </div>
+              ) : null}
+              <div className="rounded-[var(--radius-sm)] bg-card px-3 py-2.5 shadow-ring">
+                <p className="text-xs text-text-tertiary">{t("fixed.threeMonthLabel")}</p>
+                <p
+                  dir="ltr"
+                  className={cn(
+                    "mt-1 text-sm font-semibold tabular-nums",
+                    averageDelta > 0
+                      ? semanticTextClass.expense
+                      : averageDelta < 0
+                        ? semanticTextClass.income
+                        : "text-foreground",
+                  )}
+                >
+                  {formatAnalyticsSignedCurrency(locale, averageDelta)}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        ) : null}
+
+        {transferSummary ? (
+          <div className="rounded-[var(--radius-md)] bg-transfer-subtle p-3 shadow-ring">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-transfer">
+                  {t("fixed.transferLabel")}
+                </p>
+                <p dir="ltr" className="mt-1 text-sm font-semibold tabular-nums text-foreground">
+                  {formatAnalyticsCurrency(locale, transferSummary.total)}
+                </p>
+                <p className="mt-1 text-xs text-text-secondary">{t("fixed.transferCaption")}</p>
+              </div>
+            </div>
+            <div className="mt-3 flex flex-col gap-2">
+              {transferSummary.sources.map((source) => (
+                <div
+                  key={source.bucketId}
+                  className="flex items-center justify-between gap-2 rounded-[var(--radius-sm)] bg-card px-3 py-2 shadow-ring"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm text-foreground">
+                      {source.name} <span className="text-text-tertiary">{"->"}</span>{" "}
+                      {t(`fixed.type.${selectedType}`)}
+                    </p>
+                    <p className="mt-0.5 text-xs text-text-tertiary">{t("fixed.transferRouteCaption")}</p>
+                  </div>
+                  <p dir="ltr" className="text-xs tabular-nums text-transfer">
+                    {formatAnalyticsCurrency(locale, source.amount)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
 
         {selectedType === "manual" ? (
           <div className="rounded-[var(--radius-md)] bg-card px-3 py-2.5 shadow-ring">
@@ -268,19 +276,6 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
                 total: manualBuckets.length,
               })}
             </p>
-            {manualAvg !== null ? (
-              <p dir="ltr" className="mt-1 text-xs tabular-nums text-text-tertiary">
-                {t("fixed.manualTrendVsHistory", {
-                  delta: formatAnalyticsCurrency(locale, Math.abs(manualDelta)),
-                  direction:
-                    manualDelta > 0
-                      ? t("fixed.trendDirection.up")
-                      : manualDelta < 0
-                        ? t("fixed.trendDirection.down")
-                        : t("fixed.trendDirection.flat"),
-                })}
-              </p>
-            ) : null}
           </div>
         ) : null}
 

@@ -1,8 +1,10 @@
+export type FixedBucketType = "manual" | "recurring" | "installment"
+
 export type FixedBucketPlan = {
   id: string
   name: string
   budget: number
-  type: "manual" | "recurring" | "installment"
+  type: FixedBucketType
 }
 
 export type FixedBucketActual = {
@@ -23,6 +25,16 @@ export type PaymentMethodBreakdown = {
     recurring: number
     installment: number
   }
+}
+
+export type FixedTransferSummary = {
+  type: FixedBucketType
+  total: number
+  sources: Array<{
+    bucketId: string
+    name: string
+    amount: number
+  }>
 }
 
 export type LargestDay = { date: string; amount: number }
@@ -63,6 +75,7 @@ export type MonthSnapshot = {
   majorPctOfBudget: number
 
   paymentMethods: PaymentMethodBreakdown[]
+  fixedTransfers?: FixedTransferSummary[]
 }
 
 export type LiveMonthAnalysis = {
@@ -112,6 +125,7 @@ export type LiveMonthAnalysis = {
   projectedSavingsRate: number
 
   paymentMethods: PaymentMethodBreakdown[]
+  fixedTransfers?: FixedTransferSummary[]
 }
 
 export type AnalyticsData = {

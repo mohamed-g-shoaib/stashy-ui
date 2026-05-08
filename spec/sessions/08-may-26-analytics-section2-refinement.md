@@ -96,6 +96,227 @@ Continued from the analytics redesign handoff after product-owner review feedbac
 
 ---
 
+# Session 9 — Move Method Insight Out of Fixed Card
+
+**Time:** 01:08–01:20
+
+---
+
+## Status at Session Start
+
+The user proposed a cleaner ownership split: payment-method analysis should live only in the Payment Methods card, while Fixed analysis should gain a lightweight transfer insight instead of duplicating method breakdown.
+
+---
+
+## Completed This Session
+
+- Removed payment-method breakdown ownership from `FixedAnalysisCard`.
+- Added a lightweight transfer insight block to `FixedAnalysisCard`:
+  - only appears when transfer data exists for the selected fixed type
+  - currently modeled for manual fixed top-ups
+  - shows total transferred into the type plus source buckets.
+- Extended analytics mock types/data with `fixedTransfers` so transfer insight can be rendered without backend work.
+- Enhanced `PaymentMethodCard` fixed row:
+  - fixed bar now includes internal type segmentation
+  - recurring / installment / manual are shown as separate internal segments
+  - support line beneath the row now labels those sub-amounts explicitly.
+- Updated `PaymentMethodCard` conditional rendering behavior:
+  - major mini-bar is hidden when major spend is `0` for the active method/filter
+  - fixed subtype mini-bars (`recurring/installment/manual`) are hidden when their spend is `0`
+  - fixed support summary now lists only non-zero fixed subtype entries.
+- Updated EN/AR analytics copy for transfer labels.
+- Verification:
+  - `pnpm typecheck` passed.
+
+---
+
+## Decisions Made
+
+- Payment methods are now the sole owner of method-level spending analysis.
+- Fixed analysis focuses on selected-type budget behavior plus transfer correction when relevant.
+- Transfer insight should stay lightweight and contextual, not expand into a full independent analytics card yet.
+
+---
+
+## Open Blockers
+
+1. None within Analytics scope. Existing lint errors remain in untouched files: `components/settings/settings-screen.tsx`, `components/settings/settings-sections.tsx`, `components/tracker/tracker-transfer-drawer.tsx`.
+
+---
+
+# Session 8 — Selected-Type Budget Hero Rebuild
+
+**Time:** 00:55–01:08
+
+---
+
+## Status at Session Start
+
+The user clarified the core misunderstanding: the primary number should not be the whole fixed total. It should be the selected type’s own budget total. The prior design also still felt visually off-model for Stashy’s mobile card language.
+
+---
+
+## Completed This Session
+
+- Rebuilt `FixedAnalysisCard` again around the selected type’s own budget as the hero value.
+- Removed the whole-fixed total hero from the card entirely.
+- Kept the type selector as top navigation, then made the selected-type surface the dominant read:
+  - selected-type planned budget as hero
+  - spent badge as secondary context
+  - usage bar
+  - two compact support stats: `used`, `of fixed`
+- Reframed historical comparison as a separate calmer block below the hero surface.
+- Kept payment-method drill-down as a separate block after comparison so the card reads in one vertical path.
+- Updated EN/AR analytics copy for the new selected-type-budget framing.
+- Verification:
+  - `pnpm typecheck` passed.
+
+---
+
+## Decisions Made
+
+- The meaningful top number for this card is the selected type’s own planned budget, not the month’s whole fixed total.
+- A single vertical read path is more appropriate than multiple competing summary surfaces for this mobile screen.
+- Spending context belongs as a secondary badge, not as a second hero.
+
+---
+
+## Open Blockers
+
+1. None within Analytics scope. Existing lint errors remain in untouched files: `components/settings/settings-screen.tsx`, `components/settings/settings-sections.tsx`, `components/tracker/tracker-transfer-drawer.tsx`.
+
+---
+
+# Session 7 — Fixed Card Rebuilt From Read Path
+
+**Time:** 00:42–00:55
+
+---
+
+## Status at Session Start
+
+The prior Fixed card was still trying to solve too many things at once and had lost a clear visual read path. The user requested stepping back and redesigning it with stronger UI/UX judgment rather than continuing local tweaks.
+
+---
+
+## Completed This Session
+
+- Rebuilt `FixedAnalysisCard` around a stricter read path:
+  - `Total fixed` as a single top summary
+  - type selector as pure navigation
+  - selected-type detail as the main working surface
+  - comparisons as compact structured blocks
+  - payment-method detail as the final drill-down layer
+- Removed competing totals from the type-detail header and replaced them with a cleaner two-tile `spent / planned` layout.
+- Converted historical comparison from loose text rows into two compact comparison tiles:
+  - `vs last month`
+  - `vs 3-month avg`
+- Simplified `PaymentMethodCard` interpretation:
+  - bar is visual only
+  - percentage moved outside the fill
+  - variable row now explicitly shows `variable + major` amounts beneath the row.
+- Updated EN/AR analytics strings for the new Fixed-card labels.
+- Verification:
+  - `pnpm typecheck` passed.
+
+---
+
+## Decisions Made
+
+- Fixed analysis should follow one dominant read path instead of mixing summary, comparison, and drill-down at equal weight.
+- Selector chips are navigation only.
+- The selected-type panel is the only place where that type’s detailed numbers should compete for attention.
+- Comparison metrics are more trustworthy when grouped into discrete blocks rather than inline copy.
+
+---
+
+## Open Blockers
+
+1. None within Analytics scope. Existing lint errors remain in untouched files: `components/settings/settings-screen.tsx`, `components/settings/settings-sections.tsx`, `components/tracker/tracker-transfer-drawer.tsx`.
+
+---
+
+# Session 6 — Fixed Card Visual Reset
+
+**Time:** 00:30–00:42
+
+---
+
+## Status at Session Start
+
+The Fixed card still felt visually noisy and repetitive even after the interaction fixes. Totals were competing across layers, comparison text was too list-like, and the Payment Methods row still relied on text inside fills in a way that hurt trust and scan quality.
+
+---
+
+## Completed This Session
+
+- Reset `FixedAnalysisCard` hierarchy for cleaner scan:
+  - top summary now shows only `Total fixed`
+  - selected-type detail card now shows `spent` and `planned` as a compact 2-up grid
+  - usage bar and selected share remain in the detail layer
+  - comparisons were rebuilt as two small comparison blocks (`vs last month`, `vs 3-month avg`) instead of loose text rows.
+- Simplified `PaymentMethodCard` row reading:
+  - removed percentage text from inside the colored fill
+  - moved the percentage outside the bar
+  - for Variable row, added explicit `variable + major` amount text below to explain the stacked composition.
+- Updated EN/AR analytics copy for the new fixed-card labels and comparison headings.
+- Verification:
+  - `pnpm typecheck` passed.
+
+---
+
+## Decisions Made
+
+- Total summary should appear once only.
+- Selected-type detail should read as a focused inspection surface, not another summary card.
+- Comparison metrics are easier to scan as compact blocks than as paragraph-like lines.
+- Payment bars should prioritize trustworthy reading over decorative text-inside-fill treatment.
+
+---
+
+## Open Blockers
+
+1. None within Analytics scope. Existing lint errors remain in untouched files: `components/settings/settings-screen.tsx`, `components/settings/settings-sections.tsx`, `components/tracker/tracker-transfer-drawer.tsx`.
+
+---
+
+# Session 5 — Restored Fixed Comparison + Card Order Update
+
+**Time:** 00:22–00:30
+
+---
+
+## Status at Session Start
+
+Review found one functional regression from the earlier redesign: the “compare to previous months” behavior had been reduced to a manual-only note instead of following the selected fixed type. The user also requested the Payment Methods analysis card move to second position in Section 2.
+
+---
+
+## Completed This Session
+
+- Restored previous-month and 3-month-average comparison inside the selected-type detail panel of `FixedAnalysisCard`.
+- The fixed comparison now follows the active selected type (`manual`, `recurring`, or `installment`) instead of being limited to the manual-only note.
+- Kept the manual-overrun summary as a manual-only support panel.
+- Reordered Section 2 cards so `PaymentMethodCard` now appears second, directly after `BudgetCompositionCard`.
+- Updated English and Arabic analytics copy for the selected-type comparison labels.
+- Verification:
+  - `pnpm typecheck` passed.
+
+---
+
+## Decisions Made
+
+- Historical comparison belongs to the selected-type detail layer, not only to the manual-specific subpanel.
+- Payment Methods sits earlier in Section 2 because it frames where spending moved before drilling into fixed-type behavior.
+
+---
+
+## Open Blockers
+
+1. None within Analytics scope. Existing lint errors remain in untouched files: `components/settings/settings-screen.tsx`, `components/settings/settings-sections.tsx`, `components/tracker/tracker-transfer-drawer.tsx`.
+
+---
+
 # Session 4 — Selector vs Summary Cleanup
 
 **Time:** 00:15–00:22

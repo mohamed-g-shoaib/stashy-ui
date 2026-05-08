@@ -91,6 +91,13 @@ const snapshot_2026_04: MonthSnapshot = {
       fixedByType: { manual: 100, recurring: 100, installment: 0 },
     },
   ],
+  fixedTransfers: [
+    {
+      type: "manual",
+      total: 180,
+      sources: [{ bucketId: "fb-coffee", name: "Coffee", amount: 180 }],
+    },
+  ],
 }
 
 const snapshot_2026_03: MonthSnapshot = {
@@ -167,6 +174,7 @@ const snapshot_2026_03: MonthSnapshot = {
       fixedByType: { manual: 140, recurring: 60, installment: 0 },
     },
   ],
+  fixedTransfers: [],
 }
 
 const snapshot_2026_02: MonthSnapshot = {
@@ -241,6 +249,13 @@ const snapshot_2026_02: MonthSnapshot = {
       major: 0,
       total: 380,
       fixedByType: { manual: 40, recurring: 200, installment: 0 },
+    },
+  ],
+  fixedTransfers: [
+    {
+      type: "manual",
+      total: 120,
+      sources: [{ bucketId: "fb-coffee", name: "Coffee", amount: 120 }],
     },
   ],
 }
@@ -337,6 +352,13 @@ const liveMonth_2026_05: LiveMonthAnalysis = {
       fixedByType: { manual: 0, recurring: 200, installment: 0 },
     },
   ],
+  fixedTransfers: [
+    {
+      type: "manual",
+      total: 95,
+      sources: [{ bucketId: "fb-coffee", name: "Coffee", amount: 95 }],
+    },
+  ],
 }
 
 const liveMonth_firstMonth: LiveMonthAnalysis = {
@@ -410,6 +432,7 @@ export function snapshotToView(snapshot: MonthSnapshot): LiveMonthAnalysis {
     projectedSavingsRate: snapshot.variableSavingsRate,
 
     paymentMethods: snapshot.paymentMethods,
+    fixedTransfers: snapshot.fixedTransfers ?? [],
   }
 }
 

@@ -88,10 +88,10 @@ export function AnalyticsScreen() {
               subtitle={t("section.where.subtitle")}
             />
             <BudgetCompositionCard month={selectedMonth} />
+            <PaymentMethodCard month={selectedMonth} />
             <FixedAnalysisCard month={selectedMonth} data={analyticsData} />
             <VariableAnalysisCard month={selectedMonth} />
             <MajorBehaviourCard month={selectedMonth} data={analyticsData} />
-            <PaymentMethodCard month={selectedMonth} />
 
             <SectionHeader
               title={t("section.improving.title")}
