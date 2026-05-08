@@ -648,22 +648,6 @@
         "inProgress": "قيد التنفيذ"
       }
     },
-    "pacing": {
-      "underPace": "أقل من الإيقاع",
-      "overPace": "أعلى من الإيقاع",
-      "onPace": "على الإيقاع",
-      "narrative": "استخدمت {budgetUsed}% من الميزانية بينما مر {monthProgress}% من الشهر - {descriptor}.",
-      "descriptorStrongPositive": "أقل كثيرا من الإيقاع",
-      "descriptorPositive": "أقل بوضوح من الإيقاع",
-      "descriptorSoftPositive": "أقل قليلا من الإيقاع",
-      "descriptorStrongWarning": "أعلى كثيرا من إيقاع الميزانية",
-      "descriptorWarning": "أعلى من إيقاع الميزانية",
-      "descriptorSoftWarning": "أعلى قليلا من إيقاع الميزانية",
-      "budgetUsed": "المستخدم من الميزانية",
-      "monthProgress": "تقدم الشهر",
-      "barLabel": "مقارنة إيقاع الإنفاق بتقدم الشهر",
-      "overspentDays": "تم التجاوز {count} أيام حتى الآن"
-    },
     "projection": {
       "title": "توقعات نهاية الشهر",
       "heroSaving": "في طريقك للتوفير",
@@ -682,117 +666,126 @@
       "overTarget": "فوق الهدف اليومي",
       "projectedSavingsLabel": "توفير متوقع"
     },
-    "shaping": {
-      "title": "ما الذي يشكل هذا الشهر",
-      "subtitle": "قراءة سريعة لأهم العوامل المؤثرة الآن.",
-      "variableBudgetLeft": "المتبقي من الميزانية المتغيرة",
-      "fixedPressure": "ضغط المصروفات الثابتة",
-      "majorPurchases": "المشتريات الكبيرة",
-      "fixedOverBudget": "المصروف الثابت تجاوز الميزانية بمقدار {amount}، مع بند يدوي واحد فوق الحد و{paidCount}/{totalCount} من الدفعات التلقائية تم سدادها.",
-      "fixedWithinBudget": "المصروف الثابت ما زال داخل خطة {budget}، وتم سداد {paidCount}/{totalCount} من الدفعات التلقائية.",
-      "majorDragging": "{count} مشتريات كبيرة تسحب {amount} من هذا الشهر.",
-      "majorNone": "لا توجد مشتريات كبيرة تضغط هذا الشهر.",
-      "leftToWorkWith": "بعد الدخل والضغط الثابت والمشتريات الكبيرة ما زال لديك {amount} لتعمل به.",
-      "missingFromPlan": "بعد الدخل والضغط الثابت والمشتريات الكبيرة فأنت ناقص {amount} عن الخطة.",
-      "grandTotalSpent": "إجمالي المصروف",
-      "netAfterReceived": "الصافي بعد الوارد"
-    },
-    "comparison": {
-      "title": "مقارنة بالشهر الماضي",
-      "savingsMore": "توفير أعلى من الشهر الماضي",
-      "largeLess": "مشتريات كبيرة أقل من الشهر الماضي",
-      "arrow": "->",
-      "savingsRate": "معدل التوفير",
-      "baseDailyRate": "المعدل اليومي الأساسي",
-      "largePurchases": "المشتريات الكبيرة",
-      "verdictBetter": "أبريل أفضل من مارس في المؤشرات التي تغيرت.",
-      "verdictMostlyBetter": "أبريل يبدو أفضل من مارس إجمالا مع توفير أعلى ومشتريات كبيرة أقل.",
-      "verdictMostlyWorse": "أبريل يتراجع عن مارس في المؤشرات التي تغيرت.",
-      "verdictWorse": "أبريل أقل من مارس في مؤشري المقارنة الأساسيين.",
-      "verdictMixed": "شهر مختلط - تحسن مؤشر بينما تحرك الآخر في الاتجاه الخاطئ.",
-      "savingsRateMessage": "توفير أعلى من الشهر الماضي",
-      "baseRateReason": "المعدل الأساسي لم يتغير - بقيت المصروفات الثابتة كما هي",
-      "largePurchasesMessage": "مشتريات كبيرة أقل من الشهر الماضي",
-      "emptyDescription": "لا توجد بيانات للشهر السابق بعد. أغلق {month} لفتح المقارنة.",
-      "closeMonth": "أغلق {month}"
-    },
-    "tabs": {
-      "spending": "الإنفاق",
-      "overview": "نظرة عامة",
-      "trends": "الاتجاهات"
-    },
     "section": {
-      "monthlyHealth": "الصحة المالية للشهر",
-      "whereMoneyWent": "أين ذهبت أموالك",
-      "improving": "هل تتحسن؟"
-    },
-    "summary": {
-      "title": "ملخص الشهر",
-      "verdict": {
-        "strong": "شهر قوي",
-        "solid": "شهر جيد",
-        "mixed": "شهر مختلط",
-        "challenging": "شهر صعب"
+      "onPace": {
+        "title": "هل أنت ضمن الإيقاع؟",
+        "subtitle": "أين تقف الآن وأين ستنتهي على الأرجح."
       },
-      "savings": {
-        "up": "معدل التوفير تحسّن مقارنة بالشهر الماضي",
-        "down": "معدل التوفير انخفض مقارنة بالشهر الماضي",
-        "same": "معدل التوفير ظل ثابتاً",
-        "first": "لا مقارنة بعد — أول شهر مسجل"
+      "where": {
+        "title": "أين ذهبت ميزانيتك",
+        "subtitle": "كيف توزع إنفاق هذا الشهر بين الخطة والواقع."
       },
-      "days": {
-        "clean": "كل يوم مُتابَع ظل ضمن المعدل اليومي",
-        "mostlyClean": "{overspent} أيام تجاوزت المعدل اليومي",
-        "rough": "{overspent} من {tracked} يوماً تجاوزت الإنفاق"
-      },
-      "rhythm": {
-        "consistent": "كان إيقاع الإنفاق منتظماً طوال الشهر",
-        "volatile": "الإنفاق كان غير منتظم — تركّز في جزء من الشهر"
+      "improving": {
+        "title": "هل تتحسن؟",
+        "subtitle": "كيف يقارن هذا الشهر بأشهرك المغلقة."
       }
     },
-    "rollover": {
-      "title": "الوسادة الشهرية",
-      "aheadLabel": "متقدم هذا الشهر",
-      "deficitLabel": "عجز حتى الآن",
-      "contextSentence": "أنفقت {budgetUsed}% من ميزانيتك وقد مضى {monthProgress}% من الشهر.",
-      "dotGridLabel": "الأيام ضمن المعدل اليومي",
-      "overspentDays": "{overspent} من {tracked} يوماً تجاوزت فيه الإنفاق"
+    "pacing": {
+      "aheadLabel": "متقدم",
+      "behindLabel": "متأخر",
+      "contextSentence": "استخدمت {budgetUsed}% من ميزانيتك المتغيرة بينما مضى {monthProgress}% من الشهر.",
+      "barLabel": "مقارنة إيقاع الميزانية المتغيرة بتقدم الشهر",
+      "injectionFootnote": "يشمل ضخ ميزانية بقيمة {amount} هذا الشهر."
     },
     "composition": {
       "title": "توزيع الميزانية",
-      "subtitle": "كيف تتوزع ميزانيتك الشهرية",
+      "subtitle": "تقسيم الخطة الشهرية",
       "totalBudgetLabel": "الميزانية الشهرية",
       "fixedLabel": "ثابت",
-      "variableLabel": "متغير",
-      "committedAnnotation": "{pct}% من ميزانيتك محجوزة قبل بداية الشهر"
+      "variableLabel": "متغير"
     },
-    "rhythm": {
-      "title": "إيقاع الإنفاق",
-      "subtitle": "الإنفاق المتغير أسبوعياً مقابل هدف المعدل اليومي",
-      "weekLabel": "أ{n}",
-      "targetLabel": "الهدف",
+    "fixed": {
+      "title": "تحليل الثابت",
+      "subtitle": "ابدأ بإجمالي الثابت ثم افحص نوعاً واحداً في كل مرة.",
+      "type": {
+        "manual": "يدوي",
+        "recurring": "متكرر",
+        "installment": "تقسيط"
+      },
+      "selectedShare": "{type} يشكّل {share}% من الثابت",
+      "focusLabel": "تفصيل {type}",
+      "heroCaption": "الميزانية المخططة لهذا النوع",
+      "spentLabel": "المصروف",
+      "budgetLabel": "المخطط",
+      "usageLabel": "المستخدم",
+      "shareLabel": "من الثابت",
+      "usageSummary": "تم استخدام {usage}% من ميزانية هذا النوع",
+      "comparisonLabel": "مقارنة بالسابق",
+      "previousMonthLabel": "مقارنة بالشهر الماضي",
+      "threeMonthLabel": "مقارنة بمتوسط 3 أشهر",
+      "transferLabel": "مسارات التحويل اليدوي",
+      "transferCaption": "تحويلات خارجة من الميزانيات اليدوية هذا الشهر",
+      "transferImpactVariableLabel": "إلى المساحة المتغيرة",
+      "transferImpactManualLabel": "إلى ميزانيات يدوية",
+      "transferRouteToVariable": "إلى المساحة المتغيرة",
+      "transferRouteToManual": "إلى {name}",
+      "methodPanelTitle": "{type} حسب طريقة الدفع",
+      "methodPanelFilteredTitle": "مساهمة {method}",
+      "manualOverSome": "{over} من {total} بنود يدوية تجاوزت الحد هذا الشهر.",
+      "manualOverNone": "لا توجد ميزانيات يدوية تجاوزت الحد هذا الشهر.",
+      "trendDirection": {
+        "up": "أعلى",
+        "down": "أقل",
+        "flat": "مستقر"
+      },
+      "leakageCallout": "{amount} خرجت من ميزانيتك المتغيرة هذا الشهر.",
+      "bucketTrendLabel": "الاتجاه"
+    },
+    "variable": {
+      "title": "الإنفاق المتغير",
+      "subtitle": "متى تُنفق وكيف يكون التجاوز.",
+      "modeWeekly": "أسبوعياً",
+      "modeDayOfWeek": "يوم",
+      "dotGridLabel": "الأيام ضمن المعدل اليومي",
+      "overspentDays": "{overspent} من {tracked} يوماً تجاوزت فيه الإنفاق",
+      "largestDayCallout": "أسوأ يوم: {date}، {amount} — {ratio}× معدلك اليومي.",
       "insightHeavyStart": "تميل إلى الإنفاق بكثافة في بداية الشهر.",
       "insightHeavyEnd": "ارتفع الإنفاق نحو نهاية الشهر.",
       "insightConsistent": "كان إنفاقك منتظماً هذا الشهر.",
-      "insightOverTarget": "عدة أسابيع تجاوزت الهدف الأسبوعي — راجع التفاصيل أعلاه."
+      "insightOverTarget": "عدة أسابيع تجاوزت الهدف الأسبوعي.",
+      "dowInsight": "أعلى يوم لديك هو {day}، بمتوسط {amount}.",
+      "dow": {
+        "sun": "أحد",
+        "mon": "إثن",
+        "tue": "ثلا",
+        "wed": "أرب",
+        "thu": "خمي",
+        "fri": "جمع",
+        "sat": "سبت"
+      }
+    },
+    "major": {
+      "title": "الإنفاق الكبير",
+      "subtitle": "كم مرة تعيد تصنيف المشتريات الكبيرة كرئيسية.",
+      "heroMtd": "من الميزانية حتى الآن",
+      "heroFinal": "من الميزانية",
+      "deltaPositive": "+{delta}% مقارنة بالشهر الماضي",
+      "deltaNegative": "{delta}% مقارنة بالشهر الماضي",
+      "deltaNeutral": "مماثل للشهر الماضي",
+      "escapeValveHint": "استخدام بند الرئيسي مرتفع بشكل غير معتاد هذا الشهر."
     },
     "methods": {
       "title": "طرق الدفع",
-      "subtitle": "حركة الأموال حسب الطريقة والنوع",
+      "subtitle": "حركة الأموال حسب طريقة الدفع.",
       "filterAll": "الكل",
-      "filterVariable": "متغير",
-      "filterFixed": "ثابت",
-      "filterMajor": "رئيسي",
+      "fixedLabel": "ثابت",
+      "variableLabel": "متغير",
+      "showDetails": "إظهار التفصيل",
+      "hideDetails": "إخفاء التفصيل",
       "totalLabel": "إجمالي المصروف",
-      "fixedNote": "يشمل الثابت الدفعات المتكررة وأقساط التقسيط. قد يمتد الثابت اليدوي على طرق دفع متعددة."
+      "footerNote": "المتغير يشمل المشتريات المُعاد تصنيفها كرئيسية. راجع تحليل الإنفاق الكبير للتفاصيل."
     },
     "trends": {
       "title": "اتجاه معدل التوفير",
       "savingsRateLabel": "معدل التوفير",
-      "deltaPositive": "+{delta}% مقارنة بالشهر الماضي",
-      "deltaNegative": "{delta}% مقارنة بالشهر الماضي",
-      "deltaNeutral": "مماثل للشهر الماضي",
-      "closeMonthPrompt": "أغلق {month} لفتح أول مقارنة.",
+      "savingsRateMtdLabel": "معدل التوفير (حتى الآن)",
+      "deltaPositive": "+{delta}% مقارنة بـ {month}",
+      "deltaNegative": "{delta}% مقارنة بـ {month}",
+      "deltaNeutral": "مماثل لـ {month}",
+      "baseRateChangedReason": "تغير المعدل الأساسي لأن المصروفات الثابتة تغيرت بمقدار {delta}.",
+      "baseRateUnchangedReason": "المعدل الأساسي لم يتغير — بقيت المصروفات الثابتة كما هي.",
+      "autoClosedBadge": "أُغلِق تلقائياً",
+      "firstMonthPrompt": "أغلق {month} في نهاية الشهر لفتح أول مقارنة.",
       "closeMonthCta": "إغلاق {month}"
     },
     "upgrade": {

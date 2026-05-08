@@ -1,47 +1,77 @@
 "use client"
 
+import { useLocale, useTranslations } from "next-intl"
 import * as React from "react"
 
-import { useLocale, useTranslations } from "next-intl"
-
-import type { AnalyticsMonth } from "@/components/analytics/types"
+import { formatAnalyticsCurrency } from "@/components/analytics/formatters"
+import type { LiveMonthAnalysis } from "@/components/analytics/types"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
-import { formatAnalyticsCurrency } from "./formatters"
-
 const typeRows = [
-  { key: "variable" as const, barClass: "bg-variable", labelKey: "methods.filterVariable" },
-  { key: "fixed" as const, barClass: "bg-fixed", labelKey: "methods.filterFixed" },
-  { key: "major" as const, barClass: "bg-major", labelKey: "methods.filterMajor" },
+  { key: "fixed" as const, barClass: "bg-fixed", labelKey: "methods.fixedLabel" },
+  { key: "variable" as const, barClass: "bg-variable", labelKey: "methods.variableLabel" },
 ] as const
 
-export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
+export function PaymentMethodCard({ month }: { month: LiveMonthAnalysis }) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
   const [selectedMethodId, setSelectedMethodId] = React.useState<string>("all")
+  const [expandedRows, setExpandedRows] = React.useState<Record<"fixed" | "variable", boolean>>({
+    fixed: false,
+    variable: false,
+  })
 
   const selectedMethod =
     selectedMethodId === "all"
       ? null
       : (month.paymentMethods.find((m) => m.id === selectedMethodId) ?? null)
 
-  const displayTotal = selectedMethod
-    ? selectedMethod.total
-    : month.paymentMethods.reduce((sum, m) => sum + m.total, 0)
+  const aggregate = (key: "variable" | "fixed" | "major") =>
+    selectedMethod ? selectedMethod[key] : month.paymentMethods.reduce((sum, m) => sum + m[key], 0)
 
-  const typeValues = typeRows.map(({ key }) =>
-    selectedMethod
-      ? selectedMethod[key]
-      : month.paymentMethods.reduce((sum, m) => sum + m[key], 0),
-  )
-  const maxValue = Math.max(...typeValues, 1)
-  const totalForPct = typeValues.reduce((a, b) => a + b, 0)
+  const variable = aggregate("variable")
+  const major = aggregate("major")
+  const variableWithMajor = variable + major
+  const fixed = aggregate("fixed")
+  const fixedManual =
+    selectedMethod?.fixedByType?.manual ??
+    month.paymentMethods.reduce((sum, method) => sum + (method.fixedByType?.manual ?? 0), 0)
+  const fixedRecurring =
+    selectedMethod?.fixedByType?.recurring ??
+    month.paymentMethods.reduce((sum, method) => sum + (method.fixedByType?.recurring ?? 0), 0)
+  const fixedInstallment =
+    selectedMethod?.fixedByType?.installment ??
+    month.paymentMethods.reduce((sum, method) => sum + (method.fixedByType?.installment ?? 0), 0)
+  const displayTotal = variableWithMajor + fixed
+
+  const fixedTypeRows = [
+    { key: "recurring", label: t("fixed.type.recurring"), amount: fixedRecurring, barClass: "bg-fixed" },
+    {
+      key: "installment",
+      label: t("fixed.type.installment"),
+      amount: fixedInstallment,
+      barClass: "bg-transfer",
+    },
+    { key: "manual", label: t("fixed.type.manual"), amount: fixedManual, barClass: "bg-warning" },
+  ].filter((row) => row.amount > 0)
+
+  const variableTypeRows = [
+    { key: "variable", label: t("methods.variableLabel"), amount: variable, barClass: "bg-variable" },
+    { key: "major", label: t("major.title"), amount: major, barClass: "bg-major" },
+  ].filter((row) => row.amount > 0)
+
+  const values = [fixed, variableWithMajor]
+  const totalForPct = values.reduce((a, b) => a + b, 0)
+  const shouldShowRow = (key: "fixed" | "variable") => (key === "fixed" ? fixed > 0 : variableWithMajor > 0)
+
+  const toggleExpandedRow = (key: "fixed" | "variable") => {
+    setExpandedRows((prev) => ({ ...prev, [key]: !prev[key] }))
+  }
 
   return (
     <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
-        {/* Header — total updates with selected method */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <h2 className="text-[1.0625rem] font-semibold text-foreground">{t("methods.title")}</h2>
@@ -55,7 +85,6 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
           </div>
         </div>
 
-        {/* Method filter chips — horizontally swipeable */}
         <div className="no-scrollbar flex gap-2 overflow-x-auto pb-0.5">
           <button
             type="button"
@@ -86,13 +115,18 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
           ))}
         </div>
 
-        {/* Type bar rows — always Variable / Fixed / Major with their semantic colors */}
-        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3">
           {typeRows.map(({ key, barClass, labelKey }, i) => {
-            const val = typeValues[i]
+            const val = values[i] ?? 0
+              if (!shouldShowRow(key)) {
+                return null
+              }
+
             const pct = totalForPct > 0 ? Math.round((val / totalForPct) * 100) : 0
-            const barWidthPct = Math.round((val / maxValue) * 100)
-            const pctInside = barWidthPct >= 28 && val > 0
+            const barWidthPct = totalForPct > 0 ? Math.round((val / totalForPct) * 100) : 0
+              const detailRows = key === "fixed" ? fixedTypeRows : variableTypeRows
+              const canToggleDetails = detailRows.length > 1
+              const isExpanded = expandedRows[key]
 
             return (
               <div key={key} className="space-y-1.5">
@@ -105,40 +139,114 @@ export function PaymentMethodCard({ month }: { month: AnalyticsMonth }) {
                   >
                     {t(labelKey)}
                   </p>
-                  {val > 0 && (
+                  {val > 0 ? (
                     <p dir="ltr" className="text-xs text-text-tertiary tabular-nums">
                       {formatAnalyticsCurrency(locale, val)}
                     </p>
-                  )}
+                  ) : null}
                 </div>
 
-                <div className="relative h-9 overflow-hidden rounded-[var(--radius-sm)] bg-surface-offset shadow-ring">
-                  {val > 0 && (
-                    <div
-                      className={cn(
-                        "flex h-full items-center justify-end rounded-[var(--radius-sm)] pe-3 transition-all duration-300",
-                        barClass,
-                      )}
-                      style={{ width: `${barWidthPct}%` }}
-                    >
-                      {pctInside && (
-                        <p
-                          dir="ltr"
-                          className="text-xs font-medium tabular-nums"
-                          style={{ color: "var(--color-text-on-brand)" }}
-                        >
-                          {pct}%
-                        </p>
-                      )}
+                  {key === "fixed" ? (
+                  <div className="space-y-1.5">
+                    <div className="relative h-6 overflow-hidden rounded-[var(--radius-sm)] bg-surface-offset shadow-ring">
+                      {val > 0 ? (
+                        <div
+                          className={cn(
+                            "h-full overflow-hidden rounded-[var(--radius-sm)] transition-all duration-300",
+                            barClass,
+                          )}
+                          style={{ width: `${barWidthPct}%` }}
+                        />
+                      ) : null}
                     </div>
-                  )}
+                      {isExpanded && fixedTypeRows.length > 0 ? (
+                      <div className="space-y-1">
+                        {fixedTypeRows.map((row) => (
+                          <div key={row.key} className="space-y-0.5">
+                            <div className="flex items-center justify-between gap-2 text-[0.6875rem] text-text-tertiary">
+                              <p>{row.label}</p>
+                              <p dir="ltr" className="tabular-nums">
+                                {formatAnalyticsCurrency(locale, row.amount)}
+                              </p>
+                            </div>
+                            <div className="h-1.5 overflow-hidden rounded-full bg-surface-offset shadow-ring">
+                              <div
+                                className={cn("h-full rounded-full", row.barClass)}
+                                style={{
+                                    width: `${Math.round((row.amount / Math.max(1, fixed)) * 100)}%`,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <div className="relative h-6 overflow-hidden rounded-[var(--radius-sm)] bg-surface-offset shadow-ring">
+                      {val > 0 ? (
+                        <div
+                          className="h-full overflow-hidden rounded-[var(--radius-sm)] bg-variable"
+                          style={{ width: `${barWidthPct}%` }}
+                        />
+                      ) : null}
+                    </div>
+                      {isExpanded && variableTypeRows.length > 0 ? (
+                      <div className="space-y-1">
+                        {variableTypeRows.map((row) => (
+                          <div key={row.key} className="space-y-0.5">
+                            <div className="flex items-center justify-between gap-2 text-[0.6875rem] text-text-tertiary">
+                              <p>{row.label}</p>
+                              <p dir="ltr" className="tabular-nums">
+                                {formatAnalyticsCurrency(locale, row.amount)}
+                              </p>
+                            </div>
+                            <div className="h-1.5 overflow-hidden rounded-full bg-surface-offset shadow-ring">
+                              <div
+                                className={cn("h-full rounded-full", row.barClass)}
+                                style={{
+                                    width: `${Math.round((row.amount / Math.max(1, val)) * 100)}%`,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between gap-2 text-xs text-text-tertiary">
+                  <div className="flex items-center gap-2">
+                    {canToggleDetails ? (
+                      <button
+                        type="button"
+                        onClick={() => toggleExpandedRow(key)}
+                        aria-expanded={isExpanded}
+                        className={cn(
+                          "rounded-full px-2.5 py-1 text-[0.6875rem] font-medium transition-colors",
+                          isExpanded
+                            ? "border border-brand/30 bg-brand-subtle text-brand"
+                            : "bg-surface-offset text-text-secondary",
+                        )}
+                      >
+                        {isExpanded ? t("methods.hideDetails") : t("methods.showDetails")}
+                      </button>
+                    ) : null}
+                  </div>
+                  <p dir="ltr" className="tabular-nums text-foreground">
+                    {pct}%
+                  </p>
                 </div>
               </div>
             )
           })}
         </div>
 
-        <p className="text-xs leading-[1.5] text-text-tertiary">{t("methods.fixedNote")}</p>
+        <p className="text-xs leading-[1.5] text-text-tertiary text-pretty">
+          {t("methods.footerNote")}
+        </p>
       </CardContent>
     </Card>
   )

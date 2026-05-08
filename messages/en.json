@@ -648,22 +648,6 @@
         "inProgress": "In Progress"
       }
     },
-    "pacing": {
-      "underPace": "Under pace",
-      "overPace": "Over pace",
-      "onPace": "On pace",
-      "narrative": "You've used {budgetUsed}% of your budget with {monthProgress}% of the month gone - {descriptor}.",
-      "descriptorStrongPositive": "far under pace",
-      "descriptorPositive": "well under pace",
-      "descriptorSoftPositive": "slightly under pace",
-      "descriptorStrongWarning": "well ahead of budget pace",
-      "descriptorWarning": "ahead of budget pace",
-      "descriptorSoftWarning": "slightly ahead of budget pace",
-      "budgetUsed": "Budget Used",
-      "monthProgress": "Month Progress",
-      "barLabel": "Budget pace compared with month progress",
-      "overspentDays": "{count} days overspent so far"
-    },
     "projection": {
       "title": "End of month forecast",
       "heroSaving": "On track to save",
@@ -682,117 +666,126 @@
       "overTarget": "Over daily target",
       "projectedSavingsLabel": "Projected saved"
     },
-    "shaping": {
-      "title": "What’s Shaping This Month",
-      "subtitle": "A quick read on the few forces that matter most right now.",
-      "variableBudgetLeft": "Variable Budget Left",
-      "fixedPressure": "Fixed Pressure",
-      "majorPurchases": "Major Purchases",
-      "fixedOverBudget": "Fixed spending is over budget by {amount}, with {manualCount} manual bucket over limit and {paidCount}/{totalCount} auto payments already cleared.",
-      "fixedWithinBudget": "Fixed spending is within the {budget} plan, and {paidCount}/{totalCount} auto payments are already cleared.",
-      "majorDragging": "{count} major purchases are pulling {amount} out of the month.",
-      "majorNone": "No major purchases are dragging this month.",
-      "leftToWorkWith": "After income, fixed pressure, and major purchases, you still have {amount} left to work with.",
-      "missingFromPlan": "After income, fixed pressure, and major purchases, you are missing {amount} from plan.",
-      "grandTotalSpent": "Grand Total Spent",
-      "netAfterReceived": "Net After Received"
-    },
-    "comparison": {
-      "title": "vs Last Month",
-      "savingsMore": "Saving more than last month",
-      "largeLess": "Fewer large purchases than last month",
-      "arrow": "->",
-      "savingsRate": "Savings Rate",
-      "baseDailyRate": "Base Daily Rate",
-      "largePurchases": "Large Purchases",
-      "verdictBetter": "You're trending better than March across the metrics that moved.",
-      "verdictMostlyBetter": "April looks better than March overall, with stronger savings and lighter large purchases.",
-      "verdictMostlyWorse": "April is slipping behind March on the metrics that moved.",
-      "verdictWorse": "April is tracking below March on both key comparison metrics.",
-      "verdictMixed": "Mixed month - one metric improved while another moved the wrong way.",
-      "savingsRateMessage": "Saving more than last month",
-      "baseRateReason": "Base rate unchanged - fixed expenses stayed the same",
-      "largePurchasesMessage": "Fewer large purchases than last month",
-      "emptyDescription": "No previous month data yet. Close {month} to unlock comparison.",
-      "closeMonth": "Close {month}"
-    },
-    "tabs": {
-      "spending": "Spending",
-      "overview": "Overview",
-      "trends": "Trends"
-    },
     "section": {
-      "monthlyHealth": "Monthly health",
-      "whereMoneyWent": "Where your money went",
-      "improving": "Are you improving"
-    },
-    "summary": {
-      "title": "Month summary",
-      "verdict": {
-        "strong": "A strong month",
-        "solid": "A solid month",
-        "mixed": "A mixed month",
-        "challenging": "A challenging month"
+      "onPace": {
+        "title": "Are you on pace?",
+        "subtitle": "Where you stand right now and where you'll likely land."
       },
-      "savings": {
-        "up": "Savings rate improved vs. last month",
-        "down": "Savings rate dipped vs. last month",
-        "same": "Savings rate held steady",
-        "first": "No comparison yet — first recorded month"
+      "where": {
+        "title": "Where the budget went",
+        "subtitle": "How this month's spending split across plan and reality."
       },
-      "days": {
-        "clean": "Every tracked day stayed within the daily rate",
-        "mostlyClean": "{overspent} days went over the daily rate",
-        "rough": "{overspent} of {tracked} days overspent"
-      },
-      "rhythm": {
-        "consistent": "Spending rhythm was steady across the month",
-        "volatile": "Spending was uneven — concentrated in one part of the month"
+      "improving": {
+        "title": "Are you improving?",
+        "subtitle": "How this month compares to your closed months."
       }
     },
-    "rollover": {
-      "title": "Monthly cushion",
-      "aheadLabel": "ahead this month",
-      "deficitLabel": "deficit so far",
-      "contextSentence": "You've spent {budgetUsed}% of your budget with {monthProgress}% of the month elapsed.",
-      "dotGridLabel": "Days within daily rate",
-      "overspentDays": "{overspent} of {tracked} days overspent"
+    "pacing": {
+      "aheadLabel": "ahead",
+      "behindLabel": "behind",
+      "contextSentence": "You've used {budgetUsed}% of your variable budget with {monthProgress}% of the month elapsed.",
+      "barLabel": "Variable budget pace compared with month progress",
+      "injectionFootnote": "Includes a {amount} budget injection this month."
     },
     "composition": {
       "title": "Budget breakdown",
-      "subtitle": "How your monthly budget is structured",
+      "subtitle": "Monthly plan split",
       "totalBudgetLabel": "monthly budget",
       "fixedLabel": "Fixed",
-      "variableLabel": "Variable",
-      "committedAnnotation": "{pct}% of your budget is committed before the month starts"
+      "variableLabel": "Variable"
     },
-    "rhythm": {
-      "title": "Spending rhythm",
-      "subtitle": "Variable spend per week vs. your daily rate target",
-      "weekLabel": "Wk {n}",
-      "targetLabel": "Target",
+    "fixed": {
+      "title": "Fixed analysis",
+      "subtitle": "Total fixed first, then inspect one type at a time.",
+      "type": {
+        "manual": "Manual",
+        "recurring": "Recurring",
+        "installment": "Installment"
+      },
+      "selectedShare": "{type} is {share}% of fixed",
+      "focusLabel": "{type} detail",
+      "heroCaption": "Planned budget for this type",
+      "spentLabel": "spent",
+      "budgetLabel": "planned",
+      "usageLabel": "used",
+      "shareLabel": "of fixed",
+      "usageSummary": "{usage}% of this type budget used",
+      "comparisonLabel": "Compared with history",
+      "previousMonthLabel": "vs last month",
+      "threeMonthLabel": "vs 3-month avg",
+      "transferLabel": "Manual transfer flows",
+      "transferCaption": "Outgoing transfers from manual budgets this month",
+      "transferImpactVariableLabel": "To variable pool",
+      "transferImpactManualLabel": "To manual budgets",
+      "transferRouteToVariable": "to Variable pool",
+      "transferRouteToManual": "to {name}",
+      "methodPanelTitle": "{type} by payment method",
+      "methodPanelFilteredTitle": "{method} contribution",
+      "manualOverSome": "{over} of {total} manual buckets went over this month.",
+      "manualOverNone": "No manual budgets went over this month.",
+      "trendDirection": {
+        "up": "up",
+        "down": "down",
+        "flat": "flat"
+      },
+      "leakageCallout": "{amount} came out of your variable budget this month.",
+      "bucketTrendLabel": "Trend"
+    },
+    "variable": {
+      "title": "Variable spending",
+      "subtitle": "When you spend, and how badly when you do.",
+      "modeWeekly": "Weekly",
+      "modeDayOfWeek": "Day",
+      "dotGridLabel": "Days within daily rate",
+      "overspentDays": "{overspent} of {tracked} days overspent",
+      "largestDayCallout": "Worst day: {date}, {amount} — {ratio}× your daily rate.",
       "insightHeavyStart": "You tend to spend most heavily at the start of the month.",
       "insightHeavyEnd": "Spending picked up toward the end of the month.",
       "insightConsistent": "Your spending was consistent this month.",
-      "insightOverTarget": "Several weeks ran over the weekly target — check the breakdown above."
+      "insightOverTarget": "Several weeks ran over the weekly target.",
+      "dowInsight": "Your heaviest day is {day}, averaging {amount}.",
+      "dow": {
+        "sun": "Sun",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat"
+      }
     },
-    "methods": {
-      "title": "Payment methods",
-      "subtitle": "Where money moved, by method and type",
-      "filterAll": "All",
-      "filterVariable": "Variable",
-      "filterFixed": "Fixed",
-      "filterMajor": "Major",
-      "totalLabel": "total spent",
-      "fixedNote": "Fixed includes recurring and installment payments. Manual fixed may span multiple methods."
-    },
-    "trends": {
-      "title": "Savings rate trend",
-      "savingsRateLabel": "Savings Rate",
+    "major": {
+      "title": "Major spending",
+      "subtitle": "How often you reclassify large purchases as Major.",
+      "heroMtd": "of budget so far",
+      "heroFinal": "of budget",
       "deltaPositive": "+{delta}% vs last month",
       "deltaNegative": "{delta}% vs last month",
       "deltaNeutral": "Same as last month",
-      "closeMonthPrompt": "Close {month} to unlock your first comparison.",
+      "escapeValveHint": "Major usage is unusually high this month."
+    },
+    "methods": {
+      "title": "Payment methods",
+      "subtitle": "Where money moved, by method.",
+      "filterAll": "All",
+      "fixedLabel": "Fixed",
+      "variableLabel": "Variable",
+      "showDetails": "Show breakdown",
+      "hideDetails": "Hide breakdown",
+      "totalLabel": "total spent",
+      "footerNote": "Variable includes Major reclassifications. See Major Spending for behaviour breakdown."
+    },
+    "trends": {
+      "title": "Savings rate trend",
+      "savingsRateLabel": "Savings rate",
+      "savingsRateMtdLabel": "Savings rate (MTD)",
+      "deltaPositive": "+{delta}% vs {month}",
+      "deltaNegative": "{delta}% vs {month}",
+      "deltaNeutral": "Same as {month}",
+      "baseRateChangedReason": "Base rate changed because fixed expenses changed by {delta}.",
+      "baseRateUnchangedReason": "Base rate unchanged — fixed expenses stayed the same.",
+      "autoClosedBadge": "Auto-closed",
+      "firstMonthPrompt": "Close {month} at month end to unlock your first comparison.",
       "closeMonthCta": "Close {month}"
     },
     "upgrade": {

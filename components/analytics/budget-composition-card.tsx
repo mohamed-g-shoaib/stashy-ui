@@ -2,31 +2,29 @@
 
 import { useLocale, useTranslations } from "next-intl"
 
-import type { AnalyticsMonth } from "@/components/analytics/types"
+import { formatAnalyticsCurrency } from "@/components/analytics/formatters"
+import type { LiveMonthAnalysis } from "@/components/analytics/types"
 import { Card, CardContent } from "@/components/ui/card"
 
-import { formatAnalyticsCurrency } from "./formatters"
-
-export function BudgetCompositionCard({ month }: { month: AnalyticsMonth }) {
+export function BudgetCompositionCard({ month }: { month: LiveMonthAnalysis }) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
 
-  const { fixedEgp, totalBudget } = month.budgetComposition
-  // Variable = everything that isn't locked in fixed (absorbs major into flexible budget)
+  const fixedEgp = month.fixedTotalBudget
+  const totalBudget = month.monthlyBudget
   const variableEgp = totalBudget - fixedEgp
-  const fixedPct = Math.round((fixedEgp / totalBudget) * 100)
+  const fixedPct = Math.round((fixedEgp / Math.max(1, totalBudget)) * 100)
   const variablePct = 100 - fixedPct
 
   return (
     <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
-        {/* Header + total budget */}
         <div className="flex items-start justify-between gap-3">
-          <div className="space-y-1">
+          <div className="min-w-0 space-y-0.5">
             <h2 className="text-[1.0625rem] font-semibold text-foreground">
               {t("composition.title")}
             </h2>
-            <p className="text-sm leading-[1.6] text-text-secondary text-pretty">
+            <p className="max-w-[24ch] text-xs leading-[1.45] text-text-tertiary text-pretty">
               {t("composition.subtitle")}
             </p>
           </div>
@@ -38,45 +36,45 @@ export function BudgetCompositionCard({ month }: { month: AnalyticsMonth }) {
           </div>
         </div>
 
-        {/* Proportional split blocks — widths reflect the actual budget split */}
-        {/* TODO: replace bg-*-subtle with --color-{role}-identity-bg tokens once defined in design system */}
-        <div className="flex h-[88px] w-full gap-1 overflow-hidden rounded-xl">
-          <div
-            className="bg-fixed-subtle flex h-full flex-col justify-between p-3"
-            style={{ width: `${fixedPct}%` }}
-          >
-            <p className="text-xs font-semibold text-fixed">{t("composition.fixedLabel")}</p>
-            <div>
-              <p dir="ltr" className="text-sm font-bold tabular-nums text-foreground">
-                {formatAnalyticsCurrency(locale, fixedEgp)}
-              </p>
-              <p dir="ltr" className="text-xs tabular-nums text-text-tertiary">
-                {fixedPct}%
-              </p>
-            </div>
+        <div className="space-y-3">
+          <div className="flex h-3 w-full overflow-hidden rounded-full shadow-ring">
+            <div
+              className="bg-fixed"
+              style={{ width: `${fixedPct}%` }}
+              aria-label={`${t("composition.fixedLabel")} ${fixedPct}%`}
+            />
+            <div
+              className="bg-variable"
+              style={{ width: `${variablePct}%` }}
+              aria-label={`${t("composition.variableLabel")} ${variablePct}%`}
+            />
           </div>
 
-          <div
-            className="bg-variable-subtle flex h-full flex-col justify-between p-3"
-            style={{ width: `${variablePct}%` }}
-          >
-            <p className="text-xs font-semibold text-variable">{t("composition.variableLabel")}</p>
-            <div>
-              <p dir="ltr" className="text-sm font-bold tabular-nums text-foreground">
-                {formatAnalyticsCurrency(locale, variableEgp)}
-              </p>
-              <p dir="ltr" className="text-xs tabular-nums text-text-tertiary">
-                {variablePct}%
-              </p>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded-[var(--radius-sm)] bg-fixed-subtle px-3 py-2.5 shadow-ring">
+              <p className="text-xs font-semibold text-fixed">{t("composition.fixedLabel")}</p>
+              <div className="mt-1 flex items-center justify-between gap-2">
+                <p dir="ltr" className="text-sm font-semibold tabular-nums text-foreground">
+                  {formatAnalyticsCurrency(locale, fixedEgp)}
+                </p>
+                <p dir="ltr" className="rounded-full bg-card px-2 py-0.5 text-xs tabular-nums text-text-tertiary shadow-ring">
+                  {fixedPct}%
+                </p>
+              </div>
+            </div>
+
+            <div className="rounded-[var(--radius-sm)] bg-variable-subtle px-3 py-2.5 shadow-ring">
+              <p className="text-xs font-semibold text-variable">{t("composition.variableLabel")}</p>
+              <div className="mt-1 flex items-center justify-between gap-2">
+                <p dir="ltr" className="text-sm font-semibold tabular-nums text-foreground">
+                  {formatAnalyticsCurrency(locale, variableEgp)}
+                </p>
+                <p dir="ltr" className="rounded-full bg-card px-2 py-0.5 text-xs tabular-nums text-text-tertiary shadow-ring">
+                  {variablePct}%
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Annotation */}
-        <div className="rounded-xl bg-surface-offset px-3 py-2">
-          <p className="text-sm leading-[1.5] text-fixed text-pretty">
-            {t("composition.committedAnnotation", { pct: fixedPct })}
-          </p>
         </div>
       </CardContent>
     </Card>

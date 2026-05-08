@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl"
 
-import { analyticsMonths } from "@/components/analytics/data"
+import { analyticsData, getAnalyticsMonthOptions } from "@/components/analytics/data"
 import { formatAnalyticsMonthLabel } from "@/components/analytics/formatters"
 import { Button } from "@/components/ui/button"
 import {
@@ -45,17 +45,14 @@ export function MonthPickerDrawer({
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-2">
           <div className="grid gap-2">
-            {analyticsMonths.map((month) => {
+            {getAnalyticsMonthOptions(analyticsData).map((month) => {
               const selected = month.id === selectedMonthId
 
               return (
                 <DrawerClose asChild key={month.id}>
                   <button
                     type="button"
-                    className={cn(
-                      pickerOptionClass,
-                      selected && "bg-card text-foreground",
-                    )}
+                    className={cn(pickerOptionClass, selected && "bg-card text-foreground")}
                     onClick={() => onSelectMonth(month.id)}
                   >
                     <div>

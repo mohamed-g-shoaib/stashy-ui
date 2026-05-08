@@ -7,22 +7,20 @@ import * as React from "react"
 
 import { AnalyticsUpgradeGate, ProjectionCard } from "@/components/analytics/analytics-cards"
 import { BudgetCompositionCard } from "@/components/analytics/budget-composition-card"
-import { ANALYTICS_PLAN, analyticsMonths } from "@/components/analytics/data"
-import {
-  formatAnalyticsMonthLabel,
-  getPreviousAnalyticsMonth,
-} from "@/components/analytics/formatters"
+import { ANALYTICS_PLAN, analyticsData, getMonthView } from "@/components/analytics/data"
+import { FixedAnalysisCard } from "@/components/analytics/fixed-analysis-card"
+import { formatAnalyticsMonthLabel } from "@/components/analytics/formatters"
+import { MajorBehaviourCard } from "@/components/analytics/major-behaviour-card"
 import { MonthPickerDrawer } from "@/components/analytics/month-picker-drawer"
-import { MonthSummaryCard } from "@/components/analytics/month-summary-card"
+import { PacingCard } from "@/components/analytics/pacing-card"
 import { PaymentMethodCard } from "@/components/analytics/payment-method-card"
-import { RolloverCard } from "@/components/analytics/rollover-card"
-import { SpendingRhythmCard } from "@/components/analytics/spending-rhythm-card"
+import { SectionHeader } from "@/components/analytics/section-header"
 import { TrendsCard } from "@/components/analytics/trends-card"
+import { VariableAnalysisCard } from "@/components/analytics/variable-analysis-card"
 import { AppBottomNavigation } from "@/components/app-bottom-navigation"
 import { navItems } from "@/components/home/home-data"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { type Locale } from "@/i18n/routing"
 import { getDirectionForLocale } from "@/lib/i18n"
 
@@ -30,16 +28,12 @@ export function AnalyticsScreen() {
   const locale = useLocale() as Locale
   const t = useTranslations("Analytics")
   const direction = getDirectionForLocale(locale)
-  const [selectedMonthId, setSelectedMonthId] = React.useState<string>(
-    analyticsMonths[2]?.id ?? "2026-04",
-  )
+  const [selectedMonthId, setSelectedMonthId] = React.useState<string>(analyticsData.current.month)
   const [monthPickerOpen, setMonthPickerOpen] = React.useState(false)
 
-  const selectedMonth =
-    analyticsMonths.find((month) => month.id === selectedMonthId) ?? analyticsMonths[2]
-  const previousMonth = React.useMemo(
-    () => getPreviousAnalyticsMonth(analyticsMonths, selectedMonth.id),
-    [selectedMonth.id],
+  const selectedMonth = React.useMemo(
+    () => getMonthView(analyticsData, selectedMonthId),
+    [selectedMonthId],
   )
 
   return (
@@ -80,48 +74,38 @@ export function AnalyticsScreen() {
             <AnalyticsUpgradeGate />
           </div>
         ) : (
-          <Tabs defaultValue="spending">
-            <div className="px-screen pt-3">
-              <TabsList className="w-full">
-                <TabsTrigger value="spending">{t("tabs.spending")}</TabsTrigger>
-                <TabsTrigger value="overview">{t("tabs.overview")}</TabsTrigger>
-                <TabsTrigger value="trends">{t("tabs.trends")}</TabsTrigger>
-              </TabsList>
-            </div>
+          <div className="flex flex-col gap-3 px-screen pt-2">
+            <SectionHeader
+              title={t("section.onPace.title")}
+              subtitle={t("section.onPace.subtitle")}
+              showDivider={false}
+            />
+            <PacingCard month={selectedMonth} />
+            <ProjectionCard month={selectedMonth} />
 
-            <TabsContent value="spending" className="px-screen pt-4">
-              <div className="flex flex-col gap-3">
-                <BudgetCompositionCard month={selectedMonth} />
-                <PaymentMethodCard month={selectedMonth} />
-                <SpendingRhythmCard month={selectedMonth} />
-              </div>
-            </TabsContent>
+            <SectionHeader
+              title={t("section.where.title")}
+              subtitle={t("section.where.subtitle")}
+            />
+            <BudgetCompositionCard month={selectedMonth} />
+            <PaymentMethodCard month={selectedMonth} />
+            <FixedAnalysisCard month={selectedMonth} data={analyticsData} />
+            <VariableAnalysisCard month={selectedMonth} />
+            <MajorBehaviourCard month={selectedMonth} data={analyticsData} />
 
-            <TabsContent value="overview" className="px-screen pt-4">
-              <div className="flex flex-col gap-3">
-                <RolloverCard month={selectedMonth} />
-                <ProjectionCard month={selectedMonth} />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="trends" className="px-screen pt-4">
-              <div className="flex flex-col gap-3">
-                <MonthSummaryCard month={selectedMonth} previousMonth={previousMonth} />
-                <TrendsCard
-                  months={analyticsMonths}
-                  selectedMonth={selectedMonth}
-                  previousMonth={previousMonth}
-                />
-              </div>
-            </TabsContent>
-          </Tabs>
+            <SectionHeader
+              title={t("section.improving.title")}
+              subtitle={t("section.improving.subtitle")}
+            />
+            <TrendsCard data={analyticsData} selectedMonth={selectedMonth} />
+          </div>
         )}
       </main>
 
       <MonthPickerDrawer
         direction={direction}
         open={monthPickerOpen}
-        selectedMonthId={selectedMonth.id}
+        selectedMonthId={selectedMonth.month}
         onOpenChange={setMonthPickerOpen}
         onSelectMonth={setSelectedMonthId}
       />
