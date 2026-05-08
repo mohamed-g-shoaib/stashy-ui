@@ -121,7 +121,7 @@ export function VariableAnalysisCard({ month }: { month: LiveMonthAnalysis }) {
               type="button"
               onClick={() => setMode("weekly")}
               className={cn(
-                "min-h-8 rounded-full px-3 transition-colors",
+                "inline-flex min-h-8 items-center justify-center whitespace-nowrap rounded-full px-3 leading-none transition-colors",
                 mode === "weekly" ? "bg-card text-foreground shadow-ring" : "text-text-secondary",
               )}
             >
@@ -131,7 +131,7 @@ export function VariableAnalysisCard({ month }: { month: LiveMonthAnalysis }) {
               type="button"
               onClick={() => setMode("dayOfWeek")}
               className={cn(
-                "min-h-8 rounded-full px-3 transition-colors",
+                "inline-flex min-h-8 items-center justify-center whitespace-nowrap rounded-full px-3 leading-none transition-colors",
                 mode === "dayOfWeek"
                   ? "bg-card text-foreground shadow-ring"
                   : "text-text-secondary",

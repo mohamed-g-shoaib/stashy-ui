@@ -75,7 +75,9 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
   const averageDelta = selectedTypeAvg === null ? 0 : selectedTypeSpent - selectedTypeAvg
 
   const transferSummary =
-    month.fixedTransfers?.find((transfer) => transfer.type === selectedType && transfer.total > 0) ?? null
+    selectedType === "manual"
+      ? month.fixedTransfers?.find((transfer) => transfer.type === "manual" && transfer.total > 0) ?? null
+      : null
 
   const manualBuckets = month.fixedBuckets
     .filter((bucket) => bucket.type === "manual")
@@ -253,11 +255,10 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
                   className="flex items-center justify-between gap-2 rounded-[var(--radius-sm)] bg-card px-3 py-2 shadow-ring"
                 >
                   <div className="min-w-0">
-                    <p className="text-sm text-foreground">
-                      {source.name} <span className="text-text-tertiary">{"->"}</span>{" "}
-                      {t(`fixed.type.${selectedType}`)}
+                    <p className="text-sm text-foreground">{source.name}</p>
+                    <p className="mt-0.5 text-xs text-text-tertiary">
+                      {t("fixed.transferRouteCaption")}
                     </p>
-                    <p className="mt-0.5 text-xs text-text-tertiary">{t("fixed.transferRouteCaption")}</p>
                   </div>
                   <p dir="ltr" className="text-xs tabular-nums text-transfer">
                     {formatAnalyticsCurrency(locale, source.amount)}

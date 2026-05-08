@@ -131,6 +131,17 @@ The user proposed a cleaner ownership split: payment-method analysis should live
   - top-level rows are now hidden when their total is `0` for the active filter
   - subtype bars now scale to their own row context (`0-100%`) instead of being multiplied by parent-share width.
 - Added EN/AR localization strings for breakdown toggles under `Analytics.methods`.
+- Resolved requested UI/logic polish follow-ups:
+  - fixed Budget Breakdown subtitle alignment/readability by removing forced truncation and using wrapped pretty text
+  - corrected Fixed transfer route copy so rows no longer imply incorrect directional flows like `Coffee -> Manual`
+  - updated EN/AR transfer route strings to a neutral, Stashy-consistent phrasing with type interpolation
+  - fixed Variable card mode badge label alignment (`Day of week`) by centering button content and preventing wrap drift.
+- Applied deeper follow-up changes after visual re-check:
+  - redesigned `BudgetCompositionCard` so split-bar text is no longer rendered inside segment blocks
+  - introduced a compact top split bar + separate two-tile legend/value layout to avoid wrapping in narrow segments
+  - changed variable mode label from `Day of week` to one-word `Day` (`يوم`) for stable badge fit
+  - constrained fixed transfer insight to manual-only context to match Stashy transfer behavior
+  - revised transfer copy to reflect movement from manual budgets without incorrect destination wording.
 - Updated EN/AR analytics copy for transfer labels.
 - Verification:
   - `pnpm typecheck` passed.
