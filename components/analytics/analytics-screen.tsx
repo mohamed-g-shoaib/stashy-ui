@@ -5,14 +5,14 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useLocale, useTranslations } from "next-intl"
 import * as React from "react"
 
-import { AnalyticsUpgradeGate, ProjectionCard } from "@/components/analytics/analytics-cards"
+import { AnalyticsUpgradeGate } from "@/components/analytics/analytics-cards"
 import { BudgetCompositionCard } from "@/components/analytics/budget-composition-card"
 import { getAnalyticsDataForScenario, getMonthView } from "@/components/analytics/data"
 import { FixedAnalysisCard } from "@/components/analytics/fixed-analysis-card"
 import { formatAnalyticsMonthLabel } from "@/components/analytics/formatters"
 import { MajorBehaviourCard } from "@/components/analytics/major-behaviour-card"
 import { MonthPickerDrawer } from "@/components/analytics/month-picker-drawer"
-import { PacingCard } from "@/components/analytics/pacing-card"
+import { MonthlyHealthCard } from "@/components/analytics/monthly-health-card"
 import { PaymentMethodCard } from "@/components/analytics/payment-method-card"
 import { SectionHeader } from "@/components/analytics/section-header"
 import { TrendsCard } from "@/components/analytics/trends-card"
@@ -84,8 +84,7 @@ export function AnalyticsScreen() {
               subtitle={t("section.onPace.subtitle")}
               showDivider={false}
             />
-            <PacingCard month={selectedMonth} />
-            <ProjectionCard month={selectedMonth} />
+            <MonthlyHealthCard month={selectedMonth} />
 
             <SectionHeader
               title={t("section.where.title")}

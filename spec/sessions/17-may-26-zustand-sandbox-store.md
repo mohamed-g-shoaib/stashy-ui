@@ -112,3 +112,43 @@ Analytics section 2 was complete. Home screen managed all sandbox state (`dailyS
 ## Open Blockers
 
 1. `pnpm build` fails on `/[locale]/tracker` with `useSearchParams()` Suspense boundary error — pre-existing, not in scope for this session.
+
+---
+
+# Session 2 — Build MonthlyHealthCard (replace PacingCard + ProjectionCard)
+
+**Time:** Continued same day
+
+---
+
+## Status at Session Start
+
+`monthlyState` field had been added to `LiveMonthAnalysis` and `data.ts` in Session 1. The new `MonthlyHealthCard` component still needed to be created, wired up, and the old cards deleted.
+
+---
+
+## Completed This Session
+
+- Confirmed `Alert01Icon` exists in `@hugeicons/core-free-icons`.
+- Created `components/analytics/monthly-health-card.tsx` with three states (`onTrack`, `atRisk`, `over`): state badge, hero number, projection sentence, stats row, progress bar with RTL-safe `insetInlineStart` tick, inject button (Mulberry Reserve semantic), and days line. All i18n via `useTranslations("Analytics")`.
+- Added `Analytics.monthlyHealth.*` keys (15 keys) to both `messages/en.json` and `messages/ar.json`.
+- Updated `components/analytics/analytics-screen.tsx`: replaced `PacingCard` + `ProjectionCard` imports/usage with `MonthlyHealthCard`.
+- Deleted `components/analytics/pacing-card.tsx` (confirmed zero remaining imports).
+- Removed `ProjectionCard` and its `getProjectionConfidence` private helper from `analytics-cards.tsx`; stripped all now-unused imports (recharts, formatters, Badge, semanticTextClass, LiveMonthAnalysis, useLocale). `AnalyticsUpgradeGate` and `LockIllustration` preserved intact.
+- Verification: `pnpm typecheck` — clean. `pnpm lint` — same 2 pre-existing errors only. `pnpm build` — same pre-existing tracker Suspense error only, no new regressions.
+
+---
+
+## Decisions Made
+
+- Inject button uses Mulberry Reserve (`bg-injection-subtle text-injection`), not expense/danger — restorative action, per `spec/brand-color-audit.md` §11.5.
+- Bar tick rendered with `insetInlineStart` (logical CSS) for RTL safety.
+- Hero number always `dir="ltr"` for digit rendering correctness in AR locale.
+- Badge pills use inline `<span>` with `semanticSurfaceClass.*` + `rounded-full` — Badge component variants not confirmed for income/expense.
+- `snapshotToView()` returns `monthlyState: "onTrack"` for all historical months (closed months do not need scenario state).
+
+---
+
+## Open Blockers
+
+1. `pnpm build` fails on `/[locale]/tracker` — pre-existing `useSearchParams()` Suspense boundary error, not in scope.

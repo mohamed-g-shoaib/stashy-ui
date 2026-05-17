@@ -680,6 +680,22 @@
         "subtitle": "كيف يقارن هذا الشهر بأشهرك المغلقة."
       }
     },
+    "monthlyHealth": {
+      "badgeOnTrack": "في المسار الصحيح",
+      "badgeAtRisk": "في خطر",
+      "badgeOver": "تجاوز الميزانية",
+      "heroLabelAhead": "متقدم عن الإيقاع",
+      "heroLabelBehind": "متأخر عن الإيقاع",
+      "heroLabelOver": "تجاوز ميزانيتك",
+      "projectionOnTrack": "بهذه الوتيرة، ستنهي الشهر ضمن ميزانيتك.",
+      "projectionAtRisk": "بهذه الوتيرة، ستتجاوز الميزانية بـ ~{amount} جنيه بنهاية الشهر.",
+      "contextOver": "لقد استُنفدت ميزانيتك المتغيرة لهذا الشهر. يمكنك إضافة مبلغ إضافي لمتابعة التتبع.",
+      "statBudgetUsed": "نسبة الإنفاق",
+      "statMonthProgress": "تقدم الشهر",
+      "barTickLabel": "متوقع",
+      "injectButton": "إضافة أموال للميزانية",
+      "daysLine": "{tracked} أيام مُتتبعة · {remaining} أيام متبقية"
+    },
     "pacing": {
       "aheadLabel": "متقدم",
       "behindLabel": "متأخر",

@@ -296,6 +296,7 @@ const liveMonth_2026_05: LiveMonthAnalysis = {
   daysInMonth: 31,
   status: "inProgress",
   closedBy: null,
+  monthlyState: "onTrack",
 
   monthlyBudget: 6000,
   fixedTotalBudget: 1640,
@@ -417,6 +418,7 @@ export const analyticsDataOnTrack: AnalyticsData = analyticsData
 
 const liveMonth_atRisk: LiveMonthAnalysis = {
   ...liveMonth_2026_05,
+  monthlyState: "atRisk",
   totalVariableSpent: 2600,
   rolloverEgp: -320,
   pacingDeltaPct: 18,
@@ -439,6 +441,7 @@ export const analyticsDataAtRisk: AnalyticsData = {
 
 const liveMonth_over: LiveMonthAnalysis = {
   ...liveMonth_2026_05,
+  monthlyState: "over",
   totalVariableSpent: 4240,
   rolloverEgp: -1840,
   pacingDeltaPct: 42,
@@ -480,6 +483,7 @@ export function snapshotToView(snapshot: MonthSnapshot): LiveMonthAnalysis {
     daysInMonth: snapshot.daysInMonth,
     status: "closed",
     closedBy: snapshot.closedBy,
+    monthlyState: "onTrack",
 
     monthlyBudget: snapshot.monthlyBudget,
     fixedTotalBudget: snapshot.fixedTotalBudget,

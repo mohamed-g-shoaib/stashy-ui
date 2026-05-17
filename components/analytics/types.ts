@@ -90,6 +90,7 @@ export type LiveMonthAnalysis = {
   daysInMonth: number
   status: "inProgress" | "closed"
   closedBy: "user" | "auto" | null
+  monthlyState: "onTrack" | "atRisk" | "over"
 
   monthlyBudget: number
   fixedTotalBudget: number
