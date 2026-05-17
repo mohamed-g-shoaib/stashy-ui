@@ -10,7 +10,6 @@ import {
   INITIAL_PAYMENT_METHODS,
   LANGUAGE,
   MONTHLY_BUDGET,
-  PLAN,
   PROFILE_EMAIL,
   PROFILE_MEMBER_SINCE,
   PROFILE_STATUS,
@@ -30,6 +29,7 @@ import {
 import type { DrawerKind, LanguageValue, PaymentMethod } from "@/components/settings/types"
 import { type Locale } from "@/i18n/routing"
 import { getDirectionForLocale } from "@/lib/i18n"
+import { useSandboxStore } from "@/store/sandbox-store"
 
 export function SettingsScreen() {
   const locale = useLocale() as Locale
@@ -37,13 +37,7 @@ export function SettingsScreen() {
   const direction = getDirectionForLocale(locale)
   const [drawer, setDrawer] = React.useState<DrawerKind>(null)
   const [language, setLanguage] = React.useState<LanguageValue>(LANGUAGE)
-  const [plan, setPlan] = React.useState<"free" | "pro">(() => {
-    if (typeof window !== "undefined") {
-      const stored = window.localStorage.getItem("stashy-mock-plan")
-      if (stored === "free" || stored === "pro") return stored
-    }
-    return PLAN
-  })
+  const { plan } = useSandboxStore()
   const [profile, setProfile] = React.useState({
     username: PROFILE_USERNAME,
     status: PROFILE_STATUS,

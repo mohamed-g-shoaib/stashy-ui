@@ -680,6 +680,22 @@
         "subtitle": "How this month compares to your closed months."
       }
     },
+    "monthlyHealth": {
+      "badgeOnTrack": "On track",
+      "badgeAtRisk": "At risk",
+      "badgeOver": "Over budget",
+      "heroLabelAhead": "ahead of pace",
+      "heroLabelBehind": "behind pace",
+      "heroLabelOver": "over your budget",
+      "projectionOnTrack": "At this pace, you'll finish the month within your budget.",
+      "projectionAtRisk": "At this pace, you'll overspend by ~{amount} EGP by month end.",
+      "contextOver": "Your variable budget for this month has been fully used. You can inject additional funds to continue tracking.",
+      "statBudgetUsed": "Budget used",
+      "statMonthProgress": "Month progress",
+      "barTickLabel": "expected",
+      "injectButton": "Inject budget funds",
+      "daysLine": "{tracked} days tracked · {remaining} days remaining"
+    },
     "pacing": {
       "aheadLabel": "ahead",
       "behindLabel": "behind",

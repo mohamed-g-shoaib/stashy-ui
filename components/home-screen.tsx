@@ -9,11 +9,11 @@ import { HomeContent, SecondaryTabPanels } from "@/components/home/home-content"
 import { navItems } from "@/components/home/home-data"
 import { HomeDrawer } from "@/components/home/home-drawer"
 import { HomeHeader } from "@/components/home/home-header"
-import type { DailyRate, DailyScenario, DrawerKind } from "@/components/home/types"
-import { PLAN } from "@/components/settings/data"
+import type { DailyRate, DrawerKind } from "@/components/home/types"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { type Locale } from "@/i18n/routing"
 import { getDirectionForLocale } from "@/lib/i18n"
+import { useSandboxStore } from "@/store/sandbox-store"
 
 export function HomeScreen() {
   const t = useTranslations("Home")
@@ -21,35 +21,16 @@ export function HomeScreen() {
   const direction = getDirectionForLocale(locale)
   const [drawer, setDrawer] = React.useState<DrawerKind | null>(null)
   const [activeNav, setActiveNav] = React.useState("home")
-  const [dailyScenario, setDailyScenario] = React.useState<DailyScenario>("track")
-  const [majorScenario, setMajorScenario] = React.useState<"active" | "none">("active")
-  const [plan, setPlan] = React.useState<"free" | "pro">(() => {
-    if (typeof window !== "undefined") {
-      const stored = window.localStorage.getItem("stashy-mock-plan")
-      if (stored === "free" || stored === "pro") return stored
-    }
-    return PLAN
-  })
 
-  const handlePlanChange = React.useCallback((value: "free" | "pro") => {
-    window.localStorage.setItem("stashy-mock-plan", value)
-    setPlan(value)
-  }, [])
-  const [introCardVisible, setIntroCardVisible] = React.useState(true)
-  const dailyRate = getDailyRate(dailyScenario, t)
+  const {
+    monthlyBudgetState,
+    dailyRateState,
+    majorScenario,
+    introCardVisible,
+    setIntroCardVisible,
+  } = useSandboxStore()
 
-  React.useEffect(() => {
-    const dismissed = window.localStorage.getItem("stashy-home-intro-dismissed")
-
-    if (dismissed === "true") {
-      setIntroCardVisible(false)
-    }
-  }, [])
-
-  const handleIntroCardVisibleChange = React.useCallback((visible: boolean) => {
-    window.localStorage.setItem("stashy-home-intro-dismissed", visible ? "false" : "true")
-    setIntroCardVisible(visible)
-  }, [])
+  const dailyRate = getDailyRate(monthlyBudgetState, dailyRateState, t)
 
   return (
     <Tabs value={activeNav} onValueChange={setActiveNav} className="min-h-svh gap-0 bg-background">
@@ -59,8 +40,8 @@ export function HomeScreen() {
           <HomeContent
             dailyRate={dailyRate}
             introCardVisible={introCardVisible}
-            majorScenario={dailyScenario === "emergency" ? "active" : majorScenario}
-            onDismissIntroCard={() => handleIntroCardVisibleChange(false)}
+            majorScenario={monthlyBudgetState === "over" ? "active" : majorScenario}
+            onDismissIntroCard={() => setIntroCardVisible(false)}
             onOpenDrawer={setDrawer}
           />
         </TabsContent>
@@ -71,27 +52,9 @@ export function HomeScreen() {
 
       <HomeDrawer
         kind={drawer}
-        dailyScenario={dailyScenario}
-        introCardVisible={introCardVisible}
-        majorScenario={majorScenario}
         direction={direction}
-        onDailyScenarioChange={setDailyScenario}
-        onIntroCardVisibleChange={handleIntroCardVisibleChange}
-        onMajorScenarioChange={setMajorScenario}
-        plan={plan}
-        onPlanChange={handlePlanChange}
-        onPreviewAddAction={(action, amount) => {
-          if (action === "refund") {
-            setDailyScenario("track")
-            return
-          }
-
-          if (action === "budget") {
-            return
-          }
-
-          // variable
-          setDailyScenario(amount > 615.38 ? "overspent" : "track")
+        onPreviewAddAction={() => {
+          // Drawer-local preview only — does not write to sandbox store
         }}
         onOpenChange={(open) => {
           if (!open) {
@@ -105,27 +68,11 @@ export function HomeScreen() {
 
 
 function getDailyRate(
-  scenario: DailyScenario,
+  monthlyBudgetState: "onTrack" | "atRisk" | "over",
+  dailyRateState: "underRate" | "overRate",
   t: ReturnType<typeof useTranslations<"Home">>,
 ): DailyRate {
-  if (scenario === "track") {
-    return {
-      remaining: "615.38 EGP",
-      remainingAmount: 615.38,
-      allowance: "815.38 EGP",
-      allowanceAmount: 815.38,
-      spent: "200 EGP",
-      spentAmount: 200,
-      explanation: t("daily.explanationTrack"),
-      tomorrow: "871.32 EGP",
-      tomorrowAmount: 871.32,
-      status: t("daily.statusTrack"),
-      statusTone: "fixed",
-      overByAmount: null,
-    }
-  }
-
-  if (scenario === "emergency") {
+  if (monthlyBudgetState === "over") {
     return {
       remaining: "−1,240 EGP",
       remainingAmount: -1240,
@@ -142,19 +89,36 @@ function getDailyRate(
     }
   }
 
-  // overspent
+  if (dailyRateState === "overRate") {
+    return {
+      remaining: "-84.62 EGP",
+      remainingAmount: -84.62,
+      allowance: "815.38 EGP",
+      allowanceAmount: 815.38,
+      spent: "900 EGP",
+      spentAmount: 900,
+      explanation: t("daily.explanationOverspent"),
+      tomorrow: "742 EGP",
+      tomorrowAmount: 742,
+      status: t("daily.statusOverspent"),
+      statusTone: "expense",
+      overByAmount: null,
+    }
+  }
+
+  // on-track default
   return {
-    remaining: "-84.62 EGP",
-    remainingAmount: -84.62,
+    remaining: "615.38 EGP",
+    remainingAmount: 615.38,
     allowance: "815.38 EGP",
     allowanceAmount: 815.38,
-    spent: "900 EGP",
-    spentAmount: 900,
-    explanation: t("daily.explanationOverspent"),
-    tomorrow: "742 EGP",
-    tomorrowAmount: 742,
-    status: t("daily.statusOverspent"),
-    statusTone: "expense",
+    spent: "200 EGP",
+    spentAmount: 200,
+    explanation: t("daily.explanationTrack"),
+    tomorrow: "871.32 EGP",
+    tomorrowAmount: 871.32,
+    status: t("daily.statusTrack"),
+    statusTone: "fixed",
     overByAmount: null,
   }
 }
