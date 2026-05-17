@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { type Locale } from "@/i18n/routing"
 import { getDirectionForLocale } from "@/lib/i18n"
+import { cn } from "@/lib/utils"
 import { useSandboxStore } from "@/store/sandbox-store"
 
 export function AnalyticsScreen() {
@@ -48,15 +49,29 @@ export function AnalyticsScreen() {
             <h1 className="text-[1.5rem] font-semibold leading-[1.2] text-foreground">
               {t("title")}
             </h1>
-            <p className="mt-2 max-w-[26ch] text-sm leading-[1.5] text-text-tertiary">
-              {t("meta.line", {
-                tracked: selectedMonth.daysTracked,
-                remaining: selectedMonth.daysRemaining,
-                status:
-                  selectedMonth.status === "inProgress" ? t("month.inProgress") : t("month.closed"),
-              })}
-            </p>
-          </div>
+            <div className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+              <span className="text-sm tabular-nums">
+                <span className="font-semibold text-foreground">{selectedMonth.daysTracked}</span>
+                <span className="text-text-tertiary">{t("meta.labelTracked")}</span>
+              </span>
+              <span className="text-border-subtle" aria-hidden="true">·</span>
+              <span className="text-sm tabular-nums">
+                <span className="font-semibold text-foreground">{selectedMonth.daysRemaining}</span>
+                <span className="text-text-tertiary">{t("meta.labelLeft")}</span>
+              </span>
+              <span className="text-border-subtle" aria-hidden="true">·</span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-surface-offset px-2 py-0.5 text-xs font-medium text-text-secondary">
+                <span
+                  className={cn(
+                    "size-1.5 rounded-full",
+                    selectedMonth.status === "inProgress"
+                      ? "bg-text-secondary"
+                      : "bg-text-tertiary/50",
+                  )}
+                />
+                {selectedMonth.status === "inProgress" ? t("month.inProgress") : t("month.closed")}
+              </span>
+            </div>          </div>
 
           <Button
             type="button"

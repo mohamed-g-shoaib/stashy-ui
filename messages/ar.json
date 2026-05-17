@@ -644,6 +644,10 @@
     },
     "meta": {
       "line": "تم تتبع {tracked} يوما / متبقي {remaining} أيام / {status}",
+      "statTracked": "{count} يوم مُتتبَّع",
+      "statLeft": "{count} يوم متبقٍ",
+      "labelTracked": " يوم مُتتبَّع",
+      "labelLeft": " يوم متبقٍ",
       "status": {
         "inProgress": "قيد التنفيذ"
       }

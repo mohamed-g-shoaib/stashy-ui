@@ -644,6 +644,10 @@
     },
     "meta": {
       "line": "{tracked} days tracked / {remaining} days remaining / {status}",
+      "statTracked": "{count}d tracked",
+      "statLeft": "{count}d left",
+      "labelTracked": "d tracked",
+      "labelLeft": "d left",
       "status": {
         "inProgress": "In Progress"
       }
