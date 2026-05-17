@@ -411,6 +411,63 @@ export const analyticsDataFirstMonth: AnalyticsData = {
   snapshots: [],
 }
 
+// ─── Named scenario datasets ───────────────────────────────────────────────────
+
+export const analyticsDataOnTrack: AnalyticsData = analyticsData
+
+const liveMonth_atRisk: LiveMonthAnalysis = {
+  ...liveMonth_2026_05,
+  totalVariableSpent: 2600,
+  rolloverEgp: -320,
+  pacingDeltaPct: 18,
+  budgetUsedPct: 70,
+  overspentDaysMtd: 9,
+  avgDailySpend: 144,
+  projectedEndSpend: 4360,
+  projectedSavings: -280,
+  projectedSavingsRate: -7,
+  weeklySpend: [720, 760, 680, 440],
+  dayOfWeekSpend: [440, 260, 380, 340, 460, 480, 240],
+  largestVariableDay: { date: "2026-05-10", amount: 380 },
+  largestVariableTxn: { id: "tx-05-10-a", amount: 280, description: "Dinner out" },
+}
+
+export const analyticsDataAtRisk: AnalyticsData = {
+  current: liveMonth_atRisk,
+  snapshots: [snapshot_2026_04, snapshot_2026_03, snapshot_2026_02],
+}
+
+const liveMonth_over: LiveMonthAnalysis = {
+  ...liveMonth_2026_05,
+  totalVariableSpent: 4240,
+  rolloverEgp: -1840,
+  pacingDeltaPct: 42,
+  budgetUsedPct: 113,
+  overspentDaysMtd: 14,
+  avgDailySpend: 236,
+  projectedEndSpend: 6320,
+  projectedSavings: -1240,
+  projectedSavingsRate: -33,
+  weeklySpend: [980, 1120, 1240, 900],
+  dayOfWeekSpend: [580, 420, 560, 480, 680, 820, 700],
+  largestVariableDay: { date: "2026-05-14", amount: 620 },
+  largestVariableTxn: { id: "tx-05-14-a", amount: 540, description: "Emergency repair" },
+  fixedManualOverBudgetCount: 2,
+}
+
+export const analyticsDataOver: AnalyticsData = {
+  current: liveMonth_over,
+  snapshots: [snapshot_2026_04, snapshot_2026_03, snapshot_2026_02],
+}
+
+export function getAnalyticsDataForScenario(
+  monthlyBudgetState: "onTrack" | "atRisk" | "over",
+): AnalyticsData {
+  if (monthlyBudgetState === "atRisk") return analyticsDataAtRisk
+  if (monthlyBudgetState === "over") return analyticsDataOver
+  return analyticsDataOnTrack
+}
+
 export function snapshotToView(snapshot: MonthSnapshot): LiveMonthAnalysis {
   const budgetUsedPct = Math.round(
     (snapshot.totalVariableSpent / Math.max(1, snapshot.effectiveVariableBudgetFinal)) * 100,

@@ -16,9 +16,9 @@ import * as React from "react";
 
 import type {
   AddActionKind,
-  DailyScenario,
   DrawerKind,
 } from "@/components/home/types";
+import { useSandboxStore } from "@/store/sandbox-store";
 import { LanguageToggle } from "@/components/language-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -47,15 +47,7 @@ import { fixedItems } from "@/data/fixed-tracker-mock";
 
 type HomeDrawerProps = {
   kind: DrawerKind | null;
-  dailyScenario: DailyScenario;
-  introCardVisible: boolean;
-  majorScenario: "active" | "none";
-  plan: "free" | "pro";
   direction: "ltr" | "rtl";
-  onDailyScenarioChange: (value: DailyScenario) => void;
-  onIntroCardVisibleChange: (value: boolean) => void;
-  onMajorScenarioChange: (value: "active" | "none") => void;
-  onPlanChange: (value: "free" | "pro") => void;
   onPreviewAddAction: (action: AddActionKind, amount: number) => void;
   onOpenChange: (open: boolean) => void;
 };
@@ -85,15 +77,7 @@ const budgetCategories = fixedItems
 
 export function HomeDrawer({
   kind,
-  dailyScenario,
-  introCardVisible,
-  majorScenario,
-  plan,
   direction,
-  onDailyScenarioChange,
-  onIntroCardVisibleChange,
-  onMajorScenarioChange,
-  onPlanChange,
   onPreviewAddAction,
   onOpenChange,
 }: HomeDrawerProps) {
@@ -143,16 +127,7 @@ export function HomeDrawer({
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-2">
           {kind === "settings" ? (
-            <SettingsControls
-              value={dailyScenario}
-              onValueChange={onDailyScenarioChange}
-              introCardVisible={introCardVisible}
-              onIntroCardVisibleChange={onIntroCardVisibleChange}
-              majorScenario={majorScenario}
-              onMajorChange={onMajorScenarioChange}
-              plan={plan}
-              onPlanChange={onPlanChange}
-            />
+            <SettingsControls />
           ) : kind === "add" ? (
             <AddFlow
               amount={amount}
@@ -180,7 +155,7 @@ export function HomeDrawer({
               onCloseDrawer={() => onOpenChange(false)}
             />
           ) : kind === "help" ? (
-            <HelpContent dailyScenario={dailyScenario} />
+            <HelpContent />
           ) : (
             <DrawerPreview kind={kind} />
           )}
@@ -621,8 +596,10 @@ function formatAmount(value: number) {
 
 // ─── Help content ─────────────────────────────────────────────────────────────
 
-function HelpContent({ dailyScenario }: { dailyScenario: DailyScenario }) {
+function HelpContent() {
   const t = useTranslations("Home.drawer.help");
+  const { monthlyBudgetState, dailyRateState } = useSandboxStore();
+  const isOverspent = monthlyBudgetState !== "over" && dailyRateState === "overRate";
 
   return (
     <div className="grid gap-3">
@@ -665,7 +642,7 @@ function HelpContent({ dailyScenario }: { dailyScenario: DailyScenario }) {
       <div className="rounded-md border border-border bg-card p-3 shadow-ring">
         <p className="text-sm font-semibold text-foreground">{t("tomorrow.title")}</p>
         <p className="mt-1 text-sm leading-[1.5] text-text-secondary text-pretty">
-          {dailyScenario === "overspent" ? t("tomorrow.overspent") : t("tomorrow.onTrack")}
+          {isOverspent ? t("tomorrow.overspent") : t("tomorrow.onTrack")}
         </p>
       </div>
     </div>
@@ -674,26 +651,22 @@ function HelpContent({ dailyScenario }: { dailyScenario: DailyScenario }) {
 
 // ─── Settings controls (sandbox only) ────────────────────────────────────────
 
-function SettingsControls({
-  value,
-  onValueChange,
-  introCardVisible,
-  onIntroCardVisibleChange,
-  majorScenario,
-  onMajorChange,
-  plan,
-  onPlanChange,
-}: {
-  value: DailyScenario;
-  onValueChange: (value: DailyScenario) => void;
-  introCardVisible: boolean;
-  onIntroCardVisibleChange: (value: boolean) => void;
-  majorScenario: "active" | "none";
-  onMajorChange: (value: "active" | "none") => void;
-  plan: "free" | "pro";
-  onPlanChange: (value: "free" | "pro") => void;
-}) {
+function SettingsControls() {
   const t = useTranslations("Home.drawer");
+  const {
+    monthlyBudgetState,
+    dailyRateState,
+    introCardVisible,
+    majorScenario,
+    plan,
+    setMonthlyBudgetState,
+    setDailyRateState,
+    setIntroCardVisible,
+    setMajorScenario,
+    setPlan,
+  } = useSandboxStore();
+
+  const rateDisabled = monthlyBudgetState === "over";
 
   return (
     <div className="flex flex-col gap-4">
@@ -701,17 +674,31 @@ function SettingsControls({
         <LanguageToggle />
       </div>
       <div className={cn("flex flex-col gap-2 text-start", surfacePanelClass)}>
-        <p className="text-sm font-semibold text-foreground">{t("settings.previewLabel")}</p>
-        <Tabs value={value} onValueChange={(v) => onValueChange(v as DailyScenario)} className="gap-3">
+        <p className="text-sm font-semibold text-foreground">Monthly budget</p>
+        <Tabs value={monthlyBudgetState} onValueChange={(v) => setMonthlyBudgetState(v as "onTrack" | "atRisk" | "over")} className="gap-3">
           <TabsList className={cn(segmentedWellClass, "grid-cols-3")}>
-            <TabsTrigger value="track" className="rounded-xs text-xs">{t("settings.trackPreview")}</TabsTrigger>
-            <TabsTrigger value="overspent" className="rounded-xs text-xs">{t("settings.overspentPreview")}</TabsTrigger>
-            <TabsTrigger value="emergency" className="rounded-xs text-xs">{t("settings.emergencyPreview")}</TabsTrigger>
+            <TabsTrigger value="onTrack" className="rounded-xs text-xs">On track</TabsTrigger>
+            <TabsTrigger value="atRisk" className="rounded-xs text-xs">At risk</TabsTrigger>
+            <TabsTrigger value="over" className="rounded-xs text-xs">Over</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="mt-2 h-px bg-border-subtle" />
+        <p className={cn("mt-1 text-sm font-semibold", rateDisabled ? "text-text-tertiary" : "text-foreground")}>
+          {"Today's rate"}
+        </p>
+        <Tabs
+          value={dailyRateState}
+          onValueChange={(v) => setDailyRateState(v as "underRate" | "overRate")}
+          className={cn("gap-3", rateDisabled && "pointer-events-none opacity-40")}
+        >
+          <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
+            <TabsTrigger value="underRate" className="rounded-xs text-xs">Under rate</TabsTrigger>
+            <TabsTrigger value="overRate" className="rounded-xs text-xs">Over rate</TabsTrigger>
           </TabsList>
         </Tabs>
         <div className="mt-2 h-px bg-border-subtle" />
         <p className="mt-1 text-sm font-semibold text-foreground">{t("settings.planLabel")}</p>
-        <Tabs value={plan} onValueChange={(v) => onPlanChange(v as "free" | "pro")} className="gap-3">
+        <Tabs value={plan} onValueChange={(v) => setPlan(v as "free" | "pro")} className="gap-3">
           <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
             <TabsTrigger value="free" className="rounded-xs text-xs">{t("settings.planFree")}</TabsTrigger>
             <TabsTrigger value="pro" className="rounded-xs text-xs">{t("settings.planPro")}</TabsTrigger>
@@ -719,7 +706,7 @@ function SettingsControls({
         </Tabs>
         <div className="mt-2 h-px bg-border-subtle" />
         <p className="mt-1 text-sm font-semibold text-foreground">{t("settings.introLabel")}</p>
-        <Tabs value={introCardVisible ? "visible" : "hidden"} onValueChange={(v) => onIntroCardVisibleChange(v === "visible")} className="gap-3">
+        <Tabs value={introCardVisible ? "visible" : "hidden"} onValueChange={(v) => setIntroCardVisible(v === "visible")} className="gap-3">
           <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
             <TabsTrigger value="visible" className="rounded-xs text-xs">{t("settings.show")}</TabsTrigger>
             <TabsTrigger value="hidden" className="rounded-xs text-xs">{t("settings.hide")}</TabsTrigger>
@@ -728,7 +715,7 @@ function SettingsControls({
         <p className="text-xs leading-[1.5] text-text-secondary text-pretty">{t("settings.introHint")}</p>
         <div className="mt-2 h-px bg-border-subtle" />
         <p className="mt-1 text-sm font-semibold text-foreground">{t("settings.majorLabel")}</p>
-        <Tabs value={majorScenario} onValueChange={(v) => onMajorChange(v as "active" | "none")} className="gap-3">
+        <Tabs value={majorScenario} onValueChange={(v) => setMajorScenario(v as "active" | "none")} className="gap-3">
           <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
             <TabsTrigger value="active" className="rounded-xs text-xs">{t("settings.show")}</TabsTrigger>
             <TabsTrigger value="none" className="rounded-xs text-xs">{t("settings.hide")}</TabsTrigger>
