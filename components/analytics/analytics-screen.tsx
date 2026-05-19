@@ -30,8 +30,19 @@ export function AnalyticsScreen() {
   const locale = useLocale() as Locale
   const t = useTranslations("Analytics")
   const direction = getDirectionForLocale(locale)
-  const { monthlyBudgetState, plan } = useSandboxStore()
-  const analyticsData = getAnalyticsDataForScenario(monthlyBudgetState)
+  const { monthlyBudgetState, plan, budgetInjection } = useSandboxStore()
+  const baseAnalyticsData = getAnalyticsDataForScenario(monthlyBudgetState)
+
+  // Patch live month injection based on sandbox setting — closed months are unaffected
+  const analyticsData = React.useMemo(() => {
+    if (budgetInjection === "with" && baseAnalyticsData.current.status === "inProgress") {
+      return {
+        ...baseAnalyticsData,
+        current: { ...baseAnalyticsData.current, injectionTotal: 1000, injectionCount: 1 },
+      }
+    }
+    return baseAnalyticsData
+  }, [baseAnalyticsData, budgetInjection])
   const [selectedMonthId, setSelectedMonthId] = React.useState<string>(analyticsData.current.month)
   const [monthPickerOpen, setMonthPickerOpen] = React.useState(false)
 

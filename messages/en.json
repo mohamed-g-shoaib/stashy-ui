@@ -214,6 +214,9 @@
         "introLabel": "Intro card preview",
         "introHint": "Keep dismissable onboarding surfaces re-toggleable here so newcomer and returning states can both be reviewed.",
         "majorLabel": "Major expense preview",
+        "injectionLabel": "Budget injection",
+        "injectionWith": "With injection",
+        "injectionWithout": "Without",
         "show": "Show",
         "hide": "Hide"
       },

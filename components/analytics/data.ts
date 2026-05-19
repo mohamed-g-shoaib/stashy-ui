@@ -308,8 +308,8 @@ const liveMonth_2026_05: LiveMonthAnalysis = {
   fixedBucketsActual: liveFixedBucketsActual,
   majorTotal: 900,
   majorCount: 1,
-  injectionTotal: 300,
-  injectionCount: 1,
+  injectionTotal: 0,
+  injectionCount: 0,
   variableReceivedTotal: 0,
 
   effectiveVariableBudget: 3760,

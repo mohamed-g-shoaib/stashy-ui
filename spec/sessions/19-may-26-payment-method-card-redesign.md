@@ -219,3 +219,40 @@ Sessions 1–3 delivered the redesigned `PaymentMethodCard` with correct tile st
 ## Open Blockers
 
 1. `pnpm build` fails on `/[locale]/tracker` with `useSearchParams()` Suspense boundary error — pre-existing, not in scope.
+
+---
+
+# Session 5 — Injection sandbox toggle
+
+**Time:** Follow-up block same day
+
+---
+
+## Status at Session Start
+
+Session 4 shipped the three-state PaymentMethodCard with the budget bar. The default mock had `injectionTotal: 300` (State 2), but the requirement was for the card to default to State 1 (no injection) with a sandbox toggle to switch to State 2.
+
+---
+
+## Completed This Session
+
+- `components/analytics/data.ts`: Changed `liveMonth_2026_05.injectionTotal` from `300` → `0` and `injectionCount` from `1` → `0`. State 1 (no injection bar) is now the default for the in-progress month.
+- `store/sandbox-store.ts`: Added `budgetInjection: "with" | "without"` state (default `"without"`) and `setBudgetInjection` setter.
+- `components/analytics/analytics-screen.tsx`: Reads `budgetInjection` from the store. When `"with"` and the current month is `inProgress`, produces an immutable patched copy of `analyticsData.current` with `injectionTotal: 300, injectionCount: 1` via `useMemo`. Closed month snapshots are unaffected.
+- `components/home/home-drawer.tsx` — `SettingsControls`: Added "Budget injection" tabs row after the major scenario row; uses `budgetInjection` + `setBudgetInjection` from the store.
+- `messages/en.json` + `messages/ar.json`: Added `settings.injectionLabel`, `settings.injectionWith`, `settings.injectionWithout` to `Home.drawer.settings`.
+- `pnpm typecheck` — clean; `pnpm lint` — same 2 pre-existing errors only
+
+---
+
+## Decisions Made
+
+- Injection is patched in `analytics-screen.tsx` via `useMemo`, not in `data.ts`, keeping mock data clean
+- Hardcoded `300 EGP` as the sandbox injection amount (mirrors the previous mock value); no new data field needed
+- The toggle only applies when `status === "inProgress"` — switching to a closed month in the month picker always shows the real snapshot data with no injection
+
+---
+
+## Open Blockers
+
+1. `pnpm build` fails on `/[locale]/tracker` with `useSearchParams()` Suspense boundary error — pre-existing, not in scope.
