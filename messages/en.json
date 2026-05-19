@@ -786,14 +786,13 @@
     },
     "methods": {
       "title": "Payment methods",
-      "subtitle": "Where money moved, by method.",
-      "filterAll": "All",
+      "subtitle": "Spending by payment method",
+      "totalLabel": "total spent",
       "fixedLabel": "Fixed",
       "variableLabel": "Variable",
-      "showDetails": "Show breakdown",
-      "hideDetails": "Hide breakdown",
-      "totalLabel": "total spent",
-      "footerNote": "Variable includes Major reclassifications. See Major Spending for behaviour breakdown."
+      "majorLabel": "Major",
+      "deltaVsLastMonth": "vs last month",
+      "deltaNoChange": "same as last month"
     },
     "trends": {
       "title": "Savings rate trend",

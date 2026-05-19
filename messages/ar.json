@@ -786,14 +786,13 @@
     },
     "methods": {
       "title": "طرق الدفع",
-      "subtitle": "حركة الأموال حسب طريقة الدفع.",
-      "filterAll": "الكل",
+      "subtitle": "الإنفاق حسب وسيلة الدفع",
+      "totalLabel": "إجمالي المصروف",
       "fixedLabel": "ثابت",
       "variableLabel": "متغير",
-      "showDetails": "إظهار التفصيل",
-      "hideDetails": "إخفاء التفصيل",
-      "totalLabel": "إجمالي المصروف",
-      "footerNote": "المتغير يشمل المشتريات المُعاد تصنيفها كرئيسية. راجع تحليل الإنفاق الكبير للتفاصيل."
+      "majorLabel": "كبير",
+      "deltaVsLastMonth": "مقارنة بالشهر الماضي",
+      "deltaNoChange": "مماثل للشهر الماضي"
     },
     "trends": {
       "title": "اتجاه معدل التوفير",
