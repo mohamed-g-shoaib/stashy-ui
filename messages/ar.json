@@ -786,7 +786,7 @@
     },
     "methods": {
       "title": "طرق الدفع",
-      "subtitle": "الإنفاق حسب وسيلة الدفع",
+      "subtitle": "حسب الوسيلة",
       "totalLabel": "إجمالي المصروف",
       "fixedLabel": "ثابت",
       "variableLabel": "متغير",
