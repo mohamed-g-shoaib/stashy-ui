@@ -178,3 +178,44 @@ Sessions 1 and 2 delivered the correct logic and data variance. The visual layer
 ## Open Blockers
 
 1. `pnpm build` fails on `/[locale]/tracker` with `useSearchParams()` Suspense boundary error — pre-existing, not in scope.
+
+---
+
+# Session 4 — Budget bar + three-state header redesign
+
+**Time:** Follow-up block same day
+
+---
+
+## Status at Session Start
+
+Sessions 1–3 delivered the redesigned `PaymentMethodCard` with correct tile structure, identity chips, and delta pills. This session adds three-state header logic: a budget consumption bar for in-progress months, injection-aware two-segment bar rendering, and delta pills gated to closed months only.
+
+---
+
+## Completed This Session
+
+- Confirmed from `types.ts`: `LiveMonthAnalysis.status` = `"inProgress" | "closed"` (line 91); `monthlyBudget` (line 95) and `injectionTotal` (line 105) both exist — no type changes needed.
+- Confirmed from `data.ts`: `liveMonth_2026_05.injectionTotal = 300` (non-zero) covers State 2; `liveMonth_firstMonth.injectionTotal = 0` covers State 1; `snapshotToView()` always sets `status: "closed"` covering State 3 — no data changes needed.
+- Added 6 new i18n keys to `Analytics.methods` in both `messages/en.json` and `messages/ar.json`: `deltaVsPreviousMonth`, `egpSpent`, `budgetUsedPct`, `budgetUsedPctOriginal`, `budgetTotal`, `injectionNote`
+- Rewrote `components/analytics/payment-method-card.tsx`:
+  - New `BudgetBar` sub-component handles State 1 (single `bg-foreground` fill) and State 2 (two-segment: `bg-foreground` + `bg-injection opacity-60` with injection note row)
+  - Header restructured: title+subtitle row, hero number row (`text-[2rem]` + `egpSpent` suffix), then `BudgetBar` conditionally for `isInProgress`
+  - `MethodRow` receives `monthStatus` prop; Layer 3 (delta pill) gated behind `monthStatus === "closed"`
+  - `DeltaPill` uses `labelVsPreviousMonth` / `t("methods.deltaVsPreviousMonth")` for closed-month label
+- `pnpm typecheck` — clean; `pnpm lint` — same 2 pre-existing errors only
+
+---
+
+## Decisions Made
+
+- `originalBudget = month.monthlyBudget` — holds pre-injection budget; pct label reads "of {originalBudget} EGP"
+- State 2 bar pct: computed against `monthlyBudget` only, not `totalCapacity`, so user sees original-plan consumption
+- Injection segment: `opacity-60` on `bg-injection` distinguishes headroom from spent; container has `overflow-hidden rounded-full`
+- `deltaVsLastMonth` key kept in messages — removal out of scope for this pass
+
+---
+
+## Open Blockers
+
+1. `pnpm build` fails on `/[locale]/tracker` with `useSearchParams()` Suspense boundary error — pre-existing, not in scope.

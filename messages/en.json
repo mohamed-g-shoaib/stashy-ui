@@ -792,7 +792,13 @@
       "variableLabel": "Variable",
       "majorLabel": "Major",
       "deltaVsLastMonth": "vs last month",
-      "deltaNoChange": "same as last month"
+      "deltaVsPreviousMonth": "vs previous month",
+      "deltaNoChange": "same as last month",
+      "egpSpent": "EGP spent",
+      "budgetUsedPct": "{pct}% of monthly budget used",
+      "budgetUsedPctOriginal": "{pct}% of original budget used",
+      "budgetTotal": "of {budget} EGP",
+      "injectionNote": "+ {amount} EGP injected"
     },
     "trends": {
       "title": "Savings rate trend",

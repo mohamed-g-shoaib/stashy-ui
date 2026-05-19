@@ -792,7 +792,13 @@
       "variableLabel": "متغير",
       "majorLabel": "كبير",
       "deltaVsLastMonth": "مقارنة بالشهر الماضي",
-      "deltaNoChange": "مماثل للشهر الماضي"
+      "deltaVsPreviousMonth": "مقارنة بالشهر السابق",
+      "deltaNoChange": "مماثل للشهر الماضي",
+      "egpSpent": "جنيه منفق",
+      "budgetUsedPct": "{pct}٪ من الميزانية الشهرية",
+      "budgetUsedPctOriginal": "{pct}٪ من الميزانية الأصلية",
+      "budgetTotal": "من {budget} جنيه",
+      "injectionNote": "+ {amount} جنيه مُضاف"
     },
     "trends": {
       "title": "اتجاه معدل التوفير",

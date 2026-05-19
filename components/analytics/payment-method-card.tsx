@@ -42,10 +42,10 @@ interface DeltaPillProps {
   delta: number
   locale: string
   labelNoChange: string
-  labelVsLastMonth: string
+  labelVsPreviousMonth: string
 }
 
-function DeltaPill({ delta, locale, labelNoChange, labelVsLastMonth }: DeltaPillProps) {
+function DeltaPill({ delta, locale, labelNoChange, labelVsPreviousMonth }: DeltaPillProps) {
   if (delta === 0) {
     return (
       <span className="inline-flex items-center rounded-full bg-surface-offset px-2.5 py-0.5 text-xs font-medium text-text-tertiary">
@@ -74,8 +74,93 @@ function DeltaPill({ delta, locale, labelNoChange, labelVsLastMonth }: DeltaPill
           {absAmount}
         </span>
       </span>
-      <span className="text-xs text-text-tertiary">{labelVsLastMonth}</span>
+      <span className="text-xs text-text-tertiary">{labelVsPreviousMonth}</span>
     </span>
+  )
+}
+
+// ─── Budget bar ───────────────────────────────────────────────────────────────
+
+interface BudgetBarProps {
+  grandTotal: number
+  monthlyBudget: number
+  injectionTotal: number
+  locale: string
+  t: ReturnType<typeof useTranslations<"Analytics">>
+}
+
+function BudgetBar({ grandTotal, monthlyBudget, injectionTotal, locale, t }: BudgetBarProps) {
+  const hasInjection = injectionTotal > 0
+
+  if (hasInjection) {
+    // State 2 — two-segment bar
+    const totalCapacity = monthlyBudget + injectionTotal
+    const spentPct = Math.min((grandTotal / totalCapacity) * 100, 100)
+    const injectionPct = Math.min((injectionTotal / totalCapacity) * 100, 100 - spentPct)
+    const displayPct = Math.round((grandTotal / monthlyBudget) * 100)
+    const formattedBudget = new Intl.NumberFormat(locale).format(monthlyBudget)
+    const formattedInjection = new Intl.NumberFormat(locale).format(injectionTotal)
+
+    return (
+      <div className="flex flex-col gap-2">
+        {/* Two-segment bar track */}
+        <div className="flex h-1.5 overflow-hidden rounded-full bg-surface-offset">
+          <div
+            className="h-full bg-foreground"
+            style={{ width: `${spentPct}%` }}
+          />
+          <div
+            className="h-full bg-injection opacity-60"
+            style={{ width: `${injectionPct}%` }}
+          />
+        </div>
+
+        {/* Meta row */}
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs text-text-tertiary">
+            {t("methods.budgetUsedPctOriginal", { pct: displayPct })}
+          </span>
+          <span dir="ltr" className="shrink-0 text-xs tabular-nums text-text-tertiary">
+            {t("methods.budgetTotal", { budget: formattedBudget })}
+          </span>
+        </div>
+
+        {/* Injection note */}
+        <div className="flex items-center gap-1.5">
+          <span className="size-[7px] shrink-0 rounded-full bg-injection" />
+          <span className="text-xs font-medium text-injection">
+            {t("methods.injectionNote", { amount: formattedInjection })}
+          </span>
+        </div>
+      </div>
+    )
+  }
+
+  // State 1 — single-fill bar
+  const fillPct = Math.min((grandTotal / monthlyBudget) * 100, 100)
+  const displayPct = Math.round((grandTotal / monthlyBudget) * 100)
+  const formattedBudget = new Intl.NumberFormat(locale).format(monthlyBudget)
+
+  return (
+    <div className="flex flex-col gap-2">
+      {/* Single-fill bar track */}
+      <div className="h-1.5 overflow-hidden rounded-full bg-surface-offset">
+        <div
+          className="h-full rounded-full bg-foreground"
+          style={{ width: `${fillPct}%` }}
+        />
+      </div>
+
+      {/* Meta row */}
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs text-text-tertiary">
+          {t("methods.budgetUsedPct", { pct: displayPct })}
+        </span>
+        <span dir="ltr" className="shrink-0 text-xs tabular-nums text-text-tertiary">
+          {t("methods.budgetTotal", { budget: formattedBudget })}
+        </span>
+      </div>
+    </div>
   )
 }
 
@@ -84,12 +169,14 @@ function DeltaPill({ delta, locale, labelNoChange, labelVsLastMonth }: DeltaPill
 interface MethodRowProps {
   method: PaymentMethodBreakdown
   prevMethod: PaymentMethodBreakdown | null
+  monthStatus: LiveMonthAnalysis["status"]
   locale: string
   t: ReturnType<typeof useTranslations<"Analytics">>
 }
 
-function MethodRow({ method, prevMethod, locale, t }: MethodRowProps) {
+function MethodRow({ method, prevMethod, monthStatus, locale, t }: MethodRowProps) {
   const delta = prevMethod !== null ? method.total - prevMethod.total : null
+  const showDelta = monthStatus === "closed" && delta !== null
 
   return (
     <div className="rounded-[var(--radius-md)] border border-border bg-surface-2 px-3 py-3">
@@ -121,14 +208,14 @@ function MethodRow({ method, prevMethod, locale, t }: MethodRowProps) {
           })}
         </div>
 
-        {/* Layer 3 — Delta pill (only when prev data exists for this method) */}
-        {delta !== null && (
+        {/* Layer 3 — Delta pill (closed months only, when prev data exists) */}
+        {showDelta && (
           <div className="flex items-center">
             <DeltaPill
               delta={delta}
               locale={locale}
               labelNoChange={t("methods.deltaNoChange")}
-              labelVsLastMonth={t("methods.deltaVsLastMonth")}
+              labelVsPreviousMonth={t("methods.deltaVsPreviousMonth")}
             />
           </div>
         )}
@@ -145,22 +232,43 @@ export function PaymentMethodCard({ month, prevPaymentMethods }: PaymentMethodCa
 
   const activeMethods = month.paymentMethods.filter((m) => m.total > 0)
   const grandTotal = activeMethods.reduce((sum, m) => sum + m.total, 0)
+  const isInProgress = month.status === "inProgress"
+  const formattedHeroNumber = new Intl.NumberFormat(locale).format(grandTotal)
 
   return (
     <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
         {/* Header */}
-        <div>
-          {/* Row 1: title + grand total */}
+        <div className="flex flex-col gap-3">
+          {/* Row 1: title + subtitle */}
           <div className="flex items-baseline justify-between gap-3">
             <h2 className="text-[1.0625rem] font-medium text-foreground">{t("methods.title")}</h2>
-            <span dir="ltr" className="shrink-0 text-[1.125rem] font-semibold tabular-nums text-foreground">
-              {formatAnalyticsCurrency(locale, grandTotal)}
+            <span className="shrink-0 text-sm text-text-tertiary">{t("methods.subtitle")}</span>
+          </div>
+
+          {/* Row 2: hero number */}
+          <div className="flex items-baseline gap-1.5">
+            <span
+              dir="ltr"
+              className="text-[2rem] font-medium leading-none tracking-[-0.03em] tabular-nums text-foreground"
+            >
+              {formattedHeroNumber}
+            </span>
+            <span className="text-[0.9375rem] font-medium text-text-tertiary">
+              {t("methods.egpSpent")}
             </span>
           </div>
 
-          {/* Row 2: subtitle */}
-          <p className="mt-0.5 text-sm text-text-tertiary">{t("methods.subtitle")}</p>
+          {/* Row 3+: budget bar (in-progress only) */}
+          {isInProgress && (
+            <BudgetBar
+              grandTotal={grandTotal}
+              monthlyBudget={month.monthlyBudget}
+              injectionTotal={month.injectionTotal}
+              locale={locale}
+              t={t}
+            />
+          )}
         </div>
 
         {/* Divider */}
@@ -175,6 +283,7 @@ export function PaymentMethodCard({ month, prevPaymentMethods }: PaymentMethodCa
                 key={method.id}
                 method={method}
                 prevMethod={prevMethod}
+                monthStatus={month.status}
                 locale={locale}
                 t={t}
               />
