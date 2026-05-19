@@ -214,6 +214,9 @@
         "introLabel": "معاينة بطاقة المقدمة",
         "introHint": "أبقِ أسطح الإرشاد القابلة للإخفاء قابلة لإعادة التفعيل هنا حتى يمكن مراجعة حالة الوافد الجديد وحالة المستخدم العائد.",
         "majorLabel": "معاينة المصروف الكبير",
+        "injectionLabel": "حقن الميزانية",
+        "injectionWith": "مع حقن",
+        "injectionWithout": "بدون",
         "show": "إظهار",
         "hide": "إخفاء"
       },
@@ -786,14 +789,19 @@
     },
     "methods": {
       "title": "طرق الدفع",
-      "subtitle": "حركة الأموال حسب طريقة الدفع.",
-      "filterAll": "الكل",
+      "subtitle": "حسب الوسيلة",
+      "totalLabel": "إجمالي المصروف",
       "fixedLabel": "ثابت",
       "variableLabel": "متغير",
-      "showDetails": "إظهار التفصيل",
-      "hideDetails": "إخفاء التفصيل",
-      "totalLabel": "إجمالي المصروف",
-      "footerNote": "المتغير يشمل المشتريات المُعاد تصنيفها كرئيسية. راجع تحليل الإنفاق الكبير للتفاصيل."
+      "majorLabel": "كبير",
+      "deltaVsLastMonth": "مقارنة بالشهر الماضي",
+      "deltaVsPreviousMonth": "مقارنة بالشهر السابق",
+      "deltaNoChange": "مماثل للشهر الماضي",
+      "egpSpent": "جنيه منفق",
+      "budgetUsedPct": "{pct}٪ من الميزانية الشهرية",
+      "budgetUsedPctOriginal": "{pct}٪ من الميزانية الأصلية",
+      "budgetTotal": "من {budget} جنيه",
+      "injectionNote": "+ {amount} جنيه مُضاف"
     },
     "trends": {
       "title": "اتجاه معدل التوفير",

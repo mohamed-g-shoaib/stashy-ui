@@ -659,11 +659,13 @@ function SettingsControls() {
     introCardVisible,
     majorScenario,
     plan,
+    budgetInjection,
     setMonthlyBudgetState,
     setDailyRateState,
     setIntroCardVisible,
     setMajorScenario,
     setPlan,
+    setBudgetInjection,
   } = useSandboxStore();
 
   const rateDisabled = monthlyBudgetState === "over";
@@ -719,6 +721,14 @@ function SettingsControls() {
           <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
             <TabsTrigger value="active" className="rounded-xs text-xs">{t("settings.show")}</TabsTrigger>
             <TabsTrigger value="none" className="rounded-xs text-xs">{t("settings.hide")}</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="mt-2 h-px bg-border-subtle" />
+        <p className="mt-1 text-sm font-semibold text-foreground">{t("settings.injectionLabel")}</p>
+        <Tabs value={budgetInjection} onValueChange={(v) => setBudgetInjection(v as "with" | "without")} className="gap-3">
+          <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
+            <TabsTrigger value="with" className="rounded-xs text-xs">{t("settings.injectionWith")}</TabsTrigger>
+            <TabsTrigger value="without" className="rounded-xs text-xs">{t("settings.injectionWithout")}</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

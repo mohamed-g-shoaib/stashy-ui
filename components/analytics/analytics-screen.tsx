@@ -7,7 +7,7 @@ import * as React from "react"
 
 import { AnalyticsUpgradeGate } from "@/components/analytics/analytics-cards"
 import { BudgetCompositionCard } from "@/components/analytics/budget-composition-card"
-import { getAnalyticsDataForScenario, getMonthView } from "@/components/analytics/data"
+import { getAnalyticsDataForScenario, getMonthView, getPreviousSnapshot } from "@/components/analytics/data"
 import { FixedAnalysisCard } from "@/components/analytics/fixed-analysis-card"
 import { formatAnalyticsMonthLabel } from "@/components/analytics/formatters"
 import { MajorBehaviourCard } from "@/components/analytics/major-behaviour-card"
@@ -30,8 +30,19 @@ export function AnalyticsScreen() {
   const locale = useLocale() as Locale
   const t = useTranslations("Analytics")
   const direction = getDirectionForLocale(locale)
-  const { monthlyBudgetState, plan } = useSandboxStore()
-  const analyticsData = getAnalyticsDataForScenario(monthlyBudgetState)
+  const { monthlyBudgetState, plan, budgetInjection } = useSandboxStore()
+  const baseAnalyticsData = getAnalyticsDataForScenario(monthlyBudgetState)
+
+  // Patch live month injection based on sandbox setting — closed months are unaffected
+  const analyticsData = React.useMemo(() => {
+    if (budgetInjection === "with" && baseAnalyticsData.current.status === "inProgress") {
+      return {
+        ...baseAnalyticsData,
+        current: { ...baseAnalyticsData.current, injectionTotal: 1000, injectionCount: 1 },
+      }
+    }
+    return baseAnalyticsData
+  }, [baseAnalyticsData, budgetInjection])
   const [selectedMonthId, setSelectedMonthId] = React.useState<string>(analyticsData.current.month)
   const [monthPickerOpen, setMonthPickerOpen] = React.useState(false)
 
@@ -40,6 +51,8 @@ export function AnalyticsScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [analyticsData, selectedMonthId],
   )
+
+  const prevPaymentMethods = getPreviousSnapshot(analyticsData, selectedMonthId)?.paymentMethods ?? null
 
   return (
     <div className="flex min-h-svh flex-col bg-background">
@@ -106,7 +119,7 @@ export function AnalyticsScreen() {
               subtitle={t("section.where.subtitle")}
             />
             <BudgetCompositionCard month={selectedMonth} />
-            <PaymentMethodCard month={selectedMonth} />
+            <PaymentMethodCard month={selectedMonth} prevPaymentMethods={prevPaymentMethods} />
             <FixedAnalysisCard month={selectedMonth} data={analyticsData} />
             <VariableAnalysisCard month={selectedMonth} />
             <MajorBehaviourCard month={selectedMonth} data={analyticsData} />

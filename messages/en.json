@@ -214,6 +214,9 @@
         "introLabel": "Intro card preview",
         "introHint": "Keep dismissable onboarding surfaces re-toggleable here so newcomer and returning states can both be reviewed.",
         "majorLabel": "Major expense preview",
+        "injectionLabel": "Budget injection",
+        "injectionWith": "With injection",
+        "injectionWithout": "Without",
         "show": "Show",
         "hide": "Hide"
       },
@@ -786,14 +789,19 @@
     },
     "methods": {
       "title": "Payment methods",
-      "subtitle": "Where money moved, by method.",
-      "filterAll": "All",
+      "subtitle": "by method",
+      "totalLabel": "total spent",
       "fixedLabel": "Fixed",
       "variableLabel": "Variable",
-      "showDetails": "Show breakdown",
-      "hideDetails": "Hide breakdown",
-      "totalLabel": "total spent",
-      "footerNote": "Variable includes Major reclassifications. See Major Spending for behaviour breakdown."
+      "majorLabel": "Major",
+      "deltaVsLastMonth": "vs last month",
+      "deltaVsPreviousMonth": "vs previous month",
+      "deltaNoChange": "same as last month",
+      "egpSpent": "EGP spent",
+      "budgetUsedPct": "{pct}% of monthly budget used",
+      "budgetUsedPctOriginal": "{pct}% of original budget used",
+      "budgetTotal": "of {budget} EGP",
+      "injectionNote": "+ {amount} EGP injected"
     },
     "trends": {
       "title": "Savings rate trend",
