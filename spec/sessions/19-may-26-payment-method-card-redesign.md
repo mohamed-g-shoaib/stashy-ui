@@ -136,3 +136,45 @@ Session 1 delivered the redesigned `PaymentMethodCard` with delta pills. All moc
 ## Open Blockers
 
 1. `pnpm build` fails on `/[locale]/tracker` with `useSearchParams()` Suspense boundary error — pre-existing, not in scope.
+
+---
+
+# Session 3 — Visual design correction pass (surface, hero, tiles, chips)
+
+**Time:** Follow-up block same day
+
+---
+
+## Status at Session Start
+
+Sessions 1 and 2 delivered the correct logic and data variance. The visual layer needed a targeted correction: card surface, header hierarchy, method row treatment, and split item presentation were all still using placeholder styling from the initial implementation.
+
+---
+
+## Completed This Session
+
+- **Change 1 — Card surface**: Added `bg-white` to `<Card>` className. Card is now pure white (#ffffff) creating the correct three-layer depth: Oat page → white card → Cream tiles.
+- **Change 2 — Header typographic hero**: Replaced the old two-column header (title left, stat tile right) with a stacked hero layout:
+  - Row 1: title (`text-[1.0625rem] font-medium`) left + subtitle (`text-sm text-text-tertiary`) right — uses `t("methods.title")` and `t("methods.subtitle")`
+  - Row 2: hero number (`text-[2rem] font-medium tracking-[-0.03em] leading-none tabular-nums`) + "EGP" currency label (`text-[0.9375rem] font-medium text-text-tertiary`) baseline-aligned
+  - Row 3: footer label (`text-xs text-text-tertiary mt-1`) — `t("methods.totalLabel")`
+  - Hero number formatted with `new Intl.NumberFormat(locale).format(grandTotal)` (number only; EGP shown as sibling span)
+  - Full-bleed `border-t border-border` divider (`-mx-4`) between header and tile list
+- **Change 3 — Method tiles**: Wrapped each method row in a Cream tile: `rounded-[var(--radius-md)] border border-border bg-surface px-3 py-3`. Tile list uses `flex flex-col gap-1.5` with no background of its own (sits on white card). No row-level dividers.
+- **Change 4 — Identity chips**: Replaced dot + label + amount three-span pattern with single unified chips per split type: `inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium`. Fixed: `bg-fixed-subtle text-fixed`. Variable: `bg-variable-subtle text-variable`. Major: `bg-major-subtle text-major`. Chip content: label + amount together.
+- `pnpm typecheck` — clean; `pnpm lint` — same 2 pre-existing errors only
+
+---
+
+## Decisions Made
+
+- Hero number split from currency: `Intl.NumberFormat(locale).format(grandTotal)` gives locale-aware number only; "EGP" is a sibling `<span>` — no formatter utility changes needed
+- `--radius-md` in the actual CSS is `1rem` (16px); the "(12px)" annotation in the brief was a minor inaccuracy — used the CSS token as specified
+- No i18n keys added, removed, or renamed — only positional rearrangement of existing keys in JSX
+- `SPLIT_ITEMS` config: `dotClass` → `chipClass` (rename internal to the component only)
+
+---
+
+## Open Blockers
+
+1. `pnpm build` fails on `/[locale]/tracker` with `useSearchParams()` Suspense boundary error — pre-existing, not in scope.
