@@ -92,7 +92,7 @@ function MethodRow({ method, prevMethod, locale, t }: MethodRowProps) {
   const delta = prevMethod !== null ? method.total - prevMethod.total : null
 
   return (
-    <div className="rounded-[var(--radius-md)] border border-border bg-surface px-3 py-3">
+    <div className="rounded-[var(--radius-md)] border border-border bg-surface-2 px-3 py-3">
       <div className="flex flex-col gap-2">
         {/* Layer 1 — Method name + total */}
         <div className="flex items-baseline justify-between gap-3">
@@ -145,32 +145,22 @@ export function PaymentMethodCard({ month, prevPaymentMethods }: PaymentMethodCa
 
   const activeMethods = month.paymentMethods.filter((m) => m.total > 0)
   const grandTotal = activeMethods.reduce((sum, m) => sum + m.total, 0)
-  const heroNumber = new Intl.NumberFormat(locale).format(grandTotal)
 
   return (
-    <Card size="sm" className="bg-white py-4">
+    <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
         {/* Header */}
         <div>
-          {/* Row 1: title + subtitle */}
+          {/* Row 1: title + grand total */}
           <div className="flex items-baseline justify-between gap-3">
             <h2 className="text-[1.0625rem] font-medium text-foreground">{t("methods.title")}</h2>
-            <span className="text-sm text-text-tertiary">{t("methods.subtitle")}</span>
-          </div>
-
-          {/* Row 2: hero number + currency */}
-          <div className="mt-1 flex items-baseline gap-1.5">
-            <span
-              dir="ltr"
-              className="text-[2rem] font-medium leading-none tracking-[-0.03em] tabular-nums text-foreground"
-            >
-              {heroNumber}
+            <span dir="ltr" className="shrink-0 text-[1.125rem] font-semibold tabular-nums text-foreground">
+              {formatAnalyticsCurrency(locale, grandTotal)}
             </span>
-            <span className="text-[0.9375rem] font-medium text-text-tertiary">EGP</span>
           </div>
 
-          {/* Row 3: footer label */}
-          <p className="mt-1 text-xs text-text-tertiary">{t("methods.totalLabel")}</p>
+          {/* Row 2: subtitle */}
+          <p className="mt-0.5 text-sm text-text-tertiary">{t("methods.subtitle")}</p>
         </div>
 
         {/* Divider */}
