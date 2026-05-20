@@ -1,18 +1,13 @@
 "use client"
 
 import { useLocale, useTranslations } from "next-intl"
-import * as React from "react"
 
 import {
   formatAnalyticsCurrency,
   formatAnalyticsSignedCurrency,
 } from "@/components/analytics/formatters"
-import type {
-  AnalyticsData,
-  FixedBucketType,
-  LiveMonthAnalysis,
-  MonthSnapshot,
-} from "@/components/analytics/types"
+import type { AnalyticsData, LiveMonthAnalysis, MonthSnapshot } from "@/components/analytics/types"
+import { getPreviousSnapshot } from "@/components/analytics/data"
 import { Card, CardContent } from "@/components/ui/card"
 import { semanticProgressClass, semanticTextClass } from "@/lib/semantic-styles"
 import { cn } from "@/lib/utils"
@@ -22,305 +17,242 @@ interface FixedAnalysisCardProps {
   data: AnalyticsData
 }
 
-const typeKeys: FixedBucketType[] = ["manual", "recurring", "installment"]
+type StructureChangeType = "none" | "added" | "removed" | "raised" | "lowered"
 
-function getTypeSpent(
-  month: Pick<LiveMonthAnalysis, "fixedBuckets" | "fixedBucketsActual">,
-  type: FixedBucketType,
-) {
-  return month.fixedBuckets
-    .filter((bucket) => bucket.type === type)
-    .reduce((sum, bucket) => {
-      const actual = month.fixedBucketsActual.find((item) => item.id === bucket.id)
-      return sum + (actual?.spent ?? 0)
-    }, 0)
-}
-
-function getTypeBudget(month: Pick<LiveMonthAnalysis, "fixedBuckets">, type: FixedBucketType) {
-  return month.fixedBuckets
-    .filter((bucket) => bucket.type === type)
-    .reduce((sum, bucket) => sum + bucket.budget, 0)
-}
-
-function getTypeHistory(snapshot: MonthSnapshot, type: FixedBucketType) {
-  return {
-    spent: getTypeSpent(snapshot, type),
-    budget: getTypeBudget(snapshot, type),
-  }
+function getManualStructureChange(
+  current: LiveMonthAnalysis,
+  previous: MonthSnapshot | null,
+): { type: StructureChangeType; delta: number } {
+  if (!previous) return { type: "none", delta: 0 }
+  const currentBuckets = current.fixedBuckets.filter((b) => b.type === "manual")
+  const previousBuckets = previous.fixedBuckets.filter((b) => b.type === "manual")
+  const currentTotal = currentBuckets.reduce((sum, b) => sum + b.budget, 0)
+  const previousTotal = previousBuckets.reduce((sum, b) => sum + b.budget, 0)
+  const delta = currentTotal - previousTotal
+  if (delta === 0) return { type: "none", delta: 0 }
+  const previousIds = new Set(previousBuckets.map((b) => b.id))
+  const currentIds = new Set(currentBuckets.map((b) => b.id))
+  const added = currentBuckets.some((b) => !previousIds.has(b.id))
+  const removed = previousBuckets.some((b) => !currentIds.has(b.id))
+  if (added) return { type: "added", delta }
+  if (removed) return { type: "removed", delta }
+  return { type: delta > 0 ? "raised" : "lowered", delta }
 }
 
 export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
-  const [selectedType, setSelectedType] = React.useState<FixedBucketType>("manual")
 
-  const selectedTypeBudget = getTypeBudget(month, selectedType)
-  const selectedTypeSpent = getTypeSpent(month, selectedType)
-  const selectedTypeUsage = Math.round((selectedTypeSpent / Math.max(1, selectedTypeBudget)) * 100)
-  const selectedTypeShare = Math.round(
-    (selectedTypeSpent / Math.max(1, month.fixedTotalSpent)) * 100,
-  )
+  // ── Section 1: Spending this month ─────────────────────────────────────────
+  const manualBuckets = month.fixedBuckets.filter((b) => b.type === "manual")
+  const manualTotalPlanned = manualBuckets.reduce((sum, b) => sum + b.budget, 0)
+  const manualTotalSpent = manualBuckets.reduce((sum, b) => {
+    const actual = month.fixedBucketsActual.find((a) => a.id === b.id)
+    return sum + (actual?.spent ?? 0)
+  }, 0)
+  const manualUsagePct = Math.round((manualTotalSpent / Math.max(1, manualTotalPlanned)) * 100)
+  const manualOverCount = manualBuckets.filter((b) => {
+    const actual = month.fixedBucketsActual.find((a) => a.id === b.id)
+    return (actual?.spent ?? 0) > b.budget
+  }).length
 
-  const selectedTypePrevious = data.snapshots[0] ? getTypeHistory(data.snapshots[0], selectedType) : null
-  const previousDelta = selectedTypePrevious === null ? 0 : selectedTypeSpent - selectedTypePrevious.spent
-
-  const selectedTypeHistory = data.snapshots.slice(0, 3).map((snapshot) => getTypeHistory(snapshot, selectedType))
-  const selectedTypeAvg =
-    selectedTypeHistory.length > 0
-      ? Math.round(
-          selectedTypeHistory.reduce((sum, item) => sum + item.spent, 0) /
-            selectedTypeHistory.length,
-        )
-      : null
-  const averageDelta = selectedTypeAvg === null ? 0 : selectedTypeSpent - selectedTypeAvg
-
-  const transferSummary =
-    selectedType === "manual"
-      ? month.fixedTransfers?.find((transfer) => transfer.type === "manual" && transfer.total > 0) ?? null
-      : null
-  const transferToVariable =
-    transferSummary?.sources
-      .filter((source) => source.target.type === "variable")
-      .reduce((sum, source) => sum + source.amount, 0) ?? 0
-  const transferToManual =
-    transferSummary?.sources
-      .filter((source) => source.target.type === "manual")
-      .reduce((sum, source) => sum + source.amount, 0) ?? 0
-
-  const manualBuckets = month.fixedBuckets
-    .filter((bucket) => bucket.type === "manual")
-    .map((bucket) => {
-      const actual = month.fixedBucketsActual.find((item) => item.id === bucket.id)
-      return {
-        spent: actual?.spent ?? 0,
-        budget: bucket.budget,
-      }
-    })
-  const manualOver = manualBuckets.filter((bucket) => bucket.spent > bucket.budget).length
-
+  // Usage bar color-toning
   const usageToneClass =
-    selectedTypeUsage > 100
+    manualUsagePct > 100
       ? semanticTextClass.expense
-      : selectedTypeUsage >= 85
+      : manualUsagePct >= 85
         ? semanticTextClass.warning
         : semanticTextClass.fixed
   const usageBarClass =
-    selectedTypeUsage > 100
+    manualUsagePct > 100
       ? semanticProgressClass.expense
-      : selectedTypeUsage >= 85
+      : manualUsagePct >= 85
         ? semanticProgressClass.warning
         : semanticProgressClass.fixed
+
+  // ── Section 2: vs last month ─────────────────────────────────────────────
+  const previousSnapshot = getPreviousSnapshot(data, month.month)
+  const previousManualTotal = previousSnapshot
+    ? previousSnapshot.fixedBuckets
+        .filter((b) => b.type === "manual")
+        .reduce((sum, b) => sum + b.budget, 0)
+    : null
+  const structureChange = getManualStructureChange(month, previousSnapshot)
+
+  // Closed month actual comparison
+  const prevManualActual =
+    month.status === "closed" && previousSnapshot
+      ? previousSnapshot.fixedBuckets
+          .filter((b) => b.type === "manual")
+          .reduce((sum, b) => {
+            const actual = previousSnapshot.fixedBucketsActual.find((a) => a.id === b.id)
+            return sum + (actual?.spent ?? 0)
+          }, 0)
+      : null
+  const actualDelta = prevManualActual !== null ? manualTotalSpent - prevManualActual : null
+
+  // Delta badge helper
+  const deltaBadgeClass = (delta: number) =>
+    delta > 0
+      ? "bg-warning-subtle text-warning"
+      : delta < 0
+        ? "bg-income-subtle text-income"
+        : "bg-surface-offset text-text-tertiary"
 
   return (
     <Card size="sm" className="py-4">
       <CardContent className="flex flex-col gap-4 px-4">
+        {/* Header */}
         <div className="space-y-1">
-          <h2 className="text-[1.0625rem] font-semibold text-foreground">{t("fixed.title")}</h2>
+          <h2 className="text-[1.0625rem] font-medium text-foreground">{t("fixed.title")}</h2>
           <p className="text-sm leading-[1.5] text-text-secondary">{t("fixed.subtitle")}</p>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 rounded-[var(--radius-md)] bg-surface-offset p-1 shadow-ring">
-          {typeKeys.map((typeKey) => {
-            const active = selectedType === typeKey
-            return (
-              <button
-                key={typeKey}
-                type="button"
-                onClick={() => setSelectedType(typeKey)}
-                className={cn(
-                  "min-h-12 rounded-[calc(var(--radius-md)-4px)] px-3 py-2.5 text-center transition-colors active:scale-[0.96]",
-                  active ? "bg-card shadow-[var(--shadow-soft)]" : "bg-transparent",
-                )}
-              >
-                <p
-                  className={cn(
-                    "text-sm font-medium",
-                    active ? "text-brand" : "text-text-secondary",
-                  )}
-                >
-                  {t(`fixed.type.${typeKey}`)}
-                </p>
-              </button>
-            )
-          })}
-        </div>
-
-        <div className="rounded-[var(--radius-md)] bg-card p-4 shadow-[var(--shadow-soft)]">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-tertiary">
-                {t("fixed.focusLabel", { type: t(`fixed.type.${selectedType}`) })}
-              </p>
-              <p
-                dir="ltr"
-                className="mt-1 text-[1.7rem] font-semibold leading-none tabular-nums text-foreground"
-              >
-                {formatAnalyticsCurrency(locale, selectedTypeBudget)}
-              </p>
-              <p className="mt-1 text-xs text-text-tertiary">{t("fixed.heroCaption")}</p>
-            </div>
-            <div className="rounded-full bg-surface-offset px-3 py-1.5 shadow-ring">
+        {/* Section 1 — Two stat tiles + bar + overrun badge */}
+        <div className="rounded-[var(--radius-md)] bg-surface-offset p-4">
+          {/* Stat tiles side by side */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
               <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
-                {t("fixed.spentLabel")}
+                {t("fixed.spentSoFar")}
               </p>
-              <p
-                dir="ltr"
-                className={cn("mt-0.5 text-sm font-semibold tabular-nums", usageToneClass)}
-              >
-                {formatAnalyticsCurrency(locale, selectedTypeSpent)}
+              <p dir="ltr" className="mt-1 text-lg font-semibold tabular-nums text-foreground">
+                {formatAnalyticsCurrency(locale, manualTotalSpent)}
+              </p>
+            </div>
+            <div>
+              <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
+                {t("fixed.planned")}
+              </p>
+              <p dir="ltr" className="mt-1 text-lg font-semibold tabular-nums text-foreground">
+                {formatAnalyticsCurrency(locale, manualTotalPlanned)}
               </p>
             </div>
           </div>
 
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-surface-offset">
+          {/* Usage bar — color-toned fill, capped at 100% */}
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-card">
             <div
               className={cn("h-full rounded-full", usageBarClass)}
-              style={{ width: `${Math.min(selectedTypeUsage, 100)}%` }}
+              style={{ width: `${Math.min(manualUsagePct, 100)}%` }}
             />
           </div>
 
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            <div className="rounded-[var(--radius-sm)] bg-surface-offset px-3 py-2">
-              <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
-                {t("fixed.usageLabel")}
-              </p>
-              <p dir="ltr" className="mt-1 text-sm font-semibold tabular-nums text-foreground">
-                {selectedTypeUsage}%
-              </p>
-            </div>
-            <div className="rounded-[var(--radius-sm)] bg-surface-offset px-3 py-2">
-              <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
-                {t("fixed.shareLabel")}
-              </p>
-              <p dir="ltr" className="mt-1 text-sm font-semibold tabular-nums text-foreground">
-                {selectedTypeShare}%
-              </p>
-            </div>
+          {/* Budget used % + overrun badge */}
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <p className={cn("text-xs font-medium", usageToneClass)}>
+              {t("fixed.budgetUsed")} {manualUsagePct}%
+            </p>
+            {manualOverCount === 0 ? (
+              <span className="inline-flex items-center rounded-full bg-income-subtle px-2.5 py-1 text-xs font-medium text-income">
+                {t("fixed.allWithinBudget")}
+              </span>
+            ) : (
+              <span className="inline-flex items-center rounded-full bg-expense-subtle px-2.5 py-1 text-xs font-medium text-expense">
+                {t("fixed.someOverrunning", {
+                  over: manualOverCount,
+                  total: manualBuckets.length,
+                })}
+              </span>
+            )}
           </div>
         </div>
 
-        {selectedTypeAvg !== null ? (
-          <div className="rounded-[var(--radius-md)] bg-surface-offset p-3 shadow-ring">
-            <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
-              {t("fixed.comparisonLabel")}
-            </p>
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              {selectedTypePrevious !== null ? (
-                <div className="rounded-[var(--radius-sm)] bg-card px-3 py-2.5 shadow-ring">
-                  <p className="text-xs text-text-tertiary">{t("fixed.previousMonthLabel")}</p>
-                  <p
-                    dir="ltr"
-                    className={cn(
-                      "mt-1 text-sm font-semibold tabular-nums",
-                      previousDelta > 0
-                        ? semanticTextClass.expense
-                        : previousDelta < 0
-                          ? semanticTextClass.income
-                          : "text-foreground",
-                    )}
-                  >
-                    {formatAnalyticsSignedCurrency(locale, previousDelta)}
-                  </p>
-                </div>
-              ) : null}
-              <div className="rounded-[var(--radius-sm)] bg-card px-3 py-2.5 shadow-ring">
-                <p className="text-xs text-text-tertiary">{t("fixed.threeMonthLabel")}</p>
-                <p
-                  dir="ltr"
-                  className={cn(
-                    "mt-1 text-sm font-semibold tabular-nums",
-                    averageDelta > 0
-                      ? semanticTextClass.expense
-                      : averageDelta < 0
-                        ? semanticTextClass.income
-                        : "text-foreground",
-                  )}
-                >
-                  {formatAnalyticsSignedCurrency(locale, averageDelta)}
-                </p>
-              </div>
-            </div>
-          </div>
-        ) : null}
+        {/* Divider */}
+        <div className="h-px bg-border-subtle" />
 
-        {transferSummary ? (
-          <div className="rounded-[var(--radius-md)] bg-transfer-subtle p-3 shadow-ring">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-transfer">
-                  {t("fixed.transferLabel")}
+        {/* Section 2 — vs last month */}
+        {data.snapshots.length === 0 ? (
+          <p className="text-sm text-text-tertiary">{t("fixed.noHistory")}</p>
+        ) : (
+          <div className="rounded-[var(--radius-md)] bg-surface-offset p-4">
+            {/* Three-column planned comparison */}
+            <div className="flex items-start gap-2">
+              {/* This month */}
+              <div className="flex-1">
+                <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
+                  {t("fixed.thisMonth")}
                 </p>
                 <p dir="ltr" className="mt-1 text-sm font-semibold tabular-nums text-foreground">
-                  {formatAnalyticsCurrency(locale, transferSummary.total)}
+                  {formatAnalyticsCurrency(locale, manualTotalPlanned)}
                 </p>
-                <p className="mt-1 text-xs text-text-secondary">{t("fixed.transferCaption")}</p>
               </div>
-            </div>
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <div className="rounded-[var(--radius-sm)] bg-card px-3 py-2 shadow-ring">
+
+              {/* Hairline */}
+              <div className="mt-1 w-px self-stretch bg-border-subtle" />
+
+              {/* Last month */}
+              <div className="flex-1">
                 <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
-                  {t("fixed.transferImpactVariableLabel")}
+                  {t("fixed.lastMonth")}
                 </p>
-                <p dir="ltr" className="mt-1 text-xs font-semibold tabular-nums text-transfer">
-                  {formatAnalyticsCurrency(locale, transferToVariable)}
+                <p dir="ltr" className="mt-1 text-sm font-semibold tabular-nums text-foreground">
+                  {previousManualTotal !== null
+                    ? formatAnalyticsCurrency(locale, previousManualTotal)
+                    : "—"}
                 </p>
               </div>
-              <div className="rounded-[var(--radius-sm)] bg-card px-3 py-2 shadow-ring">
+
+              {/* Hairline */}
+              <div className="mt-1 w-px self-stretch bg-border-subtle" />
+
+              {/* Change — aligned end */}
+              <div className="flex-none text-end">
                 <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
-                  {t("fixed.transferImpactManualLabel")}
+                  {t("fixed.change")}
                 </p>
-                <p dir="ltr" className="mt-1 text-xs font-semibold tabular-nums text-transfer">
-                  {formatAnalyticsCurrency(locale, transferToManual)}
-                </p>
-              </div>
-            </div>
-            <div className="mt-3 flex flex-col gap-2">
-              {transferSummary.sources.map((source) => (
-                <div
-                  key={source.bucketId}
-                  className="flex items-center justify-between gap-2 rounded-[var(--radius-sm)] bg-card px-3 py-2 shadow-ring"
-                >
-                  <div className="min-w-0">
-                    <p className="text-sm text-foreground">{source.name}</p>
-                    <p className="mt-0.5 text-xs text-text-tertiary">
-                      {source.target.type === "variable"
-                        ? t("fixed.transferRouteToVariable")
-                        : t("fixed.transferRouteToManual", {
-                            name: source.target.name ?? t("fixed.type.manual"),
-                          })}
-                    </p>
-                  </div>
-                  <p dir="ltr" className="text-xs tabular-nums text-transfer">
-                    -{formatAnalyticsCurrency(locale, source.amount)}
-                  </p>
+                <div className="mt-1">
+                  {structureChange.type === "none" ? (
+                    <span className="inline-flex items-center rounded-full bg-card px-2.5 py-1 text-xs font-medium text-text-tertiary shadow-ring">
+                      {t("fixed.noChange")}
+                    </span>
+                  ) : (
+                    <span
+                      className={cn(
+                        "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
+                        deltaBadgeClass(structureChange.delta),
+                      )}
+                    >
+                      {formatAnalyticsSignedCurrency(locale, structureChange.delta)}
+                    </span>
+                  )}
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
-        ) : null}
 
-        {selectedType === "manual" ? (
-          <div className="rounded-[var(--radius-md)] bg-card px-3 py-2.5 shadow-ring">
-            <p className="text-sm text-text-secondary">
-              {manualOver > 0
-                ? t("fixed.manualOverSome", {
-                    over: manualOver,
-                    total: manualBuckets.length,
-                  })
-                : t("fixed.manualOverNone")}
-            </p>
-          </div>
-        ) : null}
+            {/* Caveat line — only when structure changed */}
+            {structureChange.type !== "none" && (
+              <p className="mt-3 border-t border-border-subtle pt-3 text-xs leading-[1.5] text-text-secondary">
+                {structureChange.type === "added" && t("fixed.caveateAdded")}
+                {structureChange.type === "removed" && t("fixed.caveateRemoved")}
+                {structureChange.type === "raised" && t("fixed.caveateRaised")}
+                {structureChange.type === "lowered" && t("fixed.caveateLowered")}
+              </p>
+            )}
 
-        {month.fixedOverspend > 0 && selectedType === "manual" ? (
-          <div className="rounded-[var(--radius-md)] bg-warning-subtle px-3 py-2 shadow-ring">
-            <p className={cn("text-sm leading-[1.5]", semanticTextClass.warning)}>
-              {t("fixed.leakageCallout", {
-                amount: formatAnalyticsCurrency(locale, month.fixedOverspend),
-              })}
-            </p>
+            {/* Closed month actual comparison */}
+            {actualDelta !== null && (
+              <div className="mt-3 border-t border-border-subtle pt-3">
+                <p className="text-[0.6875rem] uppercase tracking-[0.08em] text-text-tertiary">
+                  {t("fixed.actualComparison")}
+                </p>
+                <div className="mt-1 flex items-center gap-2">
+                  <p dir="ltr" className="text-sm font-semibold tabular-nums text-foreground">
+                    {formatAnalyticsCurrency(locale, manualTotalSpent)}
+                  </p>
+                  <span
+                    className={cn(
+                      "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
+                      deltaBadgeClass(actualDelta),
+                    )}
+                  >
+                    {formatAnalyticsSignedCurrency(locale, actualDelta)}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
-        ) : null}
+        )}
       </CardContent>
     </Card>
   )

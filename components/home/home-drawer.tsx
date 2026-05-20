@@ -660,12 +660,16 @@ function SettingsControls() {
     majorScenario,
     plan,
     budgetInjection,
+    analyticsHistoryMode,
+    fixedBudgetOverrun,
     setMonthlyBudgetState,
     setDailyRateState,
     setIntroCardVisible,
     setMajorScenario,
     setPlan,
     setBudgetInjection,
+    setAnalyticsHistoryMode,
+    setFixedBudgetOverrun,
   } = useSandboxStore();
 
   const rateDisabled = monthlyBudgetState === "over";
@@ -729,6 +733,22 @@ function SettingsControls() {
           <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
             <TabsTrigger value="with" className="rounded-xs text-xs">{t("settings.injectionWith")}</TabsTrigger>
             <TabsTrigger value="without" className="rounded-xs text-xs">{t("settings.injectionWithout")}</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="mt-2 h-px bg-border-subtle" />
+        <p className="mt-1 text-sm font-semibold text-foreground">{t("settings.historyLabel")}</p>
+        <Tabs value={analyticsHistoryMode} onValueChange={(v) => setAnalyticsHistoryMode(v as "withHistory" | "firstMonth")} className="gap-3">
+          <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
+            <TabsTrigger value="withHistory" className="rounded-xs text-xs">{t("settings.historyWith")}</TabsTrigger>
+            <TabsTrigger value="firstMonth" className="rounded-xs text-xs">{t("settings.historyFirstMonth")}</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="mt-2 h-px bg-border-subtle" />
+        <p className="mt-1 text-sm font-semibold text-foreground">{t("settings.fixedOverrunLabel")}</p>
+        <Tabs value={fixedBudgetOverrun} onValueChange={(v) => setFixedBudgetOverrun(v as "none" | "some")} className="gap-3">
+          <TabsList className={cn(segmentedWellClass, "grid-cols-2")}>
+            <TabsTrigger value="none" className="rounded-xs text-xs">{t("settings.fixedOverrunNone")}</TabsTrigger>
+            <TabsTrigger value="some" className="rounded-xs text-xs">{t("settings.fixedOverrunSome")}</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
