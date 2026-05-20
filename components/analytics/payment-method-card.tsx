@@ -170,22 +170,27 @@ interface MethodRowProps {
   method: PaymentMethodBreakdown
   prevMethod: PaymentMethodBreakdown | null
   monthStatus: LiveMonthAnalysis["status"]
+  grandTotal: number
   locale: string
   t: ReturnType<typeof useTranslations<"Analytics">>
 }
 
-function MethodRow({ method, prevMethod, monthStatus, locale, t }: MethodRowProps) {
+function MethodRow({ method, prevMethod, monthStatus, grandTotal, locale, t }: MethodRowProps) {
   const delta = prevMethod !== null ? method.total - prevMethod.total : null
   const showDelta = monthStatus === "closed" && delta !== null
+  const pct = grandTotal > 0 ? Math.round((method.total / grandTotal) * 100) : 0
 
   return (
     <div className="rounded-[var(--radius-md)] border border-border bg-surface-2 px-3 py-3">
       <div className="flex flex-col gap-2">
-        {/* Layer 1 — Method name + total */}
+        {/* Layer 1 — Method name + total + % share */}
         <div className="flex items-baseline justify-between gap-3">
           <span className="text-[0.9375rem] font-medium text-foreground">{method.name}</span>
-          <span dir="ltr" className="shrink-0 text-[1.0625rem] font-semibold tabular-nums text-foreground">
-            {formatAnalyticsCurrency(locale, method.total)}
+          <span className="flex shrink-0 items-baseline gap-1.5">
+            <span dir="ltr" className="text-[1.0625rem] font-semibold tabular-nums text-foreground">
+              {formatAnalyticsCurrency(locale, method.total)}
+            </span>
+            <span className="text-xs tabular-nums text-text-tertiary">{pct}%</span>
           </span>
         </div>
 
@@ -284,6 +289,7 @@ export function PaymentMethodCard({ month, prevPaymentMethods }: PaymentMethodCa
                 method={method}
                 prevMethod={prevMethod}
                 monthStatus={month.status}
+                grandTotal={grandTotal}
                 locale={locale}
                 t={t}
               />
