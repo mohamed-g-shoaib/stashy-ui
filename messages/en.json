@@ -740,7 +740,12 @@
       "caveateRaised": "You raised the limit on one or more manual budgets this month.",
       "caveateLowered": "You lowered the limit on one or more manual budgets this month.",
       "actualComparison": "Actual spending",
-      "noHistory": "No previous month to compare"
+      "noHistory": "No previous month to compare",
+      "transfers": {
+        "title": "Envelope transfers",
+        "toVariable": "to variable pool",
+        "toEnvelope": "to {name}"
+      }
     },
     "obligation": {
       "title": "Committed to methods",

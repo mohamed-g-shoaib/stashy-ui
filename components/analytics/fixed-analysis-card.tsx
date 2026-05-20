@@ -1,6 +1,9 @@
 "use client"
 
+import { ArrowDown01Icon, ArrowRight01Icon, ArrowUp01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useLocale, useTranslations } from "next-intl"
+import * as React from "react"
 
 import {
   formatAnalyticsCurrency,
@@ -42,6 +45,7 @@ function getManualStructureChange(
 export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
   const locale = useLocale()
   const t = useTranslations("Analytics")
+  const [transfersOpen, setTransfersOpen] = React.useState(false)
 
   // ── Section 1: Spending this month ─────────────────────────────────────────
   const manualBuckets = month.fixedBuckets.filter((b) => b.type === "manual")
@@ -98,6 +102,10 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
       : delta < 0
         ? "bg-income-subtle text-income"
         : "bg-surface-offset text-text-tertiary"
+
+  // ── Section 3: Envelope transfers ───────────────────────────────────────────
+  const manualTransferGroup = (month.fixedTransfers ?? []).find((g) => g.type === "manual")
+  const hasTransfers = !!manualTransferGroup && manualTransferGroup.total > 0
 
   return (
     <Card size="sm" className="py-4">
@@ -249,6 +257,72 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
                     {formatAnalyticsSignedCurrency(locale, actualDelta)}
                   </span>
                 </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Section 3 — Envelope transfers (hidden when none) */}
+        {hasTransfers && (
+          <div className="rounded-[var(--radius-md)] bg-surface-offset p-4">
+            {/* Header row — always visible */}
+            <button
+              type="button"
+              aria-expanded={transfersOpen}
+              onClick={() => setTransfersOpen((o) => !o)}
+              className="flex w-full items-center justify-between gap-3 text-start"
+            >
+              <span className="text-sm font-medium text-foreground">
+                {t("fixed.transfers.title")}
+              </span>
+              <span className="flex shrink-0 items-center gap-2">
+                <span className="rounded-full bg-card px-2.5 py-1 text-xs font-medium text-foreground shadow-ring">
+                  {formatAnalyticsCurrency(locale, manualTransferGroup!.total)}
+                </span>
+                <HugeiconsIcon
+                  icon={transfersOpen ? ArrowUp01Icon : ArrowDown01Icon}
+                  size={16}
+                  aria-hidden="true"
+                  className="text-text-tertiary"
+                />
+              </span>
+            </button>
+
+            {/* Expanded — per-source breakdown */}
+            {transfersOpen && (
+              <div className="mt-3 flex flex-col gap-3 border-t border-border-subtle pt-3">
+                {manualTransferGroup!.sources.map((source) => (
+                  <div key={source.bucketId} className="flex items-center justify-between gap-3">
+                    {/* FROM → TO flow */}
+                    <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+                      <span className="inline-flex items-center rounded-full bg-fixed-subtle px-2.5 py-1 text-xs font-medium text-fixed">
+                        {source.name}
+                      </span>
+                      <HugeiconsIcon
+                        icon={ArrowRight01Icon}
+                        size={12}
+                        aria-hidden="true"
+                        className="shrink-0 text-text-tertiary rtl:scale-x-[-1]"
+                      />
+                      <span
+                        className={cn(
+                          "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
+                          source.target.type === "variable"
+                            ? "bg-variable-subtle text-variable"
+                            : "bg-fixed-subtle text-fixed",
+                        )}
+                      >
+                        {source.target.type === "variable"
+                          ? t("fixed.transfers.toVariable")
+                          : t("fixed.transfers.toEnvelope", { name: source.target.name ?? "" })}
+                      </span>
+                    </div>
+                    {/* Amount */}
+                    <p dir="ltr" className="shrink-0 text-sm tabular-nums text-foreground">
+                      {formatAnalyticsCurrency(locale, source.amount)}
+                    </p>
+                  </div>
+                ))}
               </div>
             )}
           </div>
