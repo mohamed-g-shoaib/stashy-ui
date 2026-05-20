@@ -745,7 +745,8 @@
         "title": "التحويلات بين الأظرف",
         "toVariable": "إلى مجموعة الإنفاق المتغير",
         "toEnvelope": "إلى {name}"
-      }
+      },
+      "ofPlanned": "من المخطط له {amount}"
     },
     "obligation": {
       "title": "ملتزم بالطرق",

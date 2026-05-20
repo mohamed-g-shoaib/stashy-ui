@@ -138,19 +138,21 @@ export function FixedAnalysisCard({ month, data }: FixedAnalysisCardProps) {
             </div>
           </div>
 
-          {/* Usage bar — color-toned fill, capped at 100% */}
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-card">
-            <div
-              className={cn("h-full rounded-full", usageBarClass)}
-              style={{ width: `${Math.min(manualUsagePct, 100)}%` }}
-            />
+          {/* Usage bar + % inline at end */}
+          <div className="mt-4 flex items-center gap-3">
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-card">
+              <div
+                className={cn("h-full rounded-full", usageBarClass)}
+                style={{ width: `${Math.min(manualUsagePct, 100)}%` }}
+              />
+            </div>
+            <p className={cn("shrink-0 text-xs font-medium tabular-nums", usageToneClass)}>
+              {manualUsagePct}%
+            </p>
           </div>
 
-          {/* Budget used % + overrun badge */}
-          <div className="mt-3 flex items-center justify-between gap-3">
-            <p className={cn("text-xs font-medium", usageToneClass)}>
-              {t("fixed.budgetUsed")} {manualUsagePct}%
-            </p>
+          {/* Badge — own row, start-aligned */}
+          <div className="mt-3 flex justify-start">
             {manualOverCount === 0 ? (
               <span className="inline-flex items-center rounded-full bg-income-subtle px-2.5 py-1 text-xs font-medium text-income">
                 {t("fixed.allWithinBudget")}

@@ -745,7 +745,8 @@
         "title": "Envelope transfers",
         "toVariable": "to variable pool",
         "toEnvelope": "to {name}"
-      }
+      },
+      "ofPlanned": "of {amount} planned"
     },
     "obligation": {
       "title": "Committed to methods",
